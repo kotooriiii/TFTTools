@@ -3,6 +3,7 @@ package com.tfttools.controller;
 import com.tfttools.dto.UnitDTO;
 import com.tfttools.service.UnitService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
@@ -21,4 +22,12 @@ public class UnitController {
     public List<UnitDTO> getAllUnits() {
         return unitService.getAllUnits();
     }
+
+    @GetMapping("/neighborsOfChampionName/{championName}")
+    public List<UnitDTO> neighborsOfChampionName(@PathVariable String championName)
+    {
+        return unitService.neighborsOfChampionName(championName);
+    }
+
+
 }

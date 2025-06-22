@@ -5,9 +5,6 @@ import com.tfttools.domain.Trait;
 import com.tfttools.domain.Unit;
 import com.tfttools.registry.UnitRegistry;
 import org.jgrapht.Graph;
-import org.jgrapht.Graphs;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DefaultUndirectedGraph;
 import org.jgrapht.graph.Multigraph;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +19,7 @@ public class UnitGraph
     public UnitGraph(UnitRegistry registry)
     {
         this.graph = new Multigraph<>(TraitEdge.class);
-
+        
         // Add all units as vertices
         for (Unit unit : registry.getAllUnits())
         {
@@ -53,15 +50,22 @@ public class UnitGraph
         }
     }
 
-    public Set<Champion> getNeighbors(Champion champion)
+    public Set<Champion> traverseNeighborsOfChampion(Champion champion)
     {
-        return graph.containsVertex(champion)
-                ? new HashSet<>(Graphs.neighborListOf(graph, champion))
-                : Collections.emptySet();
-    }
+        Set<Champion> result = new HashSet<>();
 
-    public Set<Champion> getAllChampions()
-    {
-        return graph.vertexSet();
+        Set<TraitEdge> traitEdges = graph.edgesOf(champion);
+
+        for (TraitEdge traitEdge : traitEdges)
+        {
+            Champion target = graph.getEdgeTarget(traitEdge);
+
+            if(target == champion)
+                target = graph.getEdgeSource(traitEdge);
+
+            result.add(target);
+        }
+
+        return result;
     }
 }

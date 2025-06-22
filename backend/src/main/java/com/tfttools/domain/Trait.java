@@ -5,7 +5,7 @@ public enum Trait
     AMP,
     ANIMA_SQUAD,
     BASTION,
-    BOOMBOTS,
+    BOOMBOT,
     BRUISER,
     CYBERBOSS,
     CYPHER,

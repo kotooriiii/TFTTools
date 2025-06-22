@@ -3,7 +3,6 @@ package com.tfttools.registry;
 import com.tfttools.domain.Champion;
 import com.tfttools.domain.Trait;
 import com.tfttools.domain.Unit;
-import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -28,13 +27,13 @@ public class UnitRegistry
         register(tempTraitToUnits, tempChampionMap, AURORA, ANIMA_SQUAD, DYNAMO);
         register(tempTraitToUnits, tempChampionMap, BRAND, STREET_DEMON, TECHIE);
         register(tempTraitToUnits, tempChampionMap, BRAUM, SYNDICATE, VANGUARD);
-        register(tempTraitToUnits, tempChampionMap, CHO_GATH, BOOMBOTS, BRUISER);
+        register(tempTraitToUnits, tempChampionMap, CHO_GATH, BOOMBOT, BRUISER);
         register(tempTraitToUnits, tempChampionMap, DARIUS, SYNDICATE, BRUISER);
         register(tempTraitToUnits, tempChampionMap, DR_MUNDO, STREET_DEMON, BRUISER, SLAYER);
         register(tempTraitToUnits, tempChampionMap, DRAVEN, CYPHER, RAPIDFIRE);
         register(tempTraitToUnits, tempChampionMap, EKKO, STREET_DEMON, STRATEGIST);
         register(tempTraitToUnits, tempChampionMap, ELISE, NITRO, DYNAMO);
-        register(tempTraitToUnits, tempChampionMap, FIDDLESTICKS, BOOMBOTS, TECHIE);
+        register(tempTraitToUnits, tempChampionMap, FIDDLESTICKS, BOOMBOT, TECHIE);
         register(tempTraitToUnits, tempChampionMap, GALIO, CYPHER, BASTION);
         register(tempTraitToUnits, tempChampionMap, GAREN, GOD_OF_THE_NET);
         register(tempTraitToUnits, tempChampionMap, GRAGAS, DIVINICORP, BRUISER);
@@ -46,7 +45,7 @@ public class UnitRegistry
         register(tempTraitToUnits, tempChampionMap, JINX, STREET_DEMON, MARKSMAN);
         register(tempTraitToUnits, tempChampionMap, KINDRED, NITRO, RAPIDFIRE, MARKSMAN);
         register(tempTraitToUnits, tempChampionMap, KOBUKO, CYBERBOSS, BRUISER);
-        register(tempTraitToUnits, tempChampionMap, KOGMAW, BOOMBOTS, RAPIDFIRE);
+        register(tempTraitToUnits, tempChampionMap, KOGMAW, BOOMBOT, RAPIDFIRE);
         register(tempTraitToUnits, tempChampionMap, LEBLANC, CYPHER, STRATEGIST);
         register(tempTraitToUnits, tempChampionMap, LEONA, ANIMA_SQUAD, VANGUARD);
         register(tempTraitToUnits, tempChampionMap, MISS_FORTUNE, SYNDICATE, DYNAMO);
@@ -61,7 +60,7 @@ public class UnitRegistry
         register(tempTraitToUnits, tempChampionMap, RHAAST, DIVINICORP, VANGUARD);
         register(tempTraitToUnits, tempChampionMap, SHACO, SYNDICATE, SLAYER);
         register(tempTraitToUnits, tempChampionMap, SHYVANA, NITRO, BASTION, TECHIE);
-        register(tempTraitToUnits, tempChampionMap, SKARNER, BOOMBOTS, VANGUARD);
+        register(tempTraitToUnits, tempChampionMap, SKARNER, BOOMBOT, VANGUARD);
         register(tempTraitToUnits, tempChampionMap, SYLAS, ANIMA_SQUAD, VANGUARD);
         register(tempTraitToUnits, tempChampionMap, VI, CYPHER, VANGUARD);
         register(tempTraitToUnits, tempChampionMap, VEX, DIVINICORP, EXECUTIONER);
