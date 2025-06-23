@@ -1,5 +1,7 @@
 import React, {useState, useRef} from 'react';
-import {motion, PanInfo} from 'framer-motion';
+import {motion} from 'framer-motion';
+
+const CIRCLE_RADIUS = 20;
 
 type Vertex = {
     id: number;
@@ -29,6 +31,10 @@ const GraphCanvas: React.FC = () =>
     const [panOffset, setPanOffset] = useState({x: 0, y: 0});
     const [lastPanPosition, setLastPanPosition] = useState<{ x: number; y: number } | null>(null);
     const [zoom, setZoom] = useState(1);
+    const [draggingId, setDraggingId] = useState<number | null>(null);
+    const [hoveringId, setHoveringId] = useState<number | null>(null);
+    const [lastPointerPos, setLastPointerPos] = useState<{ x: number; y: number } | null>(null);
+
     const svgRef = useRef<SVGSVGElement>(null);
 
     // Zoom limits
@@ -84,20 +90,39 @@ const GraphCanvas: React.FC = () =>
             setPanOffset({x: newPanX, y: newPanY});
         }
     };
+    const startDrag = (e: React.PointerEvent, id: number) => {
+        e.stopPropagation();
+        e.preventDefault();
+        e.currentTarget.setPointerCapture(e.pointerId);
 
-    const handleVertexDrag = (vertexId: number, _event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) =>
-    {
-        // Update the actual vertices state
-        setVertices(prev => prev.map(vertex =>
-            vertex.id === vertexId
-                ? {...vertex, x: vertex.x + info.delta.x / zoom, y: vertex.y + info.delta.y / zoom}
-                : vertex
-        ));
+        setDraggingId(id);
+        setLastPointerPos({ x: e.clientX, y: e.clientY });
     };
 
-    const handleVertexDragEnd = (_vertexId: number, _event: MouseEvent | TouchEvent | PointerEvent, _info: PanInfo) =>
-    {
-        // Handle drag end logic if needed
+    const dragMove = (e: React.PointerEvent) => {
+        if (!draggingId || !lastPointerPos) return;
+
+        const dx = (e.clientX - lastPointerPos.x) / zoom;
+        const dy = (e.clientY - lastPointerPos.y) / zoom;
+
+        setVertices((prev) =>
+            prev.map((v) =>
+                v.id == draggingId
+                    ? { ...v, x: v.x + dx, y: v.y + dy }
+                    : v
+            )
+        );
+        setLastPointerPos({ x: e.clientX, y: e.clientY });
+    };
+
+    const endDrag = (e: React.PointerEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
+        e.currentTarget.releasePointerCapture(e.pointerId);
+
+        setDraggingId(null);
+
+        setLastPointerPos(null);
     };
 
     const handleMouseUp = () =>
@@ -130,19 +155,31 @@ const GraphCanvas: React.FC = () =>
 
             if (!sourceVertex || !targetVertex) return null;
 
+            // Calculate dynamic radius based on current scale
+            const getVertexRadius = (vertexId: number) => {
+                const baseRadius = CIRCLE_RADIUS;
+                if (draggingId === vertexId) return baseRadius * 0.9;
+                if (hoveringId === vertexId) return baseRadius * 1.1;
+                return baseRadius;
+            };
+            const sourceRadius = getVertexRadius(sourceVertex.id);
+            const targetRadius = getVertexRadius(targetVertex.id);
+
             // Calculate edge endpoints considering vertex radius
             const dx = targetVertex.x - sourceVertex.x;
             const dy = targetVertex.y - sourceVertex.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
 
-            // Offset by vertex radius (20) to connect at circle edge, not center
-            const offsetX = (dx / distance) * 20;
-            const offsetY = (dy / distance) * 20;
+            const sourceOffsetX = (dx / distance) * sourceRadius;
+            const sourceOffsetY = (dy / distance) * sourceRadius;
+            const targetOffsetX = (dx / distance) * targetRadius;
+            const targetOffsetY = (dy / distance) * targetRadius;
 
-            const startX = sourceVertex.x + offsetX;
-            const startY = sourceVertex.y + offsetY;
-            const endX = targetVertex.x - offsetX;
-            const endY = targetVertex.y - offsetY;
+
+            const startX = sourceVertex.x + sourceOffsetX;
+            const startY = sourceVertex.y + sourceOffsetY;
+            const endX = targetVertex.x - targetOffsetX;
+            const endY = targetVertex.y - targetOffsetY;
 
             // Calculate text position - midpoint of the line
             const midX = (startX + endX) / 2;
@@ -168,7 +205,7 @@ const GraphCanvas: React.FC = () =>
                             x2: endX,
                             y2: endY
                         }}
-                        transition={{ type: "spring", stiffness: 5000, damping: 100 }}
+                        transition={{ type: "spring", stiffness: 100000, damping: 100 }}
                     />
                     {edge.label && (
                         <g>
@@ -302,21 +339,23 @@ const GraphCanvas: React.FC = () =>
                     {vertices.map((v) => (
                         <motion.circle
                             key={v.id}
-                            initial={{x: v.x, y: v.y}}
-                            r={20}
+                            cx={v.x}
+                            cy={v.y}
+                            r={CIRCLE_RADIUS}
                             fill="#6F5E53"
                             stroke="#594b42"
                             strokeWidth={1.5}
-                            drag
-                            dragMomentum={false}
-                            dragElastic={0}
-                            onDrag={(event, info) => handleVertexDrag(v.id, event, info)}
-                            onDragEnd={(event, info) => handleVertexDragEnd(v.id, event, info)}
-                            style={{cursor: 'move'}}
-                            whileHover={{scale: 1.1}}
-                            whileTap={{scale: 0.95}}
-                            whileDrag={{scale: 1.05}}
+                            style={{ cursor: 'move' }}
+                            onMouseEnter={() => setHoveringId(v.id)}
+                            onMouseLeave={() => setHoveringId(null)}
+                            onPointerDown={(e) => startDrag(e, v.id)}
+                            onPointerMove={dragMove}
+                            onPointerUp={endDrag}
+                            animate={{
+                                scale: draggingId === v.id ? 0.9 : (hoveringId === v.id ? 1.1 : 1)
+                            }}
                         />
+
                     ))}
                 </g>
             </svg>
