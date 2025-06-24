@@ -13,12 +13,19 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+/**
+ * Custom graph class to represent graphs for units
+ */
 @Component
 public class UnitGraph
 {
 
     private final Graph<Champion, TraitEdge> graph;
 
+    /**
+     * Initialize new graph with given registry
+     * @param registry Champion pool to create graph from
+     */
     public UnitGraph(UnitRegistry registry)
     {
         this.graph = new Multigraph<>(TraitEdge.class);
@@ -53,6 +60,11 @@ public class UnitGraph
         }
     }
 
+    /**
+     * Gets all neighbors of given champion
+     * @param champion Champion to find neighbors from
+     * @return Set of Champions that share a trait with given Champion
+     */
     public Set<Champion> getNeighbors(Champion champion)
     {
         return graph.containsVertex(champion)
@@ -60,6 +72,10 @@ public class UnitGraph
                 : Collections.emptySet();
     }
 
+    /**
+     * Get all champions in graph
+     * @return Set of all champions in the graph
+     */
     public Set<Champion> getAllChampions()
     {
         return graph.vertexSet();

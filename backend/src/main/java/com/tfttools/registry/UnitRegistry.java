@@ -11,6 +11,9 @@ import java.util.*;
 import static com.tfttools.domain.Champion.*;
 import static com.tfttools.domain.Trait.*;
 
+/**
+ * Initialize Champions and their respective traits
+ */
 @Component
 public class UnitRegistry
 {
@@ -94,6 +97,10 @@ public class UnitRegistry
         }
     }
 
+    /**
+     * Gets all units grouped by trait
+     * @return Map of all units grouped by trait
+     */
     public Map<Trait, List<Unit>> getUnitsByTrait()
     {
         return this.traitToUnits;
@@ -108,6 +115,10 @@ public class UnitRegistry
         return championMap.get(champion);
     }
 
+    /**
+     * Gets all units in the {@link UnitRegistry}
+     * @return List of all units in the {@link UnitRegistry}
+     */
     public List<Unit> getAllUnits()
     {
         return new ArrayList<>(championMap.values());

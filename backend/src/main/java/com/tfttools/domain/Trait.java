@@ -1,5 +1,8 @@
 package com.tfttools.domain;
 
+/**
+ * Enumerates champion traits
+ */
 public enum Trait
 {
     AMP,

@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Business logic for Units
+ */
 @Service
 public class UnitService {
 
@@ -19,6 +22,10 @@ public class UnitService {
         this.unitMapper = unitMapper;
     }
 
+    /**
+     * Gets all units from {@link UnitRegistry} sanitizes it for the requestor
+     * @return List of {@link UnitDTO}
+     */
     public List<UnitDTO> getAllUnits() {
         return unitRegistry.getAllUnits().stream().map(unitMapper).collect(Collectors.toList());
     }

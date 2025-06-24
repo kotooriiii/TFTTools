@@ -1,5 +1,8 @@
 package com.tfttools.domain;
 
+/**
+ * Enumerates champion names
+ */
 public enum Champion
 {
     ALISTAR,
