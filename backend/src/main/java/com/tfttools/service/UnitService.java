@@ -1,5 +1,6 @@
 package com.tfttools.service;
 
+import com.tfttools.PrefixTrie.PrefixTrieUtils;
 import com.tfttools.dto.ChampionDTO;
 import com.tfttools.dto.SearchResultDTO;
 import com.tfttools.dto.TraitDTO;
@@ -45,6 +46,9 @@ public class UnitService {
      * @return SearchResultDTO
      */
     public SearchResultDTO getSuggestions(String search) {
+        search = PrefixTrieUtils.removePunctuation(search);
+        if (search.isEmpty()) { return new SearchResultDTO(); }
+
         List<ChampionDTO> champs = unitRegistry.getAllChampionsStartingWith(search).stream().map(championMapper).collect(Collectors.toList());
         List<TraitDTO> traits = unitRegistry.getAllTraitsStartingWith(search).stream().map(traitMapper).collect(Collectors.toList());
 
