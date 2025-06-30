@@ -2,9 +2,7 @@ package com.tfttools.PrefixTrie;
 
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Implementation of a Prefix tree that accepts generic types.
@@ -29,7 +27,7 @@ public class PrefixTrie<T> {
         PrefixNode<T> curr = this.root;
 
         // perform some input validation, remove some punctuation and whitespace
-        String s = obj.toString().toUpperCase().replaceAll("[,.'_\\-\\s]", "");
+        String s = PrefixTrieUtils.removePunctuation(obj.toString());
 
         for (int i = 0; i < s.length(); i++) {
             if (curr.childExists(s.charAt(i))) {
@@ -50,16 +48,24 @@ public class PrefixTrie<T> {
      * @return List of type T of all the completed descendants of the prefix
      */
     public List<T> getAllDescendantsByPrefix(String prefix) {
-        return getAllDescendants(search(prefix));
+        PrefixNode<T> n = search(prefix);
+
+        if (n != null) {
+            return getAllDescendants(n);
+        } else {
+            return Collections.emptyList();
+        }
+
     }
 
     private PrefixNode<T> search(String prefix) {
-        prefix = prefix.toUpperCase().replaceAll("[,.'_\\-\\s]", "");
         PrefixNode<T> curr = this.root;
 
         for (int i = 0; i < prefix.length(); i++) {
             if (curr.childExists(prefix.charAt(i))) {
                 curr = curr.getChild(prefix.charAt(i));
+            } else {
+                return null;
             }
         }
 
