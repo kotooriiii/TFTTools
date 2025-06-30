@@ -1,13 +1,11 @@
 package com.tfttools.registry;
 
+import com.tfttools.PrefixTrie.PrefixTrie;
 import com.tfttools.domain.Champion;
 import com.tfttools.domain.Trait;
 import com.tfttools.domain.Unit;
-import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
-
 import java.util.*;
-
 import static com.tfttools.domain.Champion.*;
 import static com.tfttools.domain.Trait.*;
 
@@ -19,11 +17,15 @@ public class UnitRegistry
 {
     private final Map<Trait, List<Unit>> traitToUnits;
     private final Map<Champion, Unit> championMap;
+    private final PrefixTrie<Champion> championPrefixTrie;
+    private final PrefixTrie<Trait> traitPrefixTrie;
 
     public UnitRegistry()
     {
         Map<Trait, List<Unit>> tempTraitToUnits = new HashMap<>();
         Map<Champion, Unit> tempChampionMap = new HashMap<>();
+        this.championPrefixTrie = new PrefixTrie<>();
+        this.traitPrefixTrie = new PrefixTrie<>();
 
         register(tempTraitToUnits, tempChampionMap, ALISTAR, GOLDEN_OX, BRUISER);
         register(tempTraitToUnits, tempChampionMap, ANNIE, GOLDEN_OX, AMP);
@@ -79,6 +81,9 @@ public class UnitRegistry
         register(tempTraitToUnits, tempChampionMap, ZIGGS, CYBERBOSS, STRATEGIST);
         register(tempTraitToUnits, tempChampionMap, ZYRA, STREET_DEMON, TECHIE);
 
+        // Initialize Prefix Tries
+        initPrefixTrie();
+
         // Make all trait lists unmodifiable
         for (Map.Entry<Trait, List<Unit>> entry : tempTraitToUnits.entrySet()) {
             entry.setValue(Collections.unmodifiableList(entry.getValue()));
@@ -95,6 +100,11 @@ public class UnitRegistry
         for (Trait t : traits) {
             traitToUnits.computeIfAbsent(t, k -> new ArrayList<>()).add(unit);
         }
+    }
+
+    private void initPrefixTrie() {
+        Arrays.stream(Champion.values()).forEach(this.championPrefixTrie::add);
+        Arrays.stream(Trait.values()).forEach(this.traitPrefixTrie::add);
     }
 
     /**
@@ -122,5 +132,23 @@ public class UnitRegistry
     public List<Unit> getAllUnits()
     {
         return new ArrayList<>(championMap.values());
+    }
+
+    /**
+     * Gets all champions starting with a given prefix
+     * @param prefix The prefix to be searched for
+     * @return List of champions
+     */
+    public List<Champion> getAllChampionsStartingWith(String prefix) {
+        return this.championPrefixTrie.getAllDescendantsByPrefix(prefix);
+    }
+
+    /**
+     * Gets all traits starting with a given prefix
+     * @param prefix The prefix to be searched for
+     * @return List of traits
+     */
+    public List<Trait> getAllTraitsStartingWith(String prefix) {
+        return this.traitPrefixTrie.getAllDescendantsByPrefix(prefix);
     }
 }
