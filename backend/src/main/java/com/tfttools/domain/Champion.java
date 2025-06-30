@@ -71,7 +71,8 @@ public enum Champion {
         this.displayName = name;
     }
 
-    public String getDisplayName() {
+    @Override
+    public String toString() {
         return displayName;
     }
 }
