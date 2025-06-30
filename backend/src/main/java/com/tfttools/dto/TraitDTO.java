@@ -7,16 +7,10 @@ import com.tfttools.domain.Trait;
  */
 public class TraitDTO {
 
-    private final Trait trait;
     private final String displayName;
 
     public TraitDTO(Trait trait) {
-        this.trait = trait;
         this.displayName = trait.toString();
-    }
-
-    public Trait getTrait() {
-        return trait;
     }
 
     public String getDisplayName() {

@@ -1,5 +1,7 @@
 package com.tfttools.dto;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -8,6 +10,11 @@ import java.util.List;
 public class SearchResultDTO {
     private final List<ChampionDTO> championList;
     private final List<TraitDTO> traitList;
+
+    public SearchResultDTO() {
+        this.championList = Collections.emptyList();
+        this.traitList = Collections.emptyList();
+    }
 
     public SearchResultDTO(List<ChampionDTO> championList, List<TraitDTO> traitList) {
         this.championList = championList;
