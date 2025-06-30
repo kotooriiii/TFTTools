@@ -29,7 +29,7 @@ public class PrefixTrie<T> {
         PrefixNode<T> curr = this.root;
 
         // perform some input validation, remove some punctuation and whitespace
-        String s = obj.toString().replaceAll("[,.'_\\-\\s]", "");
+        String s = obj.toString().toUpperCase().replaceAll("[,.'_\\-\\s]", "");
 
         for (int i = 0; i < s.length(); i++) {
             if (curr.childExists(s.charAt(i))) {
@@ -54,6 +54,7 @@ public class PrefixTrie<T> {
     }
 
     private PrefixNode<T> search(String prefix) {
+        prefix = prefix.toUpperCase().replaceAll("[,.'_\\-\\s]", "");
         PrefixNode<T> curr = this.root;
 
         for (int i = 0; i < prefix.length(); i++) {
@@ -87,16 +88,6 @@ public class PrefixTrie<T> {
                 .forEach(prefixNode -> _getAllDescendants(prefixNode, descendants));
 
     }
-
-//    public static void main(String[] args) {
-//        PrefixTree<Champion> t = new PrefixTree<>();
-//
-//        Arrays.stream(Champion.values()).forEach(t::add);
-//
-//        List<Champion> c = t.getAllDescendantsByPrefix("A");
-//        System.out.println(c);
-//    }
-
 }
 
 
