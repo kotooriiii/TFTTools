@@ -1,5 +1,10 @@
 package com.tfttools.domain;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 /**
  * Enumerates champion names
  */
@@ -69,6 +74,16 @@ public enum Champion {
 
     Champion(String name) {
         this.displayName = name;
+    }
+
+    private static final Map<String, Champion> BY_DISPLAY_NAME = Arrays.stream(values()).collect(Collectors.toMap(Champion::getDisplayName, Function.identity()));
+
+    public static Champion fromDisplayName(String displayName) {
+        return BY_DISPLAY_NAME.get(displayName);
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 
     @Override
