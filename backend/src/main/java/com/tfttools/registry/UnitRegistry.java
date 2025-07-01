@@ -4,6 +4,7 @@ import com.tfttools.PrefixTrie.PrefixTrie;
 import com.tfttools.domain.Champion;
 import com.tfttools.domain.Trait;
 import com.tfttools.domain.Unit;
+import com.tfttools.dto.FilterDTO;
 import org.springframework.stereotype.Component;
 import java.util.*;
 import static com.tfttools.domain.Champion.*;
@@ -150,5 +151,17 @@ public class UnitRegistry
      */
     public List<Trait> getAllTraitsStartingWith(String prefix) {
         return this.traitPrefixTrie.getAllDescendantsByPrefix(prefix);
+    }
+
+    public List<Unit> getUnitsOf(FilterDTO filterDTO) {
+        List<Unit> unitsByTrait = new ArrayList<>();
+
+        List<Champion> championList = filterDTO.getChampionDTOList().stream().map(championDTO -> Champion.fromDisplayName(championDTO.getDisplayName())).toList();
+        championList.forEach(champion -> unitsByTrait.add(getUnitByChampion(champion)));
+
+        List<Trait> traitList = filterDTO.getTraitDTOList().stream().map(traitDTO -> Trait.fromDisplayName(traitDTO.getDisplayName())).toList();
+        traitList.forEach(trait -> unitsByTrait.addAll(getUnitsByTrait(trait)));
+
+        return unitsByTrait;
     }
 }
