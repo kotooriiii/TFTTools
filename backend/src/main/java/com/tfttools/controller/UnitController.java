@@ -47,8 +47,13 @@ public class UnitController {
         return unitService.getSuggestions(query);
     }
 
+    /**
+     * Gets units according to filter params in FilterDTO
+     * @param filterDTO Contains filter data {@link FilterDTO}
+     * @return List of sanitized units {@link UnitDTO}
+     */
     @GetMapping("/getUnitsOf")
-    public List<UnitDTO> getUnitsOf(@RequestParam FilterDTO filterDTO) {
+    public List<UnitDTO> getUnitsOf(FilterDTO filterDTO) {
         return unitService.getUnitsOf(filterDTO);
     }
 }

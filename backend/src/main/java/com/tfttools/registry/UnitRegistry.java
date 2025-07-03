@@ -153,15 +153,33 @@ public class UnitRegistry
         return this.traitPrefixTrie.getAllDescendantsByPrefix(prefix);
     }
 
+    /**
+     * Gets units according to filter params in FilterDTO
+     * @param filterDTO Contains filter data {@link FilterDTO}
+     * @return List of units {@link Unit}
+     */
     public List<Unit> getUnitsOf(FilterDTO filterDTO) {
-        List<Unit> unitsByTrait = new ArrayList<>();
+        Set<Unit> filteredUnits = new HashSet<>(getAllUnits());
 
-        List<Champion> championList = filterDTO.getChampionDTOList().stream().map(championDTO -> Champion.fromDisplayName(championDTO.getDisplayName())).toList();
-        championList.forEach(champion -> unitsByTrait.add(getUnitByChampion(champion)));
+        if (!filterDTO.getChampionDTOList().isEmpty()) {
+            // From championDTOList map displayName -> actual Champion
+            List<Champion> championList= filterDTO.getChampionDTOList().stream().map(championDTO -> Champion.fromDisplayName(championDTO.getDisplayName())).toList();
 
-        List<Trait> traitList = filterDTO.getTraitDTOList().stream().map(traitDTO -> Trait.fromDisplayName(traitDTO.getDisplayName())).toList();
-        traitList.forEach(trait -> unitsByTrait.addAll(getUnitsByTrait(trait)));
+            // For each champion in championList map Champion -> SingletonSet(Unit)
+            List<Set<Unit>> unitsFromChampions = championList.stream().map(champion -> Collections.singleton(getUnitByChampion(champion))).toList();
 
-        return unitsByTrait;
+            // For each unit take intersection of filteredUnits and UnitSingleton
+            unitsFromChampions.forEach(filteredUnits::retainAll);
+
+        }
+
+        if (!filterDTO.getTraitDTOList().isEmpty()) {
+            // From traitList map displayName -> Trait
+            List<Trait> traitList = filterDTO.getTraitDTOList().stream().map(traitDTO -> Trait.fromDisplayName(traitDTO.getDisplayName())).toList();
+            // For each trait, take intersection of filteredUnits and Set(all units in trait)
+            traitList.forEach(trait -> filteredUnits.retainAll(new HashSet<>(getUnitsByTrait(trait))));
+        }
+
+        return filteredUnits.stream().toList();
     }
 }
