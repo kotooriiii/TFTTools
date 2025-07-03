@@ -52,8 +52,8 @@ public class UnitController {
      * @param filterDTO Contains filter data {@link FilterDTO}
      * @return List of sanitized units {@link UnitDTO}
      */
-    @GetMapping("/getUnitsOf")
-    public List<UnitDTO> getUnitsOf(FilterDTO filterDTO) {
-        return unitService.getUnitsOf(filterDTO);
+    @GetMapping("/filter")
+    public List<UnitDTO> filter(FilterDTO filterDTO) {
+        return unitService.filter(filterDTO);
     }
 }

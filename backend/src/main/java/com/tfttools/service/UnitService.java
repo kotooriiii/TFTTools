@@ -52,7 +52,7 @@ public class UnitService {
         return new SearchResultDTO(champs, traits);
     }
 
-    public List<UnitDTO> getUnitsOf(FilterDTO filterDTO) {
-        return unitRegistry.getUnitsOf(filterDTO).stream().map(unitMapper).collect(Collectors.toList());
+    public List<UnitDTO> filter(FilterDTO filterDTO) {
+        return unitRegistry.filter(filterDTO).stream().map(unitMapper).collect(Collectors.toList());
     }
 }

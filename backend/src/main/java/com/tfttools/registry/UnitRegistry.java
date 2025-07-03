@@ -158,7 +158,7 @@ public class UnitRegistry
      * @param filterDTO Contains filter data {@link FilterDTO}
      * @return List of units {@link Unit}
      */
-    public List<Unit> getUnitsOf(FilterDTO filterDTO) {
+    public List<Unit> filter(FilterDTO filterDTO) {
         Set<Unit> filteredUnits = new HashSet<>(getAllUnits());
 
         if (!filterDTO.getChampions().isEmpty()) {
