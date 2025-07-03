@@ -1,11 +1,12 @@
 import './App.css'
 
-import BubbleGraph from "./BubbleGraph.tsx";
+import GraphCanvas from "./GraphCanvas.tsx";
 
 function App() {
 
+
   return (
-      <BubbleGraph></BubbleGraph>
+      <GraphCanvas></GraphCanvas>
   )
 }
 

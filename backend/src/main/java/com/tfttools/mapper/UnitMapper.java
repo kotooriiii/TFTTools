@@ -4,9 +4,8 @@ import com.tfttools.domain.Unit;
 import com.tfttools.dto.UnitDTO;
 import org.springframework.stereotype.Component;
 
-import java.util.stream.Collectors;
-
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Maps internal {@link Unit} object to {@link UnitDTO} object
@@ -29,4 +28,3 @@ public class UnitMapper implements Function<Unit, UnitDTO> {
         );
     }
 }
-
