@@ -3,27 +3,27 @@ package com.tfttools.dto;
 import java.util.List;
 
 public class FilterDTO {
-    private List<ChampionDTO> championDTOList;
-    private List<TraitDTO> traitDTOList;
+    private List<ChampionDTO> champions;
+    private List<TraitDTO> traits;
 
-    public FilterDTO(List<ChampionDTO> championDTOList, List<TraitDTO> traitDTOList) {
-        this.championDTOList = championDTOList;
-        this.traitDTOList = traitDTOList;
+    public FilterDTO(List<ChampionDTO> champions, List<TraitDTO> traits) {
+        this.champions = champions;
+        this.traits = traits;
     }
 
-    public List<ChampionDTO> getChampionDTOList() {
-        return championDTOList;
+    public List<ChampionDTO> getChampions() {
+        return champions;
     }
 
-    public List<TraitDTO> getTraitDTOList() {
-        return traitDTOList;
+    public List<TraitDTO> getTraits() {
+        return traits;
     }
 
-    public void setChampionDTOList(List<ChampionDTO> championDTOList) {
-        this.championDTOList = championDTOList;
+    public void setChampions(List<ChampionDTO> champions) {
+        this.champions = champions;
     }
 
-    public void setTraitDTOList(List<TraitDTO> traitDTOList) {
-        this.traitDTOList = traitDTOList;
+    public void setTraits(List<TraitDTO> traits) {
+        this.traits = traits;
     }
 }

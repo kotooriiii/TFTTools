@@ -158,12 +158,12 @@ public class UnitRegistry
      * @param filterDTO Contains filter data {@link FilterDTO}
      * @return List of units {@link Unit}
      */
-    public List<Unit> getUnitsOf(FilterDTO filterDTO) {
+    public List<Unit> filter(FilterDTO filterDTO) {
         Set<Unit> filteredUnits = new HashSet<>(getAllUnits());
 
-        if (!filterDTO.getChampionDTOList().isEmpty()) {
+        if (!filterDTO.getChampions().isEmpty()) {
             // From championDTOList map displayName -> actual Champion
-            List<Champion> championList= filterDTO.getChampionDTOList().stream().map(championDTO -> Champion.fromDisplayName(championDTO.getDisplayName())).toList();
+            List<Champion> championList= filterDTO.getChampions().stream().map(championDTO -> Champion.fromDisplayName(championDTO.getDisplayName())).toList();
 
             // For each champion in championList map Champion -> SingletonSet(Unit)
             List<Set<Unit>> unitsFromChampions = championList.stream().map(champion -> Collections.singleton(getUnitByChampion(champion))).toList();
@@ -173,9 +173,9 @@ public class UnitRegistry
 
         }
 
-        if (!filterDTO.getTraitDTOList().isEmpty()) {
+        if (!filterDTO.getTraits().isEmpty()) {
             // From traitList map displayName -> Trait
-            List<Trait> traitList = filterDTO.getTraitDTOList().stream().map(traitDTO -> Trait.fromDisplayName(traitDTO.getDisplayName())).toList();
+            List<Trait> traitList = filterDTO.getTraits().stream().map(traitDTO -> Trait.fromDisplayName(traitDTO.getDisplayName())).toList();
             // For each trait, take intersection of filteredUnits and Set(all units in trait)
             traitList.forEach(trait -> filteredUnits.retainAll(new HashSet<>(getUnitsByTrait(trait))));
         }
