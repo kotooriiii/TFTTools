@@ -14,6 +14,6 @@ public class ChampionMapper implements Function<Champion, ChampionDTO> {
 
     @Override
     public ChampionDTO apply(Champion champion) {
-        return new ChampionDTO(champion);
+        return new ChampionDTO(champion.getDisplayName());
     }
 }

@@ -1,5 +1,6 @@
 package com.tfttools.controller;
 
+import com.tfttools.dto.FilterDTO;
 import com.tfttools.dto.SearchResultDTO;
 import com.tfttools.dto.UnitDTO;
 import com.tfttools.service.UnitService;
@@ -44,5 +45,15 @@ public class UnitController {
     @GetMapping("/search")
     public SearchResultDTO getSuggestions(@RequestParam(defaultValue = "") String query) {
         return unitService.getSuggestions(query);
+    }
+
+    /**
+     * Gets units according to filter params in FilterDTO
+     * @param filterDTO Contains filter data {@link FilterDTO}
+     * @return List of sanitized units {@link UnitDTO}
+     */
+    @GetMapping("/getUnitsOf")
+    public List<UnitDTO> getUnitsOf(FilterDTO filterDTO) {
+        return unitService.getUnitsOf(filterDTO);
     }
 }

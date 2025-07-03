@@ -14,6 +14,6 @@ public class TraitMapper implements Function<Trait, TraitDTO> {
 
     @Override
     public TraitDTO apply(Trait trait) {
-        return new TraitDTO(trait);
+        return new TraitDTO(trait.getDisplayName());
     }
 }

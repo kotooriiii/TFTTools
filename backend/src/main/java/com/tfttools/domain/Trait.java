@@ -1,9 +1,14 @@
 package com.tfttools.domain;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 /**
  * Enumerates champion traits
  */
-public enum Trait
+public enum Trait implements Namable
 {
     AMP("Amp"),
     ANIMA_SQUAD("Anima Squad"),
@@ -34,6 +39,12 @@ public enum Trait
     private final String displayName;
 
     Trait(String displayName) { this.displayName = displayName; }
+
+    private static final Map<String, Trait> BY_DISPLAY_NAME = Arrays.stream(values()).collect(Collectors.toMap(Trait::getDisplayName, Function.identity()));
+
+    public static Trait fromDisplayName(String displayName) {
+        return BY_DISPLAY_NAME.get(displayName);
+    }
 
     public String getDisplayName() {
         return displayName;

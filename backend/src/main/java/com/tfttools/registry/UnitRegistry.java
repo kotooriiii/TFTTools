@@ -1,9 +1,10 @@
 package com.tfttools.registry;
 
-import com.tfttools.PrefixTrie.PrefixTrie;
+import com.tfttools.prefixtrie.PrefixTrie;
 import com.tfttools.domain.Champion;
 import com.tfttools.domain.Trait;
 import com.tfttools.domain.Unit;
+import com.tfttools.dto.FilterDTO;
 import org.springframework.stereotype.Component;
 import java.util.*;
 import static com.tfttools.domain.Champion.*;
@@ -150,5 +151,35 @@ public class UnitRegistry
      */
     public List<Trait> getAllTraitsStartingWith(String prefix) {
         return this.traitPrefixTrie.getAllDescendantsByPrefix(prefix);
+    }
+
+    /**
+     * Gets units according to filter params in FilterDTO
+     * @param filterDTO Contains filter data {@link FilterDTO}
+     * @return List of units {@link Unit}
+     */
+    public List<Unit> getUnitsOf(FilterDTO filterDTO) {
+        Set<Unit> filteredUnits = new HashSet<>(getAllUnits());
+
+        if (!filterDTO.getChampionDTOList().isEmpty()) {
+            // From championDTOList map displayName -> actual Champion
+            List<Champion> championList= filterDTO.getChampionDTOList().stream().map(championDTO -> Champion.fromDisplayName(championDTO.getDisplayName())).toList();
+
+            // For each champion in championList map Champion -> SingletonSet(Unit)
+            List<Set<Unit>> unitsFromChampions = championList.stream().map(champion -> Collections.singleton(getUnitByChampion(champion))).toList();
+
+            // For each unit take intersection of filteredUnits and UnitSingleton
+            unitsFromChampions.forEach(filteredUnits::retainAll);
+
+        }
+
+        if (!filterDTO.getTraitDTOList().isEmpty()) {
+            // From traitList map displayName -> Trait
+            List<Trait> traitList = filterDTO.getTraitDTOList().stream().map(traitDTO -> Trait.fromDisplayName(traitDTO.getDisplayName())).toList();
+            // For each trait, take intersection of filteredUnits and Set(all units in trait)
+            traitList.forEach(trait -> filteredUnits.retainAll(new HashSet<>(getUnitsByTrait(trait))));
+        }
+
+        return filteredUnits.stream().toList();
     }
 }

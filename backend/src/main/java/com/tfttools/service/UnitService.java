@@ -1,10 +1,7 @@
 package com.tfttools.service;
 
-import com.tfttools.PrefixTrie.PrefixTrieUtils;
-import com.tfttools.dto.ChampionDTO;
-import com.tfttools.dto.SearchResultDTO;
-import com.tfttools.dto.TraitDTO;
-import com.tfttools.dto.UnitDTO;
+import com.tfttools.prefixtrie.PrefixTrieUtils;
+import com.tfttools.dto.*;
 import com.tfttools.mapper.ChampionMapper;
 import com.tfttools.mapper.TraitMapper;
 import com.tfttools.mapper.UnitMapper;
@@ -53,5 +50,9 @@ public class UnitService {
         List<TraitDTO> traits = unitRegistry.getAllTraitsStartingWith(search).stream().map(traitMapper).collect(Collectors.toList());
 
         return new SearchResultDTO(champs, traits);
+    }
+
+    public List<UnitDTO> getUnitsOf(FilterDTO filterDTO) {
+        return unitRegistry.getUnitsOf(filterDTO).stream().map(unitMapper).collect(Collectors.toList());
     }
 }
