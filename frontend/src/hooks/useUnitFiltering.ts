@@ -5,8 +5,7 @@ import {filterService} from "../services/filterService.ts";
 
 export const useUnitFiltering = (selectedItems: SelectedItem[]) => {
     const [filteredUnits, setFilteredUnits] = useState<Unit[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [unitsViewMode, setUnitsViewMode] = useState<'grid' | 'detailed'>('grid');
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchFilteredUnits = async () => {
@@ -36,8 +35,6 @@ export const useUnitFiltering = (selectedItems: SelectedItem[]) => {
 
     return {
         filteredUnits,
-        unitsViewMode,
         isLoading,
-        setUnitsViewMode
     };
 };

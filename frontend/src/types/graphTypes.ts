@@ -7,6 +7,7 @@ export type Vertex = {
     x: number;
     y: number;
     unitData?: Unit;
+    customControlPoint?: { x: number; y: number };
 };
 
 export type Edge = {

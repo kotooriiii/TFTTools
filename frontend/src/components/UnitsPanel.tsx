@@ -1,7 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Unit} from '../types/unitTypes';
 import {SelectedItem} from '../types/searchTypes';
-import {useUnitFiltering} from '../hooks/useUnitFiltering';
 import {UnitGridView} from './UnitGridView';
 import {UnitDetailedView} from './UnitDetailedView';
 import {JumpingDots} from "./JumpingDots.tsx";
@@ -21,7 +20,7 @@ export const UnitsPanel: React.FC<UnitsPanelProps> = ({
                                                           isLoading
                                                       }) =>
 {
-    const {unitsViewMode, setUnitsViewMode} = useUnitFiltering(selectedItems);
+    const [unitsViewMode, setUnitsViewMode] = useState<'grid' | 'detailed'>('grid');
 
     return (
         <div style={{
@@ -116,19 +115,23 @@ export const UnitsPanel: React.FC<UnitsPanelProps> = ({
                 </div>
             }
 
-            {unitsViewMode === 'grid' ? (
-                <UnitGridView
-                    units={filteredUnits}
-                    onUnitDragStart={onUnitDragStart}
-                    selectedItems={selectedItems}
-                />
-            ) : (
-                <UnitDetailedView
-                    units={filteredUnits}
-                    onUnitDragStart={onUnitDragStart}
-                    selectedItems={selectedItems}
-                />
+            {/* Content Views - only show when not loading */}
+            {!isLoading && (
+                unitsViewMode === 'grid' ? (
+                    <UnitGridView
+                        units={filteredUnits}
+                        onUnitDragStart={onUnitDragStart}
+                        selectedItems={selectedItems}
+                    />
+                ) : (
+                    <UnitDetailedView
+                        units={filteredUnits}
+                        onUnitDragStart={onUnitDragStart}
+                        selectedItems={selectedItems}
+                    />
+                )
             )}
+
         </div>
     );
 };

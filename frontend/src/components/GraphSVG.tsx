@@ -1,5 +1,5 @@
 import React, {forwardRef} from 'react';
-import {Vertex} from '../types/graphTypes';
+import {Edge, Vertex} from '../types/graphTypes';
 import {Unit} from '../types/unitTypes';
 import {GraphVertex} from './GraphVertex';
 import {GraphEdges} from './GraphEdges';
@@ -9,6 +9,7 @@ interface GraphSVGProps
 {
     vertices: Vertex[];
     setVertices: React.Dispatch<React.SetStateAction<Vertex[]>>;
+    edges: Edge[];
     onCanvasDrop: (e: React.DragEvent) => void;
     onCanvasDragOver: (e: React.DragEvent) => void;
     draggedUnit: Unit | null;
@@ -30,13 +31,10 @@ interface GraphSVGProps
     highlightedUnitId: number | null;
 }
 
-const edges = [
-    {id: 1, sourceId: 1, targetId: 2, label: "connection"}
-];
-
 export const GraphSVG = forwardRef<SVGSVGElement, GraphSVGProps>(({
                                                                       vertices,
                                                                       setVertices,
+                                                                      edges,
                                                                       onCanvasDrop,
                                                                       onCanvasDragOver,
                                                                       draggedUnit,
