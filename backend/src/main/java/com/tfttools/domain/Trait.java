@@ -13,7 +13,7 @@ public enum Trait implements Namable
     AMP("Amp"),
     ANIMA_SQUAD("Anima Squad"),
     BASTION("Bastion"),
-    BOOMBOTS("Boombots"),
+    BOOMBOT("Boombot"),
     BRUISER("Bruiser"),
     CYBERBOSS("Cyberboss"),
     CYPHER("Cypher"),

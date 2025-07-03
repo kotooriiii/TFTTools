@@ -78,7 +78,7 @@ export const UnitDetailedView: React.FC<UnitDetailedViewProps> = ({
                             color: '#6F5E53',
                             marginBottom: '6px'
                         }}>
-                            {unit.champion.toLowerCase().replace('_', ' ')}
+                            {unit.champion}
                         </div>
 
                         <div style={{
@@ -94,21 +94,21 @@ export const UnitDetailedView: React.FC<UnitDetailedViewProps> = ({
                                         fontSize: '10px',
                                         backgroundColor: selectedItems.some(item =>
                                             item.type === 'trait' &&
-                                            item.name.toUpperCase() === trait
+                                            item.name === trait
                                         ) ? '#8B7355' : '#E5E5E5',
                                         color: selectedItems.some(item =>
                                             item.type === 'trait' &&
-                                            item.name.toUpperCase() === trait
+                                            item.name === trait
                                         ) ? 'white' : '#666',
                                         padding: '2px 6px',
                                         borderRadius: '8px',
                                         fontWeight: selectedItems.some(item =>
                                             item.type === 'trait' &&
-                                            item.name.toUpperCase() === trait
+                                            item.name === trait
                                         ) ? 'bold' : 'normal'
                                     }}
                                 >
-                                    {trait.toLowerCase().replace('_', ' ')}
+                                    {trait}
                                 </span>
                             ))}
                         </div>

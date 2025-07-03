@@ -85,9 +85,9 @@ export const UnitGridView: React.FC<UnitGridViewProps> = ({
                             whiteSpace: 'nowrap',
                             width: '100%',
                         }}
-                        title={unit.champion.toLowerCase().replace('_', ' ')}
+                        title={unit.champion}
                     >
-                        {unit.champion.toLowerCase().replace('_', ' ')}
+                        {unit.champion}
                     </div>
 
                     {/* Trait indicators */}
@@ -103,7 +103,7 @@ export const UnitGridView: React.FC<UnitGridViewProps> = ({
                         {unit.traits.slice(0, 4).map(trait => (
                             <div
                                 key={trait}
-                                title={trait.toLowerCase().replace('_', ' ')}
+                                title={trait}
                                 style={{
                                     width: '12px',
                                     height: '12px',
@@ -120,29 +120,11 @@ export const UnitGridView: React.FC<UnitGridViewProps> = ({
                                     borderRadius: '50%',
                                     backgroundColor: selectedItems.some(item =>
                                         item.type === 'trait' &&
-                                        item.name.toUpperCase() === trait
+                                        item.name === trait
                                     ) ? '#8B7355' : '#E5E5E5',
                                 }} />
                             </div>
                         ))}
-                        {unit.traits.length > 4 && (
-                            <div
-                                style={{
-                                    fontSize: '8px',
-                                    color: '#666',
-                                    marginLeft: '2px',
-                                    cursor: 'help',
-                                    padding: '2px 4px',
-                                    minWidth: '16px',
-                                    textAlign: 'center'
-                                }}
-                                title={`Additional traits: ${unit.traits.slice(4).map(trait =>
-                                    trait.toLowerCase().replace('_', ' ')
-                                ).join(', ')}`}
-                            >
-                                +{unit.traits.length - 4}
-                            </div>
-                        )}
                     </div>
 
                     {/* Drag indicator */}

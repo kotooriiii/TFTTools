@@ -90,7 +90,7 @@ export const GraphEdges: React.FC<GraphEdgesProps> = ({
                 const midY = (startY + endY) / 2;
                 
                 // Add additional curve factor for single edges to make them slightly curved too
-                const baseCurveFactor = totalParallelEdges === 1 ? 15 : 0;
+                const baseCurveFactor = 0;
                 const controlX = midX + perpX + (baseCurveFactor * (-dy / distance));
                 const controlY = midY + perpY + (baseCurveFactor * (dx / distance));
 

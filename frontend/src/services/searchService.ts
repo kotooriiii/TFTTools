@@ -1,7 +1,7 @@
-import { SearchResult } from '../types/searchTypes';
+import {SearchItem, SearchResult} from '../types/searchTypes';
 
 export const searchService = {
-    async searchUnits(query: string): Promise<SearchResult[]> {
+    async searchUnits(query: string): Promise<SearchItem[]> {
         if (!query.trim()) return [];
 
         try {
@@ -11,7 +11,18 @@ export const searchService = {
                 throw new Error('Search request failed');
             }
 
-            return await response.json();
+            const searchResult: SearchResult = await response.json();
+            
+            const searchItems: SearchItem[] = [];
+
+                const championList = searchResult.championList;
+                championList.forEach(champion => {searchItems.push({name: champion.displayName, type: 'champion'})});
+                
+                const traitList = searchResult.traitList;
+                traitList.forEach(trait => {searchItems.push({name: trait.displayName, type: 'trait'})});
+
+
+            return searchItems;
         } catch (error) {
             console.error('Error during search:', error);
             return [];

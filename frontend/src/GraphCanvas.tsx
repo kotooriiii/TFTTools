@@ -134,7 +134,7 @@ const GraphCanvas: React.FC = () =>
             <SearchPanel
                 ref={searchPanelRef}
                 searchQuery={search.searchQuery}
-                searchResults={search.searchResults}
+                searchResultItems={search.searchResultItems}
                 selectedItems={search.selectedItems}
                 onSearchChange={search.handleSearchChange}
                 isLoading={search.isLoading}

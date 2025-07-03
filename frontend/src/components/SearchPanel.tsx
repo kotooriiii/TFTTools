@@ -1,22 +1,22 @@
 import {forwardRef} from 'react';
 import {motion} from 'framer-motion';
-import {SearchResult, SelectedItem} from '../types/searchTypes';
+import {SearchItem, SelectedItem} from '../types/searchTypes';
 import {JumpingDots} from "./JumpingDots.tsx";
 
 interface SearchPanelProps
 {
     searchQuery: string;
-    searchResults: SearchResult[];
+    searchResultItems: SearchItem[];
     selectedItems: SelectedItem[];
     onSearchChange: (query: string) => void;
     isLoading: boolean;
-    onAddSelectedItem: (item: SearchResult) => void;
+    onAddSelectedItem: (item: SearchItem) => void;
     onRemoveSelectedItem: (itemId: string) => void;
 }
 
 export const SearchPanel = forwardRef<HTMLDivElement, SearchPanelProps>(({
                                                                              searchQuery,
-                                                                             searchResults,
+                                                                             searchResultItems,
                                                                              selectedItems,
                                                                              onSearchChange,
                                                                              isLoading,
@@ -147,14 +147,14 @@ export const SearchPanel = forwardRef<HTMLDivElement, SearchPanelProps>(({
 
 
                 {/* Search Results */}
-                {!isLoading && searchResults.length > 0 && (
+                {!isLoading && searchResultItems.length > 0 && (
                     <div style={{
                         maxHeight: '200px',
                         overflowY: 'auto',
                         border: '1px solid #E5E5E5',
                         borderRadius: '8px'
                     }}>
-                        {searchResults.map((result) => (
+                        {searchResultItems.map((result) => (
                             <motion.div
                                 key={result.name}
                                 initial={{opacity: 0, x: -20}}
@@ -196,7 +196,7 @@ export const SearchPanel = forwardRef<HTMLDivElement, SearchPanelProps>(({
                 )}
 
                 {/* No Results State */}
-                {!isLoading && searchResults.length === 0 && searchQuery.length > 0 && (
+                {!isLoading && searchResultItems.length === 0 && searchQuery.length > 0 && (
                     <div style={{
                         padding: '12px',
                         textAlign: 'center',

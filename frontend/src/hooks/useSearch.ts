@@ -1,24 +1,24 @@
 import { useState, useEffect, useRef, RefObject } from 'react';
-import { SearchResult, SelectedItem } from '../types/searchTypes';
+import {SearchItem, SelectedItem} from '../types/searchTypes';
 import {searchService} from "../services/searchService.ts";
 
 export const useSearch = (searchPanelRef: RefObject<HTMLDivElement>) => {
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+    const [searchResultItems, setSearchResultItems] = useState<SearchItem[]>([]);
     const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const shouldHandleClickOutside = useRef(false);
 
     useEffect(() => {
-        shouldHandleClickOutside.current = searchResults.length > 0;
-    }, [searchResults.length]);
+        shouldHandleClickOutside.current = searchResultItems.length > 0;
+    }, [searchResultItems.length]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (shouldHandleClickOutside.current &&
                 searchPanelRef.current &&
                 !searchPanelRef.current.contains(event.target as Node)) {
-                setSearchResults([]);
+                setSearchResultItems([]);
                 setSearchQuery('');
             }
         };
@@ -31,30 +31,30 @@ export const useSearch = (searchPanelRef: RefObject<HTMLDivElement>) => {
         setSearchQuery(query);
 
         if (query.trim() === '') {
-            setSearchResults([]);
+            setSearchResultItems([]);
             return;
         }
 
         setIsLoading(true);
         try {
-            const results = await searchService.searchUnits(query);
-            setSearchResults(results);
+            const results: SearchItem[] = await searchService.searchUnits(query);
+            setSearchResultItems(results);
         } catch (error) {
             console.error('Search error:', error);
-            setSearchResults([]);
+            setSearchResultItems([]);
         } finally {
             setIsLoading(false);
         }
     };
 
 
-    const addSelectedItem = (item: SearchResult) => {
+    const addSelectedItem = (item: SearchItem) => {
         if (selectedItems.some(selected => selected.name === item.name)) {
             return;
         }
         setSelectedItems(prev => [...prev, item]);
         setSearchQuery('');
-        setSearchResults([]);
+        setSearchResultItems([]);
     };
 
     const removeSelectedItem = (itemId: string) => {
@@ -63,7 +63,7 @@ export const useSearch = (searchPanelRef: RefObject<HTMLDivElement>) => {
 
     return {
         searchQuery,
-        searchResults,
+        searchResultItems,
         selectedItems,
         isLoading,
         handleSearchChange,

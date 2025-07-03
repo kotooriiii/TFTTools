@@ -149,7 +149,7 @@ export const GraphVertex: React.FC<GraphVertexProps> = ({
                         }}
 
                     >
-                        {vertex.unitData.champion.toLowerCase().replace('_', ' ')}
+                        {vertex.unitData.champion}
                     </motion.text>
                 </motion.g>
             )}
