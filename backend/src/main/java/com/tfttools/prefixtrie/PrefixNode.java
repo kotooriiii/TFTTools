@@ -1,4 +1,4 @@
-package com.tfttools.PrefixTrie;
+package com.tfttools.prefixtrie;
 
 import java.util.ArrayList;
 import java.util.Collections;

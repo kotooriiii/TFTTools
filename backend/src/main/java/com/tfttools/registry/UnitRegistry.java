@@ -1,6 +1,6 @@
 package com.tfttools.registry;
 
-import com.tfttools.PrefixTrie.PrefixTrie;
+import com.tfttools.prefixtrie.PrefixTrie;
 import com.tfttools.domain.Champion;
 import com.tfttools.domain.Trait;
 import com.tfttools.domain.Unit;

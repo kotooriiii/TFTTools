@@ -1,6 +1,6 @@
 package com.tfttools.service;
 
-import com.tfttools.PrefixTrie.PrefixTrieUtils;
+import com.tfttools.prefixtrie.PrefixTrieUtils;
 import com.tfttools.dto.*;
 import com.tfttools.mapper.ChampionMapper;
 import com.tfttools.mapper.TraitMapper;

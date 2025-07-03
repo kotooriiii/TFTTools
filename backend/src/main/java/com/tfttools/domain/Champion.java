@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 /**
  * Enumerates champion names
  */
-public enum Champion {
+public enum Champion implements Namable{
     ALISTAR("Alistar"),
     ANNIE("Annie"),
     APHELIOS("Aphelios"),

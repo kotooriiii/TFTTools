@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 /**
  * Enumerates champion traits
  */
-public enum Trait
+public enum Trait implements Namable
 {
     AMP("Amp"),
     ANIMA_SQUAD("Anima Squad"),

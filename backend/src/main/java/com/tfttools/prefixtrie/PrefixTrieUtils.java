@@ -1,4 +1,4 @@
-package com.tfttools.PrefixTrie;
+package com.tfttools.prefixtrie;
 
 public class PrefixTrieUtils {
     public static String removePunctuation(String text) {
