@@ -59,7 +59,12 @@ public class PrefixTrie<T extends Namable> {
 
     }
 
-    private PrefixNode<T> search(String prefix) {
+    /**
+     * Searches tree for given prefix string
+     * @param prefix String to be searched for
+     * @return Node of prefix if found else null
+     */
+    public PrefixNode<T> search(String prefix) {
         PrefixNode<T> curr = this.root;
 
         for (int i = 0; i < prefix.length(); i++) {

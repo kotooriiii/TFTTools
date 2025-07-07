@@ -3,6 +3,7 @@ package com.tfttools.prefixtrie;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a node in a Prefix tree
@@ -80,5 +81,18 @@ public class PrefixNode<T> {
     public void setHasChildren(boolean hasChildren) {
         this.hasChildren = hasChildren;
     }
-    public void setData(T data) { this.data = data; }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    public void setChild(int index, PrefixNode<T> child) {
+        this.children.set(index, child); }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        PrefixNode<?> that = (PrefixNode<?>) o;
+        return hasChildren == that.hasChildren && Objects.equals(c, that.c) && Objects.equals(data, that.data) && Objects.equals(children, that.children);
+    }
 }
