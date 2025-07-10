@@ -23,11 +23,20 @@ public class ToolsController
     }
 
 
-
+    /**
+     * optimization problem -> maximize # of traits with constraints on # units, traits, champions
+     * given required traits and champions find most promsising nodes (nodes with most traits / nodes with low trait thresholds) and explore
+     * @param numberOfUnits
+     * @param numberOfComps
+     * @param requiredTraits
+     * @param requiredChampions
+     * @return
+     */
     @GetMapping("/horizontal")
-    public List<List<UnitDTO>> getHorizontalComps(int numberOfUnits, int numberOfComps, List<Trait> requiredTraits, List<Champion> requiredChampions) {
+    public List<List<UnitDTO>> getHorizontalComps(int numberOfUnits, int numberOfComps, List<Trait> requiredTraits, List<Integer> thresholds, List<Champion> requiredChampions) {
 
+        return unitService.getHorizontalComps(numberOfUnits, numberOfComps, requiredTraits, thresholds, requiredChampions);
         //dummy value
-        return List.of(List.of(unitService.getAllUnits().get(0)), List.of(unitService.getAllUnits().get(1)));
+//        return List.of(List.of(unitService.getAllUnits().get(0)), List.of(unitService.getAllUnits().get(1)));
     }
 }

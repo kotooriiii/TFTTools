@@ -1,5 +1,8 @@
 package com.tfttools.service;
 
+import com.tfttools.domain.Champion;
+import com.tfttools.domain.Trait;
+import com.tfttools.domain.Unit;
 import com.tfttools.prefixtrie.PrefixTrieUtils;
 import com.tfttools.dto.*;
 import com.tfttools.mapper.ChampionMapper;
@@ -7,7 +10,8 @@ import com.tfttools.mapper.TraitMapper;
 import com.tfttools.mapper.UnitMapper;
 import com.tfttools.registry.UnitRegistry;
 import org.springframework.stereotype.Service;
-import java.util.List;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -54,5 +58,22 @@ public class UnitService {
 
     public List<UnitDTO> filter(FilterDTO filterDTO) {
         return unitRegistry.filter(filterDTO).stream().map(unitMapper).collect(Collectors.toList());
+    }
+
+    public List<List<UnitDTO>> getHorizontalComps(int numberOfUnits, int numberOfComps, List<Trait> requiredTraits, List<Integer> thresholds, List<Champion> requiredChampions) {
+        Set<Unit> start = new HashSet<>(requiredChampions.stream().map(unitRegistry::getUnitByChampion).toList());
+
+        // start by creating a comp with the required traits
+        for (int i=0; i<requiredTraits.size(); i++) {
+            // get all units from the trait
+            List<Unit> units = unitRegistry.getUnitsByTrait(requiredTraits.get(i));
+
+            // meet trait threshold
+            Collections.shuffle(units);
+            start.addAll(units.subList(0, thresholds.get(i)));
+        }
+
+        // now we have a set of starting units that meet the trait thresholds
+        return new ArrayList<>();
     }
 }
