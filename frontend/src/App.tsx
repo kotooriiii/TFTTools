@@ -1,12 +1,11 @@
 import './App.css'
-
-import GraphCanvas from "./GraphCanvas.tsx";
+import MultiToolApp from './components/MultiToolApp'
 
 function App() {
 
 
   return (
-      <GraphCanvas></GraphCanvas>
+      <MultiToolApp></MultiToolApp>
   )
 }
 

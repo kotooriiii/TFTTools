@@ -1,16 +1,16 @@
 import React, {useRef, useState} from 'react';
-import {useGraphInteractions} from './hooks/useGraphInteractions';
-import {useSearch} from './hooks/useSearch';
-import {useUnitFiltering} from './hooks/useUnitFiltering';
-import {useDragAndDrop} from './hooks/useDragAndDrop.ts';
-import {GraphSVG} from './components/GraphSVG';
-import {SearchPanel} from './components/SearchPanel';
-import {UnitsPanel} from './components/UnitsPanel';
-import {ZoomControls} from './components/ZoomControls';
-import {Edge, Vertex} from "./types/graphTypes.ts";
-import {Unit} from "./types/unitTypes.ts";
+import {useGraphInteractions} from '../hooks/useGraphInteractions';
+import {useSearch} from '../hooks/useSearch';
+import {useUnitFiltering} from '../hooks/useUnitFiltering';
+import {useDragAndDrop} from '../hooks/useDragAndDrop.ts';
+import {GraphSVG} from '../components/GraphSVG';
+import {SearchPanel} from '../components/SearchPanel';
+import {UnitsPanel} from '../components/UnitsPanel';
+import {ZoomControls} from '../components/ZoomControls';
+import {Edge, Vertex} from "../types/graphTypes.ts";
+import {Unit} from "../types/unitTypes.ts";
 
-const GraphCanvas: React.FC = () =>
+const GraphCanvasTool: React.FC = () =>
 {
     const svgRef = useRef<SVGSVGElement>(null);
     const searchPanelRef = useRef<HTMLDivElement>(null);
@@ -121,7 +121,7 @@ const GraphCanvas: React.FC = () =>
 
 
     return (
-        <div style={{position: 'relative', width: '100%', height: '100vh'}}>
+        <div style={{position: 'relative', width: '100%', height: '100%'}}>
             {search.selectedItems.length > 0 && (
                 <UnitsPanel
                     filteredUnits={unitFiltering.filteredUnits}
@@ -164,4 +164,4 @@ const GraphCanvas: React.FC = () =>
     );
 };
 
-export default GraphCanvas;
+export default GraphCanvasTool;
