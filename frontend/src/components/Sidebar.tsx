@@ -1,80 +1,173 @@
-import React from 'react';
-import { Tool } from '../types/toolTypes';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { getToolsForSidebar } from '../config/RouteConfig';
 
 interface SidebarProps {
-  tools: Tool[];
-  activeTool: string;
-  onToolSelect: (toolId: string) => void;
-  isCollapsed: boolean;
-  onToggleCollapse: () => void;
+  currentPath: string;
+  onNavigate: (path: string) => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({
-  tools,
-  activeTool,
-  onToolSelect,
-  isCollapsed,
-  onToggleCollapse
-}) => {
+export const Sidebar: React.FC<SidebarProps> = ({ currentPath, onNavigate }) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const tools = getToolsForSidebar();
+
   return (
-    <div className={`bg-gray-800 text-white transition-all duration-300 flex flex-col ${
-      isCollapsed ? 'w-16' : 'w-64'
-    }`}>
+    <motion.div
+      animate={{ width: isCollapsed ? 48 : 200 }}
+      transition={{ duration: 0.2, ease: "easeInOut" }}
+      style={{
+        height: '100vh',
+        backgroundColor: '#f8f9fa',
+        borderRight: '1px solid #e9ecef',
+        display: 'flex',
+        flexDirection: 'column'
+      }}
+    >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-700">
+      <div style={{
+        height: '60px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: isCollapsed ? 'center' : 'flex-start',
+        padding: isCollapsed ? '0' : '0 16px',
+        borderBottom: '1px solid #e9ecef'
+      }}>
         {!isCollapsed && (
-          <h2 className="text-lg font-semibold">Tools</h2>
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1 }}
+            style={{
+              fontSize: '16px',
+              fontWeight: '600',
+              color: '#495057'
+            }}
+          >
+            Tools
+          </motion.span>
         )}
-        <button
-          onClick={onToggleCollapse}
-          className="p-2 rounded-lg hover:bg-gray-700 transition-colors"
-          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {isCollapsed ? '→' : '←'}
-        </button>
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 p-2">
-        <ul className="space-y-1">
-          {tools.map((tool) => (
-            <li key={tool.id}>
-              <button
-                onClick={() => onToolSelect(tool.id)}
-                className={`w-full flex items-center p-3 rounded-lg transition-colors text-left ${
-                  activeTool === tool.id
-                    ? 'bg-blue-600 text-white'
-                    : 'hover:bg-gray-700 text-gray-300'
-                }`}
-                title={isCollapsed ? tool.name : undefined}
-              >
-                <span className="text-xl mr-3 flex-shrink-0">
-                  {tool.icon}
-                </span>
-                {!isCollapsed && (
-                  <div>
-                    <div className="font-medium">{tool.name}</div>
-                    {tool.description && (
-                      <div className="text-xs text-gray-400 mt-1">
-                        {tool.description}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      {/* Footer */}
-      <div className="p-4 border-t border-gray-700">
-        {!isCollapsed && (
-          <div className="text-xs text-gray-400">
-            Multi-Tool Application
+        {isCollapsed && (
+          <div style={{
+            width: '24px',
+            height: '24px',
+            backgroundColor: '#6c757d',
+            borderRadius: '4px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '12px',
+            color: 'white',
+            fontWeight: '600'
+          }}>
+            T
           </div>
         )}
       </div>
-    </div>
+
+      {/* Navigation */}
+      <nav style={{
+        flex: 1,
+        padding: '8px 0',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        {tools.map((tool) => {
+          const isActive = currentPath === tool.path;
+
+          return (
+            <motion.div
+              key={tool.id}
+              onClick={() => onNavigate(tool.path)}
+              style={{
+                height: '40px',
+                margin: '2px 8px',
+                borderRadius: '6px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: isCollapsed ? 'center' : 'flex-start',
+                padding: isCollapsed ? '0' : '0 12px',
+                cursor: 'pointer',
+                backgroundColor: isActive ? '#e9ecef' : 'transparent',
+                color: isActive ? '#495057' : '#6c757d',
+                transition: 'all 0.15s ease'
+              }}
+              whileHover={{
+                backgroundColor: isActive ? '#e9ecef' : '#f8f9fa',
+                color: '#495057'
+              }}
+            >
+              <span style={{
+                fontSize: '16px',
+                minWidth: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                {tool.icon}
+              </span>
+
+              {!isCollapsed && (
+                <motion.span
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.05 }}
+                  style={{
+                    marginLeft: '12px',
+                    fontSize: '14px',
+                    fontWeight: '500'
+                  }}
+                >
+                  {tool.name}
+                </motion.span>
+              )}
+            </motion.div>
+          );
+        })}
+      </nav>
+
+      {/* Toggle Button */}
+      <div style={{
+        height: '48px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderTop: '1px solid #e9ecef'
+      }}>
+        <motion.button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          style={{
+            width: '28px',
+            height: '28px',
+            border: 'none',
+            backgroundColor: 'transparent',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#6c757d',
+            fontSize: '14px',
+            transition: 'all 0.15s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#f8f9fa';
+            e.currentTarget.style.color = '#495057';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.color = '#6c757d';
+          }}
+        >
+          <motion.span
+            animate={{ rotate: isCollapsed ? 0 : 180 }}
+            transition={{ duration: 0.2 }}
+          >
+            ←
+          </motion.span>
+        </motion.button>
+      </div>
+    </motion.div>
   );
 };

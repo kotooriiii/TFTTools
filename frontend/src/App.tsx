@@ -1,12 +1,15 @@
-import './App.css'
-import MultiToolApp from './components/MultiToolApp'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './App.css';
+import { MultiToolApp } from './components/MultiToolApp';
 
 function App() {
-
-
   return (
-      <MultiToolApp></MultiToolApp>
-  )
+    <Router>
+      <Routes>
+        <Route path="/*" element={<MultiToolApp />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

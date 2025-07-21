@@ -1,74 +1,33 @@
-import React, { useState } from 'react';
-import {Sidebar} from './Sidebar';
-import {ToolContainer} from './ToolContainer';
-import HomePage from '../tools/HomePage';
-import GraphCanvasTool from '../tools/GraphCanvasTool';
-import PlaceholderTool from '../tools/PlaceholderTool';
-import { Tool } from '../types/toolTypes';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { Sidebar } from './Sidebar';
+import { ROUTE_CONFIG } from '../config/RouteConfig';
 
-const MultiToolApp: React.FC = () => {
-  const [activeTool, setActiveTool] = useState<string>('home');
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+export const MultiToolApp: React.FC = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
 
-  const tools: Tool[] = [
-    {
-      id: 'home',
-      name: 'Home',
-      icon: '🏠',
-      component: () => <HomePage tools={tools.slice(1)} onToolSelect={handleToolSelect} />,
-      description: 'Welcome page and tool overview'
-    },
-    {
-      id: 'graph-canvas',
-      name: 'Graph Canvas',
-      icon: '🔗',
-      component: GraphCanvasTool,
-      description: 'Interactive graph visualization and node manipulation'
-    },
-    {
-      id: 'data-analyzer',
-      name: 'Data Analyzer',
-      icon: '📊',
-      component: PlaceholderTool,
-      description: 'Analyze and visualize data patterns and trends'
-    },
-    {
-      id: 'network-mapper',
-      name: 'Network Mapper',
-      icon: '🌐',
-      component: PlaceholderTool,
-      description: 'Map and explore network connections and relationships'
-    },
-    {
-      id: 'workflow-builder',
-      name: 'Workflow Builder',
-      icon: '⚙️',
-      component: PlaceholderTool,
-      description: 'Design and automate custom workflows and processes'
-    },
-  ];
-
-  const handleToolSelect = (toolId: string) => {
-    setActiveTool(toolId);
-  };
-  const toggleSidebar = () => {
-    setSidebarCollapsed(!sidebarCollapsed);
-  };
-
-  const currentTool = tools.find(tool => tool.id === activeTool);
+    const handleNavigate = (path: string) => {
+        navigate(path);
+    };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="h-screen bg-stone-50 flex">
       <Sidebar
-          tools={tools}
-          activeTool={activeTool}
-          onToolSelect={handleToolSelect}
-          isCollapsed={sidebarCollapsed}
-          onToggleCollapse={toggleSidebar}
+          currentPath={location.pathname}
+          onNavigate={handleNavigate}
       />
-      <ToolContainer activeTool={currentTool} />
+      <main className="flex-1 overflow: 'auto'">
+        <Routes>
+          {ROUTE_CONFIG.map(({ path, component: Component }) => (
+            <Route 
+              key={path} 
+              path={path} 
+              element={<Component />} 
+            />
+          ))}
+        </Routes>
+      </main>
     </div>
   );
 };
-
-export default MultiToolApp;
