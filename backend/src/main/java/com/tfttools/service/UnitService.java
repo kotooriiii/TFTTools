@@ -1,9 +1,5 @@
 package com.tfttools.service;
 
-import com.tfttools.domain.Champion;
-import com.tfttools.domain.Trait;
-import com.tfttools.domain.Unit;
-import com.tfttools.graph.UnitGraph;
 import com.tfttools.prefixtrie.PrefixTrieUtils;
 import com.tfttools.dto.*;
 import com.tfttools.mapper.ChampionMapper;
