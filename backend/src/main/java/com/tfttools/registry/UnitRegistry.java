@@ -1,9 +1,10 @@
 package com.tfttools.registry;
 
+import com.tfttools.domain.*;
+import com.tfttools.dto.ChampionDTO;
+import com.tfttools.dto.TraitDTO;
+import com.tfttools.graph.UnitGraphTraversal;
 import com.tfttools.prefixtrie.PrefixTrie;
-import com.tfttools.domain.Champion;
-import com.tfttools.domain.Trait;
-import com.tfttools.domain.Unit;
 import com.tfttools.dto.FilterDTO;
 import org.springframework.stereotype.Component;
 
@@ -190,5 +191,32 @@ public class UnitRegistry {
         }
 
         return filteredUnits.stream().toList();
+    }
+
+    /**
+     * Finds comps with the most possible active traits given the # of units per comp, # of comps to generate, required traits + thresholds,
+     * and required champions
+     *
+     * @param numberOfUnits Number of units to include per composition
+     * @param numberOfComps Target number of compositions to generate
+     * @param requiredTraitDTOs Required traits that each composition must contain
+     * @param thresholds The minimum thresholds for each required trait
+     * @param requiredChampionDTOs Required champions that each composition must contain
+     * @return List of generated compositions
+     */
+    public List<List<Unit>> getHorizontalComps(int numberOfUnits, int numberOfComps, List<TraitDTO> requiredTraitDTOs, List<Integer> thresholds, List<ChampionDTO> requiredChampionDTOs) {
+        // create new graph traversal object
+        List<Trait> requiredTraits = requiredTraitDTOs.stream().map(traitDTO -> Trait.fromDisplayName(traitDTO.getDisplayName())).toList();
+        List<Champion> requiredChampions = requiredChampionDTOs.stream().map(championDTO -> Champion.fromDisplayName(championDTO.getDisplayName())).toList();
+
+        UnitGraphTraversal traversal = new UnitGraphTraversal(requiredTraits, thresholds, requiredChampions, this);
+
+        List<List<Unit>> comps = new ArrayList<>();
+
+        for (int i=0; i<numberOfComps; i++) {
+            comps.add(traversal.createComp(numberOfUnits));
+        }
+
+        return comps;
     }
 }

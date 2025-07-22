@@ -1,12 +1,12 @@
 package com.tfttools.controller;
 
-import com.tfttools.domain.Champion;
-import com.tfttools.domain.Trait;
-import com.tfttools.domain.Unit;
+import com.tfttools.dto.ChampionDTO;
+import com.tfttools.dto.TraitDTO;
 import com.tfttools.dto.UnitDTO;
 import com.tfttools.service.UnitService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -22,21 +22,19 @@ public class ToolsController
         this.unitService = unitService;
     }
 
-
     /**
-     * optimization problem -> maximize # of traits with constraints on # units, traits, champions
-     * given required traits and champions find most promsising nodes (nodes with most traits / nodes with low trait thresholds) and explore
-     * @param numberOfUnits
-     * @param numberOfComps
-     * @param requiredTraits
-     * @param requiredChampions
-     * @return
+     * Finds comps with the most possible active traits given the # of units per comp, # of comps to generate, required traits + thresholds,
+     * and required champions
+     *
+     * @param numberOfUnits Number of units to include per composition
+     * @param numberOfComps Target number of compositions to generate
+     * @param requiredTraitDTOs Required traits that each composition must contain
+     * @param thresholds The minimum thresholds for each required trait
+     * @param requiredChampionDTOs Required champions that each composition must contain
+     * @return List of generated compositions
      */
     @GetMapping("/horizontal")
-    public List<List<UnitDTO>> getHorizontalComps(int numberOfUnits, int numberOfComps, List<Trait> requiredTraits, List<Integer> thresholds, List<Champion> requiredChampions) {
-
-        return unitService.getHorizontalComps(numberOfUnits, numberOfComps, requiredTraits, thresholds, requiredChampions);
-        //dummy value
-//        return List.of(List.of(unitService.getAllUnits().get(0)), List.of(unitService.getAllUnits().get(1)));
+    public List<List<UnitDTO>> getHorizontalComps(@RequestParam int numberOfUnits, @RequestParam int numberOfComps, @RequestParam List<TraitDTO> requiredTraitDTOs, @RequestParam List<Integer> thresholds, @RequestParam List<ChampionDTO> requiredChampionDTOs) {
+        return unitService.getHorizontalComps(numberOfUnits, numberOfComps, requiredTraitDTOs, thresholds, requiredChampionDTOs);
     }
 }

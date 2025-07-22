@@ -3,6 +3,7 @@ package com.tfttools.service;
 import com.tfttools.domain.Champion;
 import com.tfttools.domain.Trait;
 import com.tfttools.domain.Unit;
+import com.tfttools.graph.UnitGraph;
 import com.tfttools.prefixtrie.PrefixTrieUtils;
 import com.tfttools.dto.*;
 import com.tfttools.mapper.ChampionMapper;
@@ -60,20 +61,7 @@ public class UnitService {
         return unitRegistry.filter(filterDTO).stream().map(unitMapper).collect(Collectors.toList());
     }
 
-    public List<List<UnitDTO>> getHorizontalComps(int numberOfUnits, int numberOfComps, List<Trait> requiredTraits, List<Integer> thresholds, List<Champion> requiredChampions) {
-        Set<Unit> start = new HashSet<>(requiredChampions.stream().map(unitRegistry::getUnitByChampion).toList());
-
-        // start by creating a comp with the required traits
-        for (int i=0; i<requiredTraits.size(); i++) {
-            // get all units from the trait
-            List<Unit> units = unitRegistry.getUnitsByTrait(requiredTraits.get(i));
-
-            // meet trait threshold
-            Collections.shuffle(units);
-            start.addAll(units.subList(0, thresholds.get(i)));
-        }
-
-        // now we have a set of starting units that meet the trait thresholds
-        return new ArrayList<>();
+    public List<List<UnitDTO>> getHorizontalComps(int numberOfUnits, int numberOfComps, List<TraitDTO> requiredTraits, List<Integer> thresholds, List<ChampionDTO> requiredChampions) {
+        return unitRegistry.getHorizontalComps(numberOfUnits, numberOfComps, requiredTraits, thresholds, requiredChampions).stream().map(comp -> comp.stream().map(unitMapper).collect(Collectors.toList())).collect(Collectors.toList());
     }
 }
