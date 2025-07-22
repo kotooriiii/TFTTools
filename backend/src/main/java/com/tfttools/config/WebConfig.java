@@ -1,6 +1,7 @@
 package com.tfttools.config;
 
 import com.tfttools.converter.StringToChampionDTOConverter;
+import com.tfttools.converter.StringToTraitDTOConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -10,5 +11,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new StringToChampionDTOConverter());
+        registry.addConverter(new StringToTraitDTOConverter());
     }
 }

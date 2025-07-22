@@ -33,7 +33,9 @@ public class SecurityFilterChainConfig
                     authorizationManagerRequestMatcherRegistry.requestMatchers(
                             HttpMethod.GET,
                             "/units/filter",
-                            "/units/search"
+                            "/units/search",
+                            "/units",
+                            "/tools/*"
                     ).permitAll();
                 })
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
