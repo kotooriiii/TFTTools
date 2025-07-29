@@ -1,8 +1,7 @@
 package com.tfttools.registry;
 
 import com.tfttools.domain.*;
-import com.tfttools.dto.ChampionDTO;
-import com.tfttools.dto.TraitDTO;
+import com.tfttools.dto.HorizontalDTO;
 import com.tfttools.graph.UnitGraphTraversal;
 import com.tfttools.prefixtrie.PrefixTrie;
 import com.tfttools.dto.FilterDTO;
@@ -142,6 +141,10 @@ public class UnitRegistry {
         return new ArrayList<>(championMap.values());
     }
 
+    public List<Trait> getAllTraits() {
+        return Arrays.stream(Trait.values()).toList();
+    }
+
     /**
      * Gets all champions starting with a given prefix
      *
@@ -197,24 +200,19 @@ public class UnitRegistry {
      * Finds comps with the most possible active traits given the # of units per comp, # of comps to generate, required traits + thresholds,
      * and required champions
      *
-     * @param numberOfUnits Number of units to include per composition
-     * @param numberOfComps Target number of compositions to generate
-     * @param requiredTraitDTOs Required traits that each composition must contain
-     * @param thresholds The minimum thresholds for each required trait
-     * @param requiredChampionDTOs Required champions that each composition must contain
-     * @return List of generated compositions
+     * get horizontal comps -> from all units filter down using trait + unit constraints to find initial state ->
+     * generate weights for potential units -> choose best unit -> update trait + comp states ->
+     * repeat until # units is reached -> reset state to initial state -> repeat until number of comps is reached
+     *
+     * @param horizontalDTO
      */
-    public List<List<Unit>> getHorizontalComps(int numberOfUnits, int numberOfComps, List<TraitDTO> requiredTraitDTOs, List<Integer> thresholds, List<ChampionDTO> requiredChampionDTOs) {
-        // create new graph traversal object
-        List<Trait> requiredTraits = requiredTraitDTOs.stream().map(traitDTO -> Trait.fromDisplayName(traitDTO.getDisplayName())).toList();
-        List<Champion> requiredChampions = requiredChampionDTOs.stream().map(championDTO -> Champion.fromDisplayName(championDTO.getDisplayName())).toList();
-
-        UnitGraphTraversal traversal = new UnitGraphTraversal(requiredTraits, thresholds, requiredChampions, this);
+    public List<List<Unit>> getHorizontalComps(HorizontalDTO horizontalDTO) {
+        UnitGraphTraversal traversal = new UnitGraphTraversal(horizontalDTO, this);
 
         List<List<Unit>> comps = new ArrayList<>();
 
-        for (int i=0; i<numberOfComps; i++) {
-            comps.add(traversal.createComp(numberOfUnits));
+        for (int i=0; i<horizontalDTO.getNumberOfComps(); i++) {
+            comps.add(traversal.createComp(horizontalDTO.getNumberOfUnits()));
         }
 
         return comps;

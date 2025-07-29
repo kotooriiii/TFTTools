@@ -33,6 +33,7 @@ public class SecurityFilterChainConfig
                             HttpMethod.GET,
                             "/units/filter",
                             "/units/search",
+                            "/units/traits",
                             "/units",
                             "/tools/*"
                     ).permitAll();

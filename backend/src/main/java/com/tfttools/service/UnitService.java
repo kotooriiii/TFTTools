@@ -38,6 +38,10 @@ public class UnitService {
         return unitRegistry.getAllUnits().stream().map(unitMapper).collect(Collectors.toList());
     }
 
+    public List<TraitDTO> getAllTraits() {
+        return unitRegistry.getAllTraits().stream().map(traitMapper).collect(Collectors.toList());
+    }
+
     /**
      * Gets suggestions from {@link UnitRegistry} and sanitizes it for the requestor
      * @param search The input parameter for a search
@@ -57,7 +61,7 @@ public class UnitService {
         return unitRegistry.filter(filterDTO).stream().map(unitMapper).collect(Collectors.toList());
     }
 
-    public List<List<UnitDTO>> getHorizontalComps(int numberOfUnits, int numberOfComps, List<TraitDTO> requiredTraits, List<Integer> thresholds, List<ChampionDTO> requiredChampions) {
-        return unitRegistry.getHorizontalComps(numberOfUnits, numberOfComps, requiredTraits, thresholds, requiredChampions).stream().map(comp -> comp.stream().map(unitMapper).collect(Collectors.toList())).collect(Collectors.toList());
+    public List<List<UnitDTO>> getHorizontalComps(HorizontalDTO horizontalDTO) {
+        return unitRegistry.getHorizontalComps(horizontalDTO).stream().map(comp -> comp.stream().map(unitMapper).collect(Collectors.toList())).collect(Collectors.toList());
     }
 }
