@@ -2,6 +2,7 @@ package com.tfttools.controller;
 
 import com.tfttools.dto.FilterDTO;
 import com.tfttools.dto.SearchResultDTO;
+import com.tfttools.dto.TraitDTO;
 import com.tfttools.dto.UnitDTO;
 import com.tfttools.service.UnitService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +36,11 @@ public class UnitController {
     @GetMapping
     public List<UnitDTO> getAllUnits() {
         return unitService.getAllUnits();
+    }
+
+    @GetMapping("/traits")
+    public List<TraitDTO> getAllTraits() {
+        return unitService.getAllTraits();
     }
 
     /**
