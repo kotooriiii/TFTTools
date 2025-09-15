@@ -29,14 +29,18 @@ public class SecurityFilterChainConfig
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                 {
-                    authorizationManagerRequestMatcherRegistry.requestMatchers(
+                    authorizationManagerRequestMatcherRegistry
+                        .requestMatchers(
                             HttpMethod.GET,
                             "/units/filter",
                             "/units/search",
                             "/units/traits",
                             "/units",
                             "/tools/*"
-                    ).permitAll();
+                        ).permitAll().requestMatchers(
+                            HttpMethod.POST,
+                    "/tools/horizontal"
+                        ).permitAll();
                 })
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
