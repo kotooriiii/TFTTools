@@ -6,12 +6,12 @@ import com.tfttools.dto.HorizontalDTO;
 import com.tfttools.registry.UnitRegistry;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component
 public class Manager {
     private final EngineHeuristicManager engineHeuristicManager;
     private final EngineFilterManager engineFilterManager;
@@ -21,7 +21,7 @@ public class Manager {
 
     public Manager(HorizontalDTO horizontalDTO, UnitRegistry unitRegistry) {
         List<Champion> requiredChampions = horizontalDTO.getRequiredChampionDTOs().stream().map(championDTO -> Champion.fromDisplayName(championDTO.getDisplayName())).toList();
-        Map<Trait, Integer> requiredTraits = horizontalDTO.getRequiredTraitDTOs().entrySet().stream().collect(Collectors.toMap(e -> Trait.fromDisplayName(e.getKey().getDisplayName()), Map.Entry::getValue));
+        Map<Trait, Integer> requiredTraits = horizontalDTO.getRequiredTraitDTOs().entrySet().stream().collect(Collectors.toMap(e -> Trait.fromDisplayName(e.getKey()), Map.Entry::getValue));
         float luck = horizontalDTO.getLuck();
         List<Trait> emblems = horizontalDTO.getEmblems().stream().map(traitDTO -> Trait.fromDisplayName(traitDTO.getDisplayName())).toList();
         int costOfBoard = horizontalDTO.getCostOfBoard();
