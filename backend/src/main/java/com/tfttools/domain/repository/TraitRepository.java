@@ -19,6 +19,16 @@ public class TraitRepository {
     public TraitRepository() {
         this.traits = new HashMap<>();
 
+        parseJson("15");
+    }
+
+    public TraitRepository(String set) {
+        this.traits = new HashMap<>();
+
+        parseJson(set);
+    }
+
+    private void parseJson(String set) {
         try {
             InputStream inputStream = getClass().getResourceAsStream("/com/tfttools/domain/repository/communitydragon/en_us.json");
             if (inputStream == null) {
@@ -29,7 +39,7 @@ public class TraitRepository {
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             CommunityDragonObject communityDragonObject = objectMapper.readValue(inputStream, CommunityDragonObject.class);
 
-            List<CommunityDragonTraits> set15Traits = communityDragonObject.getSets().get("15").getTraits();
+            List<CommunityDragonTraits> set15Traits = communityDragonObject.getSets().get(set).getTraits();
             for (CommunityDragonTraits communityDragonTrait : set15Traits) {
                 String apiName = communityDragonTrait.getApiName();
                 String name = communityDragonTrait.getName();

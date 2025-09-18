@@ -36,6 +36,21 @@ public class UnitRegistry {
         this.traitRepository = new TraitRepository();
         this.unitRepository = new UnitRepository(traitRepository);
 
+        initRegistry();
+    }
+
+    public UnitRegistry(String set) {
+        this.traitToUnits = new HashMap<>();
+        this.unitPrefixTrie = new PrefixTrie<>();
+        this.traitPrefixTrie = new PrefixTrie<>();
+
+        this.traitRepository = new TraitRepository(set);
+        this.unitRepository = new UnitRepository(traitRepository, set);
+
+        initRegistry();
+    }
+
+    private void initRegistry() {
         //Initialize Prefix Tries
         initPrefixTrie();
 

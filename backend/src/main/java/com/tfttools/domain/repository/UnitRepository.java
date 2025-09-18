@@ -23,6 +23,17 @@ public class UnitRepository {
         this.units = new HashMap<>();
         this.traitRepository = traitRepository;
 
+        parseJson("15");
+    }
+
+    public UnitRepository(TraitRepository traitRepository, String set) {
+        this.units = new HashMap<>();
+        this.traitRepository = traitRepository;
+
+        parseJson(set);
+    }
+
+    private void parseJson(String set) {
         try {
             InputStream inputStream = getClass().getResourceAsStream("/com/tfttools/domain/repository/communitydragon/en_us.json");
             if (inputStream == null) {
@@ -33,7 +44,7 @@ public class UnitRepository {
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             CommunityDragonObject communityDragonObject = objectMapper.readValue(inputStream, CommunityDragonObject.class);
 
-            List<CommunityDragonChampions> set15units = communityDragonObject.getSets().get("15").getChampions();
+            List<CommunityDragonChampions> set15units = communityDragonObject.getSets().get(set).getChampions();
             for (CommunityDragonChampions champions : set15units) {
                 String apiName = champions.getApiName();
                 String name = champions.getName();
