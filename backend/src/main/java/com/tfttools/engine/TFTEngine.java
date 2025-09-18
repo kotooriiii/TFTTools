@@ -1,17 +1,12 @@
 package com.tfttools.engine;
 
-import com.tfttools.domain.Champion;
 import com.tfttools.domain.Unit;
 import com.tfttools.engine.enginefilter.EngineFilter;
-import com.tfttools.engine.enginefilter.RequiredChampionFilter;
+import com.tfttools.engine.enginefilter.RequiredUnitFilter;
 import com.tfttools.engine.engineterminator.EngineTerminator;
-import com.tfttools.engine.heuristic.Heuristic;
 import com.tfttools.engine.manager.EngineFilterManager;
 import com.tfttools.engine.manager.EngineHeuristicManager;
 import com.tfttools.engine.manager.EngineTerminatorManager;
-import com.tfttools.engine.manager.EngineTieBreakerManager;
-import com.tfttools.engine.tiebreaker.TieBreaker;
-import com.tfttools.registry.UnitRegistry;
 
 import java.util.*;
 
@@ -44,8 +39,8 @@ public class TFTEngine {
         List<EngineFilter> filters = engineFilterManager.getEngineFilters();
 
         for (EngineFilter filter : filters) {
-            if (filter.getClass().equals(RequiredChampionFilter.class)) {
-                for (Unit unit : ((RequiredChampionFilter) filter).getRequiredUnits()) {
+            if (filter.getClass().equals(RequiredUnitFilter.class)) {
+                for (Unit unit : ((RequiredUnitFilter) filter).getRequiredUnits()) {
                     engineState.addUnitToComp(unit);
                 }
             }

@@ -8,9 +8,9 @@ import java.util.Map;
 public class HorizontalDTO {
     private final int numberOfComps;
     private final Map<String, Integer> requiredTraitDTOs;
-    private final List<ChampionDTO> requiredChampionDTOs;
+    private final List<UnitDTO> requiredUnitDTOs;
     private final List<TraitDTO> excludedTraitDTOs;
-    private final List<ChampionDTO> excludedChampionDTOs;
+    private final List<UnitDTO> excludedUnitDTOs;
     private final int costOfBoard;
     private final int tactitionLevel;
     private final int crowns;
@@ -21,9 +21,9 @@ public class HorizontalDTO {
     public HorizontalDTO(
             int numberOfComps,
             Map<String, Integer> requiredTraitDTOs,
-            List<ChampionDTO> requiredChampionDTOs,
+            List<UnitDTO> requiredUnitDTOs,
             List<TraitDTO> excludedTraitDTOs,
-            List<ChampionDTO> excludedChampionDTOs,
+            List<UnitDTO> excludedUnitDTOs,
             int costOfBoard,
             int tactitionLevel,
             int crowns,
@@ -32,9 +32,9 @@ public class HorizontalDTO {
     ) {
         this.numberOfComps = numberOfComps;
         this.requiredTraitDTOs = requiredTraitDTOs;
-        this.requiredChampionDTOs = requiredChampionDTOs;
+        this.requiredUnitDTOs = requiredUnitDTOs;
         this.excludedTraitDTOs = excludedTraitDTOs;
-        this.excludedChampionDTOs = excludedChampionDTOs;
+        this.excludedUnitDTOs = excludedUnitDTOs;
         this.costOfBoard = costOfBoard;
         this.tactitionLevel = tactitionLevel;
         this.crowns = crowns;
@@ -54,16 +54,16 @@ public class HorizontalDTO {
         return requiredTraitDTOs;
     }
 
-    public List<ChampionDTO> getRequiredChampionDTOs() {
-        return requiredChampionDTOs;
+    public List<UnitDTO> getRequiredUnitDTOs() {
+        return requiredUnitDTOs;
     }
 
     public List<TraitDTO> getExcludedTraitDTOs() {
         return excludedTraitDTOs;
     }
 
-    public List<ChampionDTO> getExcludedChampionDTOs() {
-        return excludedChampionDTOs;
+    public List<UnitDTO> getExcludedUnitDTOs() {
+        return excludedUnitDTOs;
     }
 
     public int getCostOfBoard() {

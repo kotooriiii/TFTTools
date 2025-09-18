@@ -1,6 +1,5 @@
 package com.tfttools.mapper;
 
-import com.tfttools.domain.Trait;
 import com.tfttools.domain.Unit;
 import com.tfttools.dto.UnitDTO;
 import org.springframework.stereotype.Component;
@@ -13,6 +12,11 @@ import java.util.stream.Collectors;
  */
 @Component
 public class UnitMapper implements Function<Unit, UnitDTO> {
+    private final TraitMapper traitMapper;
+
+    public UnitMapper(TraitMapper traitMapper) {
+        this.traitMapper = traitMapper;
+    }
 
     /**
      * Creates a new {@link UnitDTO} object from internal {@link Unit} object
@@ -22,10 +26,8 @@ public class UnitMapper implements Function<Unit, UnitDTO> {
     @Override
     public UnitDTO apply(Unit unit) {
         return new UnitDTO(
-                unit.getChampion().getDisplayName(),
-                unit.getTraits().stream()
-                        .map(Trait::getDisplayName)
-                        .collect(Collectors.toSet())
+                unit.getDisplayName(),
+                unit.getTraits().stream().map(traitMapper).collect(Collectors.toSet())
         );
     }
 }

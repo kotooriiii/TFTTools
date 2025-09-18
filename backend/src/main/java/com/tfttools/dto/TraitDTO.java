@@ -1,14 +1,16 @@
 package com.tfttools.dto;
 
+import java.util.List;
+
 /**
  * Sanitize trait object for data transfer from business logic to requestor
  */
 public class TraitDTO {
 
     private final String displayName;
-    private final int[] thresholds;
+    private final List<int[]> thresholds;
 
-    public TraitDTO(String displayName, int[] thresholds) {
+    public TraitDTO(String displayName, List<int[]> thresholds) {
         this.displayName = displayName;
         this.thresholds = thresholds;
     }
@@ -17,7 +19,7 @@ public class TraitDTO {
         return displayName;
     }
 
-    public int[] getThresholds() {
+    public List<int[]> getThresholds() {
         return thresholds;
     }
 }

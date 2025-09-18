@@ -1,7 +1,7 @@
 package com.tfttools.engine.manager;
 
-import com.tfttools.domain.Champion;
 import com.tfttools.domain.Trait;
+import com.tfttools.domain.Unit;
 import com.tfttools.engine.EngineState;
 import com.tfttools.engine.heuristic.Heuristic;
 import com.tfttools.engine.heuristic.engineweight.LuckWeight;
@@ -15,7 +15,7 @@ public class EngineHeuristicManager {
     EngineState engineState;
     Heuristic heuristic;
 
-    public EngineHeuristicManager(List<Champion> requiredChampions, Map<Trait, Integer> requiredTraits, float luck, List<Trait> emblems, int costOfBoard, EngineState engineState) {
+    public EngineHeuristicManager(List<Unit> requiredUnits, Map<Trait, Integer> requiredTraits, float luck, List<Trait> emblems, int costOfBoard, EngineState engineState) {
         this.engineState = engineState;
 
         TraitsAddedWeight traitsAddedWeight = new TraitsAddedWeight(engineState);

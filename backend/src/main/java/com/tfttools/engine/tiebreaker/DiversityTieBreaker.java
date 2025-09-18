@@ -1,10 +1,8 @@
 package com.tfttools.engine.tiebreaker;
 
 import com.tfttools.domain.Unit;
-import com.tfttools.engine.EngineState;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DiversityTieBreaker implements TieBreaker {
     private final List<Set<Unit>> previousComps;

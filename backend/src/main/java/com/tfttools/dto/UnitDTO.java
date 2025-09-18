@@ -6,19 +6,19 @@ import java.util.Set;
  * Sanitize unit object for data transfer from business logic to requestor
  */
 public class UnitDTO {
-    private String champion;
-    private Set<String> traits;
+    private String unit;
+    private Set<TraitDTO> traits;
 
-    public UnitDTO(String champion, Set<String> traits) {
-        this.champion = champion;
+    public UnitDTO(String unit, Set<TraitDTO> traits) {
+        this.unit = unit;
         this.traits = traits;
     }
 
-    public String getChampion() {
-        return champion;
+    public String getUnit() {
+        return unit;
     }
 
-    public Set<String> getTraits() {
+    public Set<TraitDTO> getTraits() {
         return traits;
     }
 }
