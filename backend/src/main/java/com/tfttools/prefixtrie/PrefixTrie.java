@@ -13,7 +13,7 @@ import java.util.*;
 @Component
 public class PrefixTrie<T extends Namable> {
 
-    PrefixNode<T> root;
+    private final PrefixNode<T> root;
 
     public PrefixTrie() {
         this.root = new PrefixNode<>();

@@ -1,10 +1,11 @@
 package com.tfttools.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
 
+@Getter
 public class HorizontalDTO {
     private final int numberOfComps;
     private final Map<String, Integer> requiredTraitDTOs;
@@ -42,43 +43,4 @@ public class HorizontalDTO {
         this.luck = luck;
     }
 
-    public int getCrowns() {
-        return crowns;
-    }
-
-    public int getNumberOfComps() {
-        return numberOfComps;
-    }
-
-    public Map<String, Integer> getRequiredTraitDTOs() {
-        return requiredTraitDTOs;
-    }
-
-    public List<UnitDTO> getRequiredUnitDTOs() {
-        return requiredUnitDTOs;
-    }
-
-    public List<TraitDTO> getExcludedTraitDTOs() {
-        return excludedTraitDTOs;
-    }
-
-    public List<UnitDTO> getExcludedUnitDTOs() {
-        return excludedUnitDTOs;
-    }
-
-    public int getCostOfBoard() {
-        return costOfBoard;
-    }
-
-    public int getTactitionLevel() {
-        return tactitionLevel;
-    }
-
-    public List<TraitDTO> getEmblems() {
-        return emblems;
-    }
-
-    public float getLuck() {
-        return luck;
-    }
 }

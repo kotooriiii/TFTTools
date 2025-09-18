@@ -6,6 +6,7 @@ import com.tfttools.domain.Role;
 import com.tfttools.domain.Trait;
 import com.tfttools.domain.Unit;
 import com.tfttools.domain.repository.communitydragon.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
@@ -16,9 +17,10 @@ import java.util.Map;
 
 @Component
 public class UnitRepository {
-    private Map<String, Unit> units;
-    private TraitRepository traitRepository;
+    private final Map<String, Unit> units;
+    private final TraitRepository traitRepository;
 
+    @Autowired
     public UnitRepository(TraitRepository traitRepository) {
         this.units = new HashMap<>();
         this.traitRepository = traitRepository;

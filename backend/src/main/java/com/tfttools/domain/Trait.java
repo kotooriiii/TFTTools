@@ -1,7 +1,10 @@
 package com.tfttools.domain;
 
+import lombok.Getter;
+
 import java.util.List;
 
+@Getter
 public class Trait implements Namable{
     private final String traitName;
     private final List<int[]> thresholds;
@@ -9,14 +12,6 @@ public class Trait implements Namable{
     public Trait(String traitName, List<int[]> thresholds) {
         this.traitName = traitName;
         this.thresholds = thresholds;
-    }
-
-    public String getTraitName() {
-        return traitName;
-    }
-
-    public List<int[]> getThresholds() {
-        return thresholds;
     }
 
     @Override

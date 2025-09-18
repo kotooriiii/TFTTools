@@ -1,10 +1,13 @@
 package com.tfttools.dto;
 
+import lombok.Getter;
+
 import java.util.List;
 
 /**
  * Sanitize trait object for data transfer from business logic to requestor
  */
+@Getter
 public class TraitDTO {
 
     private final String displayName;
@@ -15,11 +18,4 @@ public class TraitDTO {
         this.thresholds = thresholds;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public List<int[]> getThresholds() {
-        return thresholds;
-    }
 }

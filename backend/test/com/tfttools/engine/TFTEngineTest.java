@@ -17,11 +17,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class TFTEngineTest {
-    HorizontalDTO horizontalDTO;
-    UnitRegistry unitRegistry;
+    private HorizontalDTO horizontalDTO;
+    private UnitRegistry unitRegistry;
 
-    TraitMapper traitMapper = new TraitMapper();
-    UnitMapper unitMapper = new UnitMapper(traitMapper);
+    private final TraitMapper traitMapper = new TraitMapper();
+    private final UnitMapper unitMapper = new UnitMapper(traitMapper);
 
     @BeforeEach
     public void initTests() {

@@ -1,7 +1,6 @@
 package com.tfttools.dto;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;

@@ -2,8 +2,6 @@ package com.tfttools.config;
 
 import com.tfttools.converter.StringToTraitConverter;
 import com.tfttools.converter.StringToUnitConverter;
-import com.tfttools.domain.repository.TraitRepository;
-import com.tfttools.domain.repository.UnitRepository;
 import com.tfttools.registry.UnitRegistry;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;

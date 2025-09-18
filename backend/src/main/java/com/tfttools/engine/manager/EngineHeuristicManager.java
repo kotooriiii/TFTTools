@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 public class EngineHeuristicManager {
-    EngineState engineState;
-    Heuristic heuristic;
+    private final EngineState engineState;
+    private final Heuristic heuristic;
 
     public EngineHeuristicManager(List<Unit> requiredUnits, Map<Trait, Integer> requiredTraits, float luck, List<Trait> emblems, int costOfBoard, EngineState engineState) {
         this.engineState = engineState;

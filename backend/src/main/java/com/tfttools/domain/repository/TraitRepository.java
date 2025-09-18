@@ -14,7 +14,7 @@ import java.util.*;
 
 @Component
 public class TraitRepository {
-    private Map<String, Trait> traits;
+    private final Map<String, Trait> traits;
 
     public TraitRepository() {
         this.traits = new HashMap<>();

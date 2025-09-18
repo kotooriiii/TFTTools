@@ -11,13 +11,12 @@ import com.tfttools.engine.manager.EngineTerminatorManager;
 import java.util.*;
 
 public class TFTEngine {
-    EngineHeuristicManager engineHeuristicManager;
-    EngineTerminatorManager engineTerminatorManager;
-    EngineFilterManager engineFilterManager;
-    EngineState engineState;
-    List<Set<Unit>> comps;
-    List<Unit> unitPool;
-    Set<Unit> core;
+    private final EngineHeuristicManager engineHeuristicManager;
+    private final EngineTerminatorManager engineTerminatorManager;
+    private final EngineFilterManager engineFilterManager;
+    private final EngineState engineState;
+    private final List<Set<Unit>> comps;
+    private List<Unit> unitPool;
     /**
      * idea of having some amount of core units to create comps around to guarantee uniqueness, obviously place all required units if none then the highest ranked units
      * number of core units are the max(number of required units, (tactition level + crowns) / 3), if there are required units < (tactition level + crowns) / 3 then fill in core with highest ranked units
