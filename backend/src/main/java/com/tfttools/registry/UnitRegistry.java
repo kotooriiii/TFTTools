@@ -157,17 +157,13 @@ public class UnitRegistry {
      * @param horizontalDTO
      */
     public List<List<Unit>> getHorizontalComps(HorizontalDTO horizontalDTO) {
-        Manager manager = new Manager(horizontalDTO, this);
-
-        EngineHeuristicManager engineHeuristicManager = manager.getEngineHeuristicManager();
-        EngineTerminatorManager engineTerminatorManager = manager.getEngineTerminatorManager();
-        EngineFilterManager engineFilterManager = manager.getEngineFilterManager();
-        EngineState engineState = manager.getEngineStateManager().getEngineState();
         List<Set<Unit>> comps = new ArrayList<>();
-        List<Unit> unitPool = this.getAllUnits();
+
+        Manager manager = new Manager(horizontalDTO, this, comps, this.getAllUnits());
+
         int numComps = horizontalDTO.getNumberOfComps();
 
-        TFTEngine tftEngine = new TFTEngine(engineHeuristicManager, engineTerminatorManager, engineFilterManager, engineState, comps, unitPool);
+        TFTEngine tftEngine = new TFTEngine(manager);
 
         return tftEngine.buildComps(numComps).stream().map(comp -> comp.stream().toList()).toList();
     }

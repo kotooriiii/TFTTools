@@ -35,6 +35,10 @@ public class EngineState {
             currentTraits.put(trait, 0);
         }
 
+        for (Trait trait : availableEmblems) {
+            currentTraits.put(trait, currentTraits.get(trait) + 1);
+        }
+
         for (Unit unit : core) {
             for (Trait trait : unit.getTraits()) {
                 currentTraits.put(trait, currentTraits.get(trait) + 1);
@@ -75,5 +79,9 @@ public class EngineState {
 
     public boolean addToCore(Unit unit) {
         return core.add(unit);
+    }
+
+    public List<Trait> getAvailableEmblems() {
+        return availableEmblems;
     }
 }

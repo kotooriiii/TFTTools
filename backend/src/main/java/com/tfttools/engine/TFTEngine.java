@@ -7,6 +7,7 @@ import com.tfttools.engine.engineterminator.EngineTerminator;
 import com.tfttools.engine.manager.EngineFilterManager;
 import com.tfttools.engine.manager.EngineHeuristicManager;
 import com.tfttools.engine.manager.EngineTerminatorManager;
+import com.tfttools.engine.manager.Manager;
 
 import java.util.*;
 
@@ -30,6 +31,17 @@ public class TFTEngine {
         this.engineState = engineState;
         this.comps = comps;
         this.unitPool = unitPool;
+
+        filterUnitPool();
+    }
+
+    public TFTEngine(Manager manager) {
+        this.engineHeuristicManager = manager.getEngineHeuristicManager();
+        this.engineTerminatorManager = manager.getEngineTerminatorManager();
+        this.engineFilterManager = manager.getEngineFilterManager();
+        this.engineState = manager.getEngineStateManager().getEngineState();
+        this.comps = manager.getComps();
+        this.unitPool = manager.getUnitPool();
 
         filterUnitPool();
     }

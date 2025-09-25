@@ -17,7 +17,7 @@ public class UnitPicker {
 
         initRankings(unitWeights);
         if (engineState.getCore().size() < engineState.getTactitionLevel() / 3) {
-            for (int i = 0; i < engineState.getTactitionLevel() - engineState.getCore().size(); i++) {
+            for (int i = 0; i < engineState.getTactitionLevel() / 3 - engineState.getCore().size(); i++) {
                 engineState.addToCore(this.rankings.poll().getKey());
             }
         }

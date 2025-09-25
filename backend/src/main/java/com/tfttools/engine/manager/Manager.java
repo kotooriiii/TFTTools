@@ -8,6 +8,7 @@ import com.tfttools.registry.UnitRegistry;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Manager {
@@ -16,8 +17,10 @@ public class Manager {
     private final EngineTerminatorManager engineTerminatorManager;
     private final EngineStateManager engineStateManager;
     private final UnitRegistry unitRegistry;
+    private final List<Set<Unit>> comps;
+    private final List<Unit> unitPool;
 
-    public Manager(HorizontalDTO horizontalDTO, UnitRegistry unitRegistry) {
+    public Manager(HorizontalDTO horizontalDTO, UnitRegistry unitRegistry, List<Set<Unit>> comps, List<Unit> unitPool) {
         List<Unit> requiredUnits = horizontalDTO.getRequiredUnitDTOs().stream().map(unitDTO -> unitRegistry.getUnitByName(unitDTO.getUnit())).toList();
         Map<Trait, Integer> requiredTraits = horizontalDTO.getRequiredTraitDTOs().entrySet().stream().collect(Collectors.toMap(e -> unitRegistry.getTraitByName(e.getKey()), Map.Entry::getValue));
         float luck = horizontalDTO.getLuck();
@@ -25,6 +28,8 @@ public class Manager {
         int costOfBoard = horizontalDTO.getCostOfBoard();
         int tactitionLevel = horizontalDTO.getTactitionLevel();
         this.unitRegistry = unitRegistry;
+        this.comps = comps;
+        this.unitPool = unitPool;
 
         this.engineStateManager = new EngineStateManager(new HashSet<>(), requiredUnits, emblems, tactitionLevel, unitRegistry);
 
@@ -38,6 +43,14 @@ public class Manager {
         this.engineTerminatorManager = new EngineTerminatorManager(tactitionLevel, crowns);
 
 
+    }
+
+    public List<Set<Unit>> getComps() {
+        return comps;
+    }
+
+    public List<Unit> getUnitPool() {
+        return unitPool;
     }
 
     public EngineHeuristicManager getEngineHeuristicManager() {
