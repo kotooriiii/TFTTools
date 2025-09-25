@@ -72,9 +72,7 @@ public class TFTEngine {
     private void buildComp(Set<Unit> unitPoolCopy) {
         while (true) {
             for (EngineTerminator terminator : engineTerminatorManager.getEngineTerminators()) {
-                if (terminator.getCondition(engineState.getComp())) {
-//                        engineState.resetCurrentComp();
-                } else {
+                if (!terminator.getCondition(engineState.getComp())) {
                     comps.add(engineState.getComp());
                     engineState.resetCurrentComp();
                     return;

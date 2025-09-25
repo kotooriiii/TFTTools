@@ -4,12 +4,7 @@ import com.tfttools.domain.*;
 import com.tfttools.domain.repository.TraitRepository;
 import com.tfttools.domain.repository.UnitRepository;
 import com.tfttools.dto.HorizontalDTO;
-//import com.tfttools.graph.UnitGraphTraversal;
-import com.tfttools.engine.EngineState;
 import com.tfttools.engine.TFTEngine;
-import com.tfttools.engine.manager.EngineFilterManager;
-import com.tfttools.engine.manager.EngineHeuristicManager;
-import com.tfttools.engine.manager.EngineTerminatorManager;
 import com.tfttools.engine.manager.Manager;
 import com.tfttools.prefixtrie.PrefixTrie;
 import com.tfttools.dto.FilterDTO;
@@ -76,7 +71,7 @@ public class UnitRegistry {
     /**
      * Gets all units grouped by trait
      *
-     * @return Map of all units grouped by trait
+     * @return List of all units grouped by trait
      */
     public List<Unit> getUnitsByTrait(Trait trait) {
         return traitToUnits.getOrDefault(trait, new ArrayList<>());
