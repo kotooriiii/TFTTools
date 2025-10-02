@@ -2,7 +2,6 @@ package com.tfttools.service;
 
 import com.tfttools.prefixtrie.PrefixTrieUtils;
 import com.tfttools.dto.*;
-import com.tfttools.mapper.ChampionMapper;
 import com.tfttools.mapper.TraitMapper;
 import com.tfttools.mapper.UnitMapper;
 import com.tfttools.registry.UnitRegistry;
@@ -19,14 +18,12 @@ public class UnitService {
 
     private final UnitRegistry unitRegistry;
     private final UnitMapper unitMapper;
-    private final ChampionMapper championMapper;
     private final TraitMapper traitMapper;
 
 
-    public UnitService(UnitRegistry unitRegistry, UnitMapper unitMapper, ChampionMapper championMapper, TraitMapper traitMapper) {
+    public UnitService(UnitRegistry unitRegistry, UnitMapper unitMapper, TraitMapper traitMapper) {
         this.unitRegistry = unitRegistry;
         this.unitMapper = unitMapper;
-        this.championMapper = championMapper;
         this.traitMapper = traitMapper;
     }
 
@@ -51,7 +48,7 @@ public class UnitService {
         search = PrefixTrieUtils.removePunctuation(search);
         if (search.isEmpty()) { return new SearchResultDTO(); }
 
-        List<ChampionDTO> champs = unitRegistry.getAllChampionsStartingWith(search).stream().map(championMapper).collect(Collectors.toList());
+        List<UnitDTO> champs = unitRegistry.getAllChampionsStartingWith(search).stream().map(unitMapper).collect(Collectors.toList());
         List<TraitDTO> traits = unitRegistry.getAllTraitsStartingWith(search).stream().map(traitMapper).collect(Collectors.toList());
 
         return new SearchResultDTO(champs, traits);

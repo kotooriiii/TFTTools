@@ -10,9 +10,9 @@ import java.util.Objects;
  * @param <T> Object of type T to be stored in each node
  */
 public class PrefixNode<T> {
-    Character c;
-    T data;
-    List<PrefixNode<T>> children;
+    private final Character c;
+    protected T data;
+    protected List<PrefixNode<T>> children;
     boolean hasChildren;
     private static final int LEN_ALPHABET = 26;
     private static final int ASCII_RANGE_LOW = 65;

@@ -1,28 +1,31 @@
 package com.tfttools.engine.manager;
 
-import com.tfttools.domain.Champion;
 import com.tfttools.domain.Trait;
+import com.tfttools.domain.Unit;
 import com.tfttools.engine.enginefilter.EngineFilter;
-import com.tfttools.engine.enginefilter.ExcludedChampionFilter;
+import com.tfttools.engine.enginefilter.ExcludedUnitFilter;
 import com.tfttools.engine.enginefilter.ExcludedTraitFilter;
-import com.tfttools.engine.enginefilter.RequiredChampionFilter;
+import com.tfttools.engine.enginefilter.RequiredUnitFilter;
 import com.tfttools.registry.UnitRegistry;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class EngineFilterManager {
-    ExcludedChampionFilter excludedChampionFilter;
-    ExcludedTraitFilter excludedTraitFilter;
-    RequiredChampionFilter requiredChampionFilter;
-    UnitRegistry unitRegistry;
+    private final ExcludedUnitFilter excludedUnitFilter;
+    private final ExcludedTraitFilter excludedTraitFilter;
+    private final RequiredUnitFilter requiredUnitFilter;
+    private final UnitRegistry unitRegistry;
 
-    public EngineFilterManager(List<Champion> excludedChampions, List<Trait> excludedTraits, List<Champion> requiredChampions, UnitRegistry unitRegistry) {
-        this.excludedChampionFilter = new ExcludedChampionFilter(excludedChampions, unitRegistry);
+    public EngineFilterManager(List<Unit> excludedUnits, List<Trait> excludedTraits, List<Unit> requiredUnits, UnitRegistry unitRegistry) {
+        this.excludedUnitFilter = new ExcludedUnitFilter(excludedUnits, unitRegistry);
         this.excludedTraitFilter = new ExcludedTraitFilter(excludedTraits);
-        this.requiredChampionFilter = new RequiredChampionFilter(requiredChampions, unitRegistry);
+        this.requiredUnitFilter = new RequiredUnitFilter(requiredUnits, unitRegistry);
+        this.unitRegistry = unitRegistry;
     }
 
     public List<EngineFilter> getEngineFilters() {
-        return List.of(excludedChampionFilter, excludedTraitFilter, requiredChampionFilter);
+        return List.of(excludedUnitFilter, excludedTraitFilter, requiredUnitFilter);
     }
 }

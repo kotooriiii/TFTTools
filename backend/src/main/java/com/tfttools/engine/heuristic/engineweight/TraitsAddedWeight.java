@@ -33,12 +33,12 @@ public class TraitsAddedWeight implements EngineWeight{
     }
 
     private int getNextThreshold(Trait trait) {
-        for (int threshold : trait.getThresholds()) {
-            if (currentTraits.get(trait) < threshold) {
-                return threshold;
+        for (int[] threshold : trait.getThresholds()) {
+            if (currentTraits.get(trait) < threshold[0]) {
+                return threshold[0];
             }
         }
 
-        return trait.getThresholds()[trait.getThresholds().length - 1];
+        return trait.getThresholds().get(trait.getThresholds().size() - 1)[0];
     }
 }

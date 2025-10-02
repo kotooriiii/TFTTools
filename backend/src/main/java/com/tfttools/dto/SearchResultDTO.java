@@ -1,31 +1,26 @@
 package com.tfttools.dto;
 
-import java.util.ArrayList;
+import lombok.Getter;
+
 import java.util.Collections;
 import java.util.List;
 
 /**
  * Consolidates data for transfer from business logic to requestor
  */
+@Getter
 public class SearchResultDTO {
-    private final List<ChampionDTO> championList;
+    private final List<UnitDTO> unitDTOList;
     private final List<TraitDTO> traitList;
 
     public SearchResultDTO() {
-        this.championList = Collections.emptyList();
+        this.unitDTOList = Collections.emptyList();
         this.traitList = Collections.emptyList();
     }
 
-    public SearchResultDTO(List<ChampionDTO> championList, List<TraitDTO> traitList) {
-        this.championList = championList;
+    public SearchResultDTO(List<UnitDTO> championList, List<TraitDTO> traitList) {
+        this.unitDTOList = championList;
         this.traitList = traitList;
     }
 
-    public List<ChampionDTO> getChampionList() {
-        return championList;
-    }
-
-    public List<TraitDTO> getTraitList() {
-        return traitList;
-    }
 }

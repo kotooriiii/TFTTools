@@ -1,28 +1,23 @@
 package com.tfttools.engine;
 
-import com.tfttools.domain.Champion;
 import com.tfttools.domain.Unit;
 import com.tfttools.engine.enginefilter.EngineFilter;
-import com.tfttools.engine.enginefilter.RequiredChampionFilter;
+import com.tfttools.engine.enginefilter.RequiredUnitFilter;
 import com.tfttools.engine.engineterminator.EngineTerminator;
-import com.tfttools.engine.heuristic.Heuristic;
 import com.tfttools.engine.manager.EngineFilterManager;
 import com.tfttools.engine.manager.EngineHeuristicManager;
 import com.tfttools.engine.manager.EngineTerminatorManager;
-import com.tfttools.engine.manager.EngineTieBreakerManager;
-import com.tfttools.engine.tiebreaker.TieBreaker;
-import com.tfttools.registry.UnitRegistry;
+import com.tfttools.engine.manager.Manager;
 
 import java.util.*;
 
 public class TFTEngine {
-    EngineHeuristicManager engineHeuristicManager;
-    EngineTerminatorManager engineTerminatorManager;
-    EngineFilterManager engineFilterManager;
-    EngineState engineState;
-    List<Set<Unit>> comps;
-    List<Unit> unitPool;
-    Set<Unit> core;
+    private final EngineHeuristicManager engineHeuristicManager;
+    private final EngineTerminatorManager engineTerminatorManager;
+    private final EngineFilterManager engineFilterManager;
+    private final EngineState engineState;
+    private final List<Set<Unit>> comps;
+    private List<Unit> unitPool;
     /**
      * idea of having some amount of core units to create comps around to guarantee uniqueness, obviously place all required units if none then the highest ranked units
      * number of core units are the max(number of required units, (tactition level + crowns) / 3), if there are required units < (tactition level + crowns) / 3 then fill in core with highest ranked units
@@ -40,12 +35,23 @@ public class TFTEngine {
         filterUnitPool();
     }
 
+    public TFTEngine(Manager manager) {
+        this.engineHeuristicManager = manager.getEngineHeuristicManager();
+        this.engineTerminatorManager = manager.getEngineTerminatorManager();
+        this.engineFilterManager = manager.getEngineFilterManager();
+        this.engineState = manager.getEngineStateManager().getEngineState();
+        this.comps = manager.getComps();
+        this.unitPool = manager.getUnitPool();
+
+        filterUnitPool();
+    }
+
     private void filterUnitPool() {
         List<EngineFilter> filters = engineFilterManager.getEngineFilters();
 
         for (EngineFilter filter : filters) {
-            if (filter.getClass().equals(RequiredChampionFilter.class)) {
-                for (Unit unit : ((RequiredChampionFilter) filter).getRequiredUnits()) {
+            if (filter.getClass().equals(RequiredUnitFilter.class)) {
+                for (Unit unit : ((RequiredUnitFilter) filter).getRequiredUnits()) {
                     engineState.addUnitToComp(unit);
                 }
             }
@@ -66,9 +72,7 @@ public class TFTEngine {
     private void buildComp(Set<Unit> unitPoolCopy) {
         while (true) {
             for (EngineTerminator terminator : engineTerminatorManager.getEngineTerminators()) {
-                if (terminator.getCondition(engineState.getComp())) {
-//                        engineState.resetCurrentComp();
-                } else {
+                if (!terminator.getCondition(engineState.getComp())) {
                     comps.add(engineState.getComp());
                     engineState.resetCurrentComp();
                     return;

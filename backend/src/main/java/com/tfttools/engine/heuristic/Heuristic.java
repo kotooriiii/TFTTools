@@ -7,17 +7,9 @@ import com.tfttools.engine.heuristic.engineweight.RequiredUnitsWeight;
 import com.tfttools.engine.heuristic.engineweight.TraitsAddedWeight;
 
 public class Heuristic {
-    TraitsAddedWeight traitsAddedWeight;
-    RequiredUnitsWeight requiredUnitsWeight;
-    RequiredTraitsWeight requiredTraitsWeight;
-    LuckWeight luckWeight;
-
-    public Heuristic(TraitsAddedWeight traitsAddedWeight, RequiredUnitsWeight requiredUnitsWeight, RequiredTraitsWeight requiredTraitsWeight, LuckWeight luckWeight) {
-        this.traitsAddedWeight = traitsAddedWeight;
-        this.requiredUnitsWeight = requiredUnitsWeight;
-        this.requiredTraitsWeight = requiredTraitsWeight;
-        this.luckWeight = luckWeight;
-    }
+    private final TraitsAddedWeight traitsAddedWeight;
+    private final RequiredTraitsWeight requiredTraitsWeight;
+    private final LuckWeight luckWeight;
 
     public Heuristic(TraitsAddedWeight traitsAddedWeight, RequiredTraitsWeight requiredTraitsWeight, LuckWeight luckWeight) {
         this.traitsAddedWeight = traitsAddedWeight;

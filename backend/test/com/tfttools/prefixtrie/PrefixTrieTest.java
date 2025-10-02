@@ -1,17 +1,25 @@
 package com.tfttools.prefixtrie;
 
-import com.tfttools.domain.Champion;
+import com.tfttools.domain.Unit;
+import com.tfttools.registry.UnitRegistry;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
 
 public class PrefixTrieTest {
+    private UnitRegistry unitRegistry;
 
-    private PrefixNode<Champion> createTestTrieSingle() {
-        PrefixNode<Champion> trie = new PrefixNode<>();
+    @BeforeEach
+    public void initSet() {
+        this.unitRegistry = new UnitRegistry("14");
+    }
 
-        PrefixNode<Champion> curr = trie;
+    public PrefixNode<Unit> createTestTrieSingle() {
+        PrefixNode<Unit> trie = new PrefixNode<>();
+
+        PrefixNode<Unit> curr = trie;
         curr.setChild(0, new PrefixNode<>('A'));
         curr = curr.getChild('A');
         curr.setHasChildren(true);
@@ -26,15 +34,15 @@ public class PrefixTrieTest {
         curr.setHasChildren(true);
         curr.setChild(4, new PrefixNode<>('E'));
         curr = curr.getChild('E');
-        curr.setData(Champion.ANNIE);
+        curr.setData(unitRegistry.getUnitByName("Annie"));
 
         return trie;
     }
 
-    private PrefixNode<Champion> createTestTrie() {
-        PrefixNode<Champion> trie = new PrefixNode<>();
+    private PrefixNode<Unit> createTestTrie() {
+        PrefixNode<Unit> trie = new PrefixNode<>();
 
-        PrefixNode<Champion> curr = trie;
+        PrefixNode<Unit> curr = trie;
         curr.setChild(0, new PrefixNode<>('A'));
         curr = curr.getChild('A');
         curr.setHasChildren(true);
@@ -49,7 +57,7 @@ public class PrefixTrieTest {
         curr.setHasChildren(true);
         curr.setChild(4, new PrefixNode<>('E'));
         curr = curr.getChild('E');
-        curr.setData(Champion.ANNIE);
+        curr.setData(unitRegistry.getUnitByName("Annie"));
 
         curr = trie;
         curr = curr.getChild('A');
@@ -68,15 +76,15 @@ public class PrefixTrieTest {
         curr.setHasChildren(true);
         curr.setChild(0, new PrefixNode<>('A'));
         curr = curr.getChild('A');
-        curr.setData(Champion.AURORA);
+        curr.setData(unitRegistry.getUnitByName("Aurora"));
 
         return trie;
     }
 
-    private PrefixNode<Champion> createTestTriePunctuation() {
-        PrefixNode<Champion> trie = new PrefixNode<>();
+    private PrefixNode<Unit> createTestTriePunctuation() {
+        PrefixNode<Unit> trie = new PrefixNode<>();
 
-        PrefixNode<Champion> curr = trie;
+        PrefixNode<Unit> curr = trie;
         curr.setChild(2, new PrefixNode<>('C'));
         curr = curr.getChild('C');
         curr.setHasChildren(true);
@@ -97,7 +105,7 @@ public class PrefixTrieTest {
         curr.setHasChildren(true);
         curr.setChild(7, new PrefixNode<>('H'));
         curr = curr.getChild('H');
-        curr.setData(Champion.CHO_GATH);
+        curr.setData(unitRegistry.getUnitByName("Cho'Gath"));
 
         curr = trie;
         curr.setChild(3, new PrefixNode<>('D'));
@@ -120,7 +128,7 @@ public class PrefixTrieTest {
         curr.setHasChildren(true);
         curr.setChild(14, new PrefixNode<>('O'));
         curr = curr.getChild('O');
-        curr.setData(Champion.DR_MUNDO);
+        curr.setData(unitRegistry.getUnitByName("Dr. Mundo"));
 
         return trie;
     }
@@ -129,13 +137,13 @@ public class PrefixTrieTest {
      * Tests PrefixTrie.add(),
      */
     @Test
-    public void testAddSingleChampion() {
-        PrefixNode<Champion> testTrieSingle = createTestTrieSingle();
-        PrefixTrie<Champion> test = new PrefixTrie<>();
+    public void testAddSingleUnit() {
+        PrefixNode<Unit> testTrieSingle = createTestTrieSingle();
+        PrefixTrie<Unit> test = new PrefixTrie<>();
 
-        test.add(Champion.ANNIE);
+        test.add(unitRegistry.getUnitByName("Annie"));
 
-        PrefixNode<Champion> curr = testTrieSingle;
+        PrefixNode<Unit> curr = testTrieSingle;
         assert test.search("A").equals(curr.getChild('A'));
         curr = curr.getChild('A');
         assert test.search("AN").equals(curr.getChild('N'));
@@ -148,14 +156,14 @@ public class PrefixTrieTest {
     }
 
     @Test
-    public void testAddMultipleChampions() {
-        PrefixNode<Champion> testTrie = createTestTrie();
-        PrefixNode<Champion> curr = testTrie;
+    public void testAddMultipleUnits() {
+        PrefixNode<Unit> testTrie = createTestTrie();
+        PrefixNode<Unit> curr = testTrie;
 
-        PrefixTrie<Champion> test = new PrefixTrie<>();
+        PrefixTrie<Unit> test = new PrefixTrie<>();
 
-        test.add(Champion.ANNIE);
-        test.add(Champion.AURORA);
+        test.add(unitRegistry.getUnitByName("Annie"));
+        test.add(unitRegistry.getUnitByName("Aurora"));
 
         assert test.search("A").equals(curr.getChild('A'));
         curr = curr.getChild('A');
@@ -182,13 +190,13 @@ public class PrefixTrieTest {
     }
 
     @Test
-    public void testAddChampionsWithPunctuation() {
-        PrefixTrie<Champion> test = new PrefixTrie<>();
-        PrefixNode<Champion> testTriePunctuation = createTestTriePunctuation();
-        PrefixNode<Champion> curr = testTriePunctuation;
+    public void testAddUnitsWithPunctuation() {
+        PrefixTrie<Unit> test = new PrefixTrie<>();
+        PrefixNode<Unit> testTriePunctuation = createTestTriePunctuation();
+        PrefixNode<Unit> curr = testTriePunctuation;
 
-        test.add(Champion.CHO_GATH);
-        test.add(Champion.DR_MUNDO);
+        test.add(unitRegistry.getUnitByName("Cho'Gath"));
+        test.add(unitRegistry.getUnitByName("Dr. Mundo"));
 
         assert test.search("C").equals(curr.getChild('C'));
         curr = curr.getChild('C');
@@ -222,13 +230,13 @@ public class PrefixTrieTest {
 
     @Test
     public void testGetAllDescendantsByPrefixEmptyString() {
-        PrefixTrie<Champion> test = new PrefixTrie<>();
+        PrefixTrie<Unit> test = new PrefixTrie<>();
 
-        // add all champions to test trie
-        Arrays.stream(Champion.values()).forEach(test::add);
+        // add all Units to test trie
+        unitRegistry.getAllUnits().forEach(test::add);
 
         // collect all champs to truth set
-        Set<Champion> allChamps = new HashSet<>(Arrays.asList(Champion.values()));
+        Set<Unit> allChamps = new HashSet<>(unitRegistry.getAllUnits());
 
         assert new HashSet<>(test.getAllDescendantsByPrefix("")).equals(allChamps);
     }
@@ -236,23 +244,23 @@ public class PrefixTrieTest {
 
     @Test
     public void testGetAllDescendantsByPrefix() {
-        PrefixTrie<Champion> test = new PrefixTrie<>();
-        Set<Champion> annieAurora = new HashSet<>(Arrays.asList(Champion.ANNIE, Champion.AURORA));
-        Set<Champion> annieAuroraAlistar = new HashSet<>(Arrays.asList(Champion.ANNIE, Champion.AURORA, Champion.ALISTAR));
-        Set<Champion> garenGalio = new HashSet<>(Arrays.asList(Champion.GAREN, Champion.GALIO));
+        PrefixTrie<Unit> test = new PrefixTrie<>();
+        Set<Unit> annieAurora = new HashSet<>(Arrays.asList(unitRegistry.getUnitByName("Annie"), unitRegistry.getUnitByName("Aurora")));
+        Set<Unit> annieAuroraAlistar = new HashSet<>(Arrays.asList(unitRegistry.getUnitByName("Annie"), unitRegistry.getUnitByName("Aurora"), unitRegistry.getUnitByName("Alistar")));
+        Set<Unit> garenGalio = new HashSet<>(Arrays.asList(unitRegistry.getUnitByName("Garen"), unitRegistry.getUnitByName("Galio")));
 
 
-        test.add(Champion.ANNIE);
-        test.add(Champion.AURORA);
+        test.add(unitRegistry.getUnitByName("Annie"));
+        test.add(unitRegistry.getUnitByName("Aurora"));
 
         assert new HashSet<>(test.getAllDescendantsByPrefix("A")).equals(annieAurora);
 
-        test.add(Champion.ALISTAR);
+        test.add(unitRegistry.getUnitByName("Alistar"));
 
         assert new HashSet<>(test.getAllDescendantsByPrefix("A")).equals(annieAuroraAlistar);
 
-        test.add(Champion.GAREN);
-        test.add(Champion.GALIO);
+        test.add(unitRegistry.getUnitByName("Garen"));
+        test.add(unitRegistry.getUnitByName("Galio"));
 
         assert new HashSet<>(test.getAllDescendantsByPrefix("GA")).equals(garenGalio);
 
@@ -260,20 +268,20 @@ public class PrefixTrieTest {
 
     @Test
     public void testSearchNull() {
-        PrefixTrie<Champion> test = new PrefixTrie<>();
+        PrefixTrie<Unit> test = new PrefixTrie<>();
 
-        test.add(Champion.ANNIE);
+        test.add(unitRegistry.getUnitByName("Annie"));
 
         assert test.search("B") == null;
     }
 
     @Test
     public void testSearchValid() {
-        PrefixTrie<Champion> test = new PrefixTrie<>();
-        PrefixNode<Champion> testTrieSingle = createTestTrieSingle();
-        PrefixNode<Champion> curr = testTrieSingle;
+        PrefixTrie<Unit> test = new PrefixTrie<>();
+        PrefixNode<Unit> testTrieSingle = createTestTrieSingle();
+        PrefixNode<Unit> curr = testTrieSingle;
 
-        test.add(Champion.ANNIE);
+        test.add(unitRegistry.getUnitByName("Annie"));
 
         assert test.search("A").equals(curr.getChild('A'));
         curr = curr.getChild('A');

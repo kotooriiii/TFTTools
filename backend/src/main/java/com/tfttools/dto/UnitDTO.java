@@ -1,24 +1,20 @@
 package com.tfttools.dto;
 
+import lombok.Getter;
+
 import java.util.Set;
 
 /**
  * Sanitize unit object for data transfer from business logic to requestor
  */
+@Getter
 public class UnitDTO {
-    private String champion;
-    private Set<String> traits;
+    private final String unit;
+    private final Set<TraitDTO> traits;
 
-    public UnitDTO(String champion, Set<String> traits) {
-        this.champion = champion;
+    public UnitDTO(String unit, Set<TraitDTO> traits) {
+        this.unit = unit;
         this.traits = traits;
     }
 
-    public String getChampion() {
-        return champion;
-    }
-
-    public Set<String> getTraits() {
-        return traits;
-    }
 }
