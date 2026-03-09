@@ -19,16 +19,13 @@ export const JumpingDots: React.FC = () => {
             transition={{staggerChildren: -0.15, staggerDirection: -1}}
             className="container"
             style={{
-                position: 'absolute',
-                bottom: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 gap: '5px'
             }}
         >
+
             <motion.div className="dot" variants={dotVariants}/>
             <motion.div className="dot" variants={dotVariants}/>
             <motion.div className="dot" variants={dotVariants}/>

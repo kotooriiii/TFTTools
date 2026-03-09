@@ -1,11 +1,14 @@
 import { useState, useEffect, useRef, RefObject } from 'react';
-import {SearchItem, SelectedItem} from '../types/searchTypes';
-import {searchService} from "../services/searchService.ts";
 
-export const useSearch = (searchPanelRef: RefObject<HTMLDivElement>) => {
+export interface SearchHookConfig<T> {
+    searchFunction: (query: string) => Promise<T[]>;
+    searchPanelRef: RefObject<HTMLDivElement>;
+}
+
+export const useGenericSearch = <T>({ searchFunction, searchPanelRef }: SearchHookConfig<T>) => {
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchResultItems, setSearchResultItems] = useState<SearchItem[]>([]);
-    const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
+    const [searchResultItems, setSearchResultItems] = useState<T[]>([]);
+    const [selectedItems, setSelectedItems] = useState<T[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const shouldHandleClickOutside = useRef(false);
 
@@ -37,7 +40,7 @@ export const useSearch = (searchPanelRef: RefObject<HTMLDivElement>) => {
 
         setIsLoading(true);
         try {
-            const results: SearchItem[] = await searchService.searchUnits(query);
+            const results = await searchFunction(query);
             setSearchResultItems(results);
         } catch (error) {
             console.error('Search error:', error);
@@ -47,9 +50,8 @@ export const useSearch = (searchPanelRef: RefObject<HTMLDivElement>) => {
         }
     };
 
-
-    const addSelectedItem = (item: SearchItem) => {
-        if (selectedItems.some(selected => selected.name === item.name)) {
+    const addSelectedItem = (item: T, getItemKey: (item: T) => string) => {
+        if (selectedItems.some(selected => getItemKey(selected) === getItemKey(item))) {
             return;
         }
         setSelectedItems(prev => [...prev, item]);
@@ -57,8 +59,8 @@ export const useSearch = (searchPanelRef: RefObject<HTMLDivElement>) => {
         setSearchResultItems([]);
     };
 
-    const removeSelectedItem = (itemId: string) => {
-        setSelectedItems(prev => prev.filter(item => item.name !== itemId));
+    const removeSelectedItem = (itemKey: string, getItemKey: (item: T) => string) => {
+        setSelectedItems(prev => prev.filter(item => getItemKey(item) !== itemKey));
     };
 
     return {

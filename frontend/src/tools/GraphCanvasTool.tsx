@@ -1,14 +1,14 @@
 import React, {useRef, useState} from 'react';
 import {useGraphInteractions} from '../hooks/useGraphInteractions';
-import {useSearch} from '../hooks/useSearch';
+import {useUnitSearch} from '../hooks/search/ItemSearchHook.ts';
 import {useUnitFiltering} from '../hooks/useUnitFiltering';
 import {useDragAndDrop} from '../hooks/useDragAndDrop.ts';
 import {GraphSVG} from '../components/GraphSVG';
-import {SearchPanel} from '../components/SearchPanel';
 import {UnitsPanel} from '../components/UnitsPanel';
 import {ZoomControls} from '../components/ZoomControls';
 import {Edge, Vertex} from "../types/graphTypes.ts";
 import {Unit} from "../types/unitTypes.ts";
+import {UnitPopupSearchPanel} from "../components/search/UnitPopupSearchPanel.tsx";
 
 const GraphCanvasTool: React.FC = () =>
 {
@@ -23,7 +23,7 @@ const GraphCanvasTool: React.FC = () =>
 
 
     const graphInteractions = useGraphInteractions(svgRef);
-    const search = useSearch(searchPanelRef);
+    const search = useUnitSearch(searchPanelRef);
     const unitFiltering = useUnitFiltering(search.selectedItems);
     const dragAndDrop = useDragAndDrop(svgRef, graphInteractions.panOffset, graphInteractions.zoom);
 
@@ -96,6 +96,8 @@ const GraphCanvasTool: React.FC = () =>
         point.x = e.clientX;
         point.y = e.clientY;
 
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         const svgPoint = point.matrixTransform(ctm.inverse());
 
         const newVertex = {
@@ -131,7 +133,7 @@ const GraphCanvasTool: React.FC = () =>
                 />
             )}
 
-            <SearchPanel
+            <UnitPopupSearchPanel
                 ref={searchPanelRef}
                 searchQuery={search.searchQuery}
                 searchResultItems={search.searchResultItems}

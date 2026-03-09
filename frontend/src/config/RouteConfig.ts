@@ -1,7 +1,7 @@
 import React from 'react';
 import {HomePage} from '../pages/HomePage';
 import GraphCanvasTool from '../tools/GraphCanvasTool';
-import PlaceholderTool from '../tools/PlaceholderTool';
+import HorizontalCompositionGenerator from "../tools/HorizontalCompositionGenerator.tsx";
 
 export interface RouteConfig
 {
@@ -36,7 +36,7 @@ export const ROUTE_CONFIG: RouteConfig[] = [
         name: 'Horizontal Comp Generator',
         icon: '🧬',
         description: 'Generate horizontal compositions based in filter criteria',
-        component: PlaceholderTool
+        component: HorizontalCompositionGenerator
     }
 ];
 

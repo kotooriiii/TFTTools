@@ -1,19 +1,29 @@
-export type Champion = {displayName: string}
-export type Trait = {displayName: string}
+export interface SearchItem {
+    displayName: string;
+}
 
-export type SearchResult =
-    {
-        championList: Champion[],
-        traitList: Trait[],
-    };
+export interface ChampionItem extends SearchItem {
+}
 
-export type SearchItem =
-    {
-        name: string;
-        type: 'champion' | 'trait';
-    };
+export interface TraitItem extends SearchItem {
+    count: number;
+    activationThresholds?: number[]; // [3, 5, 7] for example
+}
 
-export type SelectedItem = {
-    name: string;
-    type: 'champion' | 'trait';
-};
+export interface EmblemItem extends SearchItem {
+    count: number;
+}
+
+// API Response Types
+export interface ApiEmblemResponse {
+    displayName: string;
+}
+
+export interface ApiTraitResponse {
+    displayName: string;
+    activationThresholds?: number[];
+}
+
+export interface ApiChampionResponse {
+    displayName: string;
+}
