@@ -1,46 +1,33 @@
 package main.com.tfttools.controller;
 
-import main.com.tfttools.dto.FilterDTO;
-import main.com.tfttools.dto.SearchResultDTO;
-import main.com.tfttools.dto.UnitDTO;
+import main.com.tfttools.dto.*;
 import main.com.tfttools.service.UnitService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import main.com.tfttools.service.SearchService;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * Manages endpoints for unit requests
+ * Manages endpoints for unit requests and search operations
  */
 @RestController
 @RequestMapping("/units")
 public class UnitController {
 
     private final UnitService unitService;
+    private final SearchService searchService;
 
-    /**
-     * Constructor, autoinjects UnitService object for use in
-     * the class
-     * @param unitService UnitService object which handles business logic
-     */
-    public UnitController(UnitService unitService) {
+    public UnitController(UnitService unitService, SearchService searchService) {
         this.unitService = unitService;
+        this.searchService = searchService;
     }
 
-    /**
-     * Uses unitService to get all units from unit registry
-     * @return Returns a list of UnitDTO objects for all units in the unit registry
-     */
     @GetMapping
     public List<UnitDTO> getAllUnits() {
         return unitService.getAllUnits();
     }
 
     /**
-     * Uses unitService to get suggestions for a query
-     * @param query The query to be searched for
-     * @return Returns {@link SearchResultDTO}
+     * General search endpoint that returns all matching entities
      */
     @GetMapping("/search")
     public SearchResultDTO getSuggestions(@RequestParam(defaultValue = "") String query) {
@@ -48,10 +35,29 @@ public class UnitController {
     }
 
     /**
-     * Gets units according to filter params in FilterDTO
-     * @param filterDTO Contains filter data {@link FilterDTO}
-     * @return List of sanitized units {@link UnitDTO}
+     * Champion-specific search endpoint
      */
+    @GetMapping("/search/champions")
+    public List<ChampionDTO> searchChampions(@RequestParam String query) {
+        return searchService.searchChampions(query);
+    }
+
+    /**
+     * Trait-specific search endpoint
+     */
+    @GetMapping("/search/traits")
+    public List<TraitDTO> searchTraits(@RequestParam String query) {
+        return searchService.searchTraits(query);
+    }
+
+    /**
+     * Emblem-specific search endpoint
+     */
+    @GetMapping("/search/emblems")
+    public List<EmblemDTO> searchEmblems(@RequestParam String query) {
+        return searchService.searchEmblems(query);
+    }
+
     @GetMapping("/filter")
     public List<UnitDTO> filter(FilterDTO filterDTO) {
         return unitService.filter(filterDTO);
