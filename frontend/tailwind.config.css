@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+@theme {
+    /*These values are injected by themeConfigurations. These are dummy values. */
+    --color-text-primary: #2C1D17;
+    --color-text-secondary: #C3A995;
+    --color-text-accent: #C3A995;
+
+    --color-bg-primary: #98896F;
+    --color-bg-secondary: #756356;
+    --color-bg-accent: #756356;
+
+    --color-border: #C3A995;
+    --color-success: #4CAF50;
+    --color-warning: #FF9800;
+    --color-error: #F44336;
+
+}
+/* Define text color utilities that use different variables */
+@utility text-primary {
+    color: var(--color-text-primary);
+}
+
+@utility text-secondary {
+    color: var(--color-text-secondary);
+}
+
+@utility text-accent {
+    color: var(--color-text-accent);
+}
+
+/* Define background color utilities that use different variables */
+@utility bg-primary {
+    background-color: var(--color-bg-primary);
+}
+
+@utility bg-secondary {
+    background-color: var(--color-bg-secondary);
+}
+@utility bg-accent {
+    background-color: var(--color-bg-accent);
+}
+
+/* Custom scrollbar styling */
+@layer base {
+    /* Webkit scrollbar (Chrome, Safari, Edge) */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+        transition: background-color 0.2s ease;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    /* Modern thin scrollbar for specific containers */
+    .custom-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 3px;
+        transition: all 0.2s ease;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 0, 0, 0.3);
+    }
+
+    /* Hide scrollbar but keep functionality */
+    .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+
+
+

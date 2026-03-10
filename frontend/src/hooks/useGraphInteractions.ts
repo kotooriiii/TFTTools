@@ -7,7 +7,7 @@ const MAX_ZOOM = 2;
 export const useGraphInteractions = (svgRef: RefObject<SVGSVGElement>) => {
     const [isPanning, setIsPanning] = useState(false);
     const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
-    const [lastPanPosition, setLastPanPosition] = useState<{ x: number; y: number } | null>(null);
+    const [lastPanPosition, setLastPanPosition] = useState<{ x: number; y: number } | null>({x:0,y:0});
     const [zoom, setZoom] = useState(1);
     const [draggingId, setDraggingId] = useState<number | null>(null);
     const [hoveringId, setHoveringId] = useState<number | null>(null);
