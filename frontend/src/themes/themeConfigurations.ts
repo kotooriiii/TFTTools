@@ -9,7 +9,7 @@ export const themes: Record<string, Theme> = {
                     bg:
                         {
                             primary: '#E7EFC7',
-                            secondary: '#efe2c7',
+                            secondary: '#c7e4ef',
                             accent: '#ceefc7'
                         },
                     text:

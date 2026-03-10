@@ -3,7 +3,7 @@ import { EmblemItem, TraitItem, SearchItem, ApiEmblemResponse, ApiTraitResponse,
 interface MultiSearchConfig<TResponse, TResult> {
     endpoint: string;
     responseMappers: readonly {
-        responseKey: string;
+        responseKey?: string; // Make this optional since some endpoints return arrays directly
         transform: (item: TResponse) => TResult;
     }[];
 }
@@ -21,7 +21,8 @@ const createSearchMethod = <TResponse, TResult>(config: MultiSearchConfig<TRespo
             const results: TResult[] = [];
             
             config.responseMappers.forEach(mapper => {
-                const items = data[mapper.responseKey] || [];
+                // If responseKey is provided, use it; otherwise, use data directly (for endpoints that return arrays)
+                const items = mapper.responseKey ? (data[mapper.responseKey] || []) : (Array.isArray(data) ? data : []);
                 results.push(...items.map(mapper.transform));
             });
             
@@ -35,18 +36,19 @@ const createSearchMethod = <TResponse, TResult>(config: MultiSearchConfig<TRespo
 // All configurations
 const searchConfigs = {
     champions: {
-        endpoint: '/search/champions',
+        endpoint: '/units/search/champions',
         responseMappers: [{
-            responseKey: 'championList',
+            // Remove responseKey since the endpoint returns the array directly
             transform: (item: ApiChampionResponse): SearchItem => ({
                 displayName: item.displayName,
             })
         }]
     } satisfies MultiSearchConfig<ApiChampionResponse, SearchItem>,
+    
     emblems: {
-        endpoint: '/search/emblems',
+        endpoint: '/units/search/emblems',
         responseMappers: [{
-            responseKey: 'emblemList',
+            // Remove responseKey since the endpoint returns the array directly
             transform: (item: ApiEmblemResponse): EmblemItem => ({
                 displayName: item.displayName,
                 count: 1
@@ -55,9 +57,9 @@ const searchConfigs = {
     } satisfies MultiSearchConfig<ApiEmblemResponse, EmblemItem>,
     
     traits: {
-        endpoint: '/search/traits',
+        endpoint: '/units/search/traits',
         responseMappers: [{
-            responseKey: 'traitList',
+            // Remove responseKey since the endpoint returns the array directly
             transform: (item: ApiTraitResponse): TraitItem => ({
                 displayName: item.displayName,
                 count: item.activationThresholds?.[0] || 1,
@@ -70,13 +72,13 @@ const searchConfigs = {
         endpoint: '/units/search',
         responseMappers: [
             {
-                responseKey: 'championList',
+                responseKey: 'championList', // Keep this one since /units/search returns a SearchResultDTO
                 transform: (item: ApiChampionResponse): SearchItem => ({
                     displayName: item.displayName,
                 })
             },
             {
-                responseKey: 'traitList',
+                responseKey: 'traitList', // Keep this one since /units/search returns a SearchResultDTO
                 transform: (item: ApiTraitResponse): SearchItem => ({
                     displayName: item.displayName,
                 })

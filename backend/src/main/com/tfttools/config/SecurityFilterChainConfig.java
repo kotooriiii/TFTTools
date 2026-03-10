@@ -29,8 +29,7 @@ public class SecurityFilterChainConfig {
                 {
                     authorizationManagerRequestMatcherRegistry.requestMatchers(
                             HttpMethod.GET,
-                            "/units/filter",
-                            "/units/search"
+                            "/units/**"
                     ).permitAll();
                 })
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

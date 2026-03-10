@@ -44,6 +44,36 @@ export const GenericSearchBox = <T, >({
                                           getItemAllowedCounts
                                       }: GenericSearchBoxProps<T>) =>
 {
+    const handleCountChange = (item: T, newValue: number) => {
+        const allowedCounts = getItemAllowedCounts?.(item);
+        
+        if (allowedCounts && allowedCounts.length > 0) {
+
+            let closestValue: number;
+            
+            // If the new value is higher than current, find next higher allowed value
+            // If lower, find next lower allowed value
+            const currentValue = getItemCount?.(item) || allowedCounts[0];
+            
+            if (newValue > currentValue) {
+                // Going up - find next higher value
+                closestValue = allowedCounts.find(val => val > currentValue) || allowedCounts[allowedCounts.length - 1];
+            } else if (newValue < currentValue) {
+                // Going down - find next lower value
+                const lowerValues = allowedCounts.filter(val => val < currentValue);
+                closestValue = lowerValues.length > 0 ? lowerValues[lowerValues.length - 1] : allowedCounts[0];
+            } else {
+                closestValue = currentValue;
+            }
+            
+            onUpdateCount?.(config.itemKey(item), closestValue);
+        } else {
+            // Free count - use the value directly but constrain to 1-9
+            const constrainedValue = Math.max(1, Math.min(9, newValue));
+            onUpdateCount?.(config.itemKey(item), constrainedValue);
+        }
+    };
+
     return (
         <div className="mb-6">
             <label className="block text-sm font-medium text-foreground mb-2">
@@ -145,6 +175,9 @@ export const GenericSearchBox = <T, >({
                     {selectedItems.map((item) =>
                     {
                         const allowedCounts = getItemAllowedCounts?.(item);
+                        const currentCount = getItemCount?.(item) || 1;
+                        const minValue = allowedCounts && allowedCounts.length > 0 ? Math.min(...allowedCounts) : 1;
+                        const maxValue = allowedCounts && allowedCounts.length > 0 ? Math.max(...allowedCounts) : 9;
 
                         return (
                             <motion.div
@@ -156,30 +189,15 @@ export const GenericSearchBox = <T, >({
                                 <span>{config.icon}</span>
                                 <span>{config.displayName(item)}</span>
                                 {showCount && onUpdateCount && getItemCount && (
-                                    allowedCounts ? (
-                                        // Dropdown for constrained counts
-                                        <select
-                                            value={getItemCount(item)}
-                                            onChange={(e) => onUpdateCount(config.itemKey(item), parseInt(e.target.value))}
-                                            className="w-16 px-2 py-1 text-center border border-purple-300 rounded bg-white text-purple-800"
-                                        >
-                                            {allowedCounts.map(count => (
-                                                <option key={count} value={count}>
-                                                    {count}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    ) : (
-                                        // Number input for free counts
-                                        <input
-                                            type="number"
-                                            min="1"
-                                            max="9"
-                                            value={getItemCount(item)}
-                                            onChange={(e) => onUpdateCount(config.itemKey(item), parseInt(e.target.value))}
-                                            className="w-16 px-2 py-1 text-center border border-purple-300 rounded bg-white text-purple-800"
-                                        />
-                                    )
+                                    // Always use number input with up/down buttons
+                                    <input
+                                        type="number"
+                                        min={minValue}
+                                        max={maxValue}
+                                        value={currentCount}
+                                        onChange={(e) => handleCountChange(item, parseInt(e.target.value) || minValue)}
+                                        className="w-16 px-2 py-1 text-center border border-purple-300 rounded bg-white text-purple-800"
+                                    />
                                 )}
                                 <button
                                     onClick={() => onRemoveItem(config.itemKey(item))}

@@ -28,7 +28,7 @@ public class PrefixTrie<T extends Namable> {
         PrefixNode<T> curr = this.root;
 
         // perform some input validation, remove some punctuation and whitespace
-        String s = PrefixTrieUtils.removePunctuation(obj.toString());
+        String s = PrefixTrieUtils.removePunctuation(obj.getDisplayName());
 
         for (int i = 0; i < s.length(); i++) {
             if (curr.childExists(s.charAt(i))) {
@@ -61,6 +61,9 @@ public class PrefixTrie<T extends Namable> {
 
     private PrefixNode<T> search(String prefix) {
         PrefixNode<T> curr = this.root;
+
+        prefix = PrefixTrieUtils.removePunctuation(prefix);
+        prefix = prefix.toUpperCase();
 
         for (int i = 0; i < prefix.length(); i++) {
             if (curr.childExists(prefix.charAt(i))) {

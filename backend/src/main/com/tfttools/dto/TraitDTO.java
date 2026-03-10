@@ -6,12 +6,19 @@ package main.com.tfttools.dto;
 public class TraitDTO {
 
     private final String displayName;
+    private final int[] activationThresholds;
 
-    public TraitDTO(String displayName) {
+    public TraitDTO(String displayName, int[] activationThresholds) {
         this.displayName = displayName;
+        this.activationThresholds = activationThresholds;
     }
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public int[] getActivationThresholds()
+    {
+        return activationThresholds;
     }
 }
