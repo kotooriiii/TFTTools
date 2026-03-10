@@ -3,6 +3,7 @@ import com.tfttools.domain.Unit;
 import com.tfttools.dto.HorizontalDTO;
 import com.tfttools.dto.TraitDTO;
 import com.tfttools.dto.UnitDTO;
+import com.tfttools.engine.TFTEngine;
 import com.tfttools.engine.manager.Manager;
 import com.tfttools.mapper.TraitMapper;
 import com.tfttools.mapper.UnitMapper;
