@@ -1,22 +1,25 @@
 package com.tfttools.engine.heuristic;
 
 import com.tfttools.domain.Unit;
-import com.tfttools.engine.heuristic.engineweight.LuckWeight;
-import com.tfttools.engine.heuristic.engineweight.RequiredTraitsWeight;
-import com.tfttools.engine.heuristic.engineweight.TraitsAddedWeight;
+import com.tfttools.engine.heuristic.tiebreaker.TieBreakerScorer;
+import com.tfttools.engine.heuristic.weight.EngineWeightScorer;
+import lombok.Getter;
 
+import java.util.List;
+
+@Getter
 public class Heuristic {
-    private final TraitsAddedWeight traitsAddedWeight;
-    private final RequiredTraitsWeight requiredTraitsWeight;
-    private final LuckWeight luckWeight;
+    private final List<EngineWeightScorer> weights;
+    private final List<TieBreakerScorer> tieBreakers;
 
-    public Heuristic(TraitsAddedWeight traitsAddedWeight, RequiredTraitsWeight requiredTraitsWeight, LuckWeight luckWeight) {
-        this.traitsAddedWeight = traitsAddedWeight;
-        this.requiredTraitsWeight = requiredTraitsWeight;
-        this.luckWeight = luckWeight;
+    public Heuristic(List<EngineWeightScorer> weights, List<TieBreakerScorer> tieBreakers) {
+        this.weights = weights;
+        this.tieBreakers = tieBreakers;
     }
 
     public int getWeight(Unit unit) {
-        return traitsAddedWeight.getWeight(unit) + requiredTraitsWeight.getWeight(unit) + luckWeight.getWeight(unit);
+        return weights.stream()
+                .mapToInt(weight -> weight.getWeight(unit))
+                .sum();
     }
 }

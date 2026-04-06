@@ -1,6 +1,6 @@
 package com.tfttools.prefixtrie;
 
-import com.tfttools.domain.Namable;
+import com.tfttools.domain.Nameable;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -11,7 +11,7 @@ import java.util.*;
  * @param <T> Objects of type T that will be stored within the tree
  */
 @Component
-public class PrefixTrie<T extends Namable> {
+public class PrefixTrie<T extends Nameable> {
 
     private final PrefixNode<T> root;
 

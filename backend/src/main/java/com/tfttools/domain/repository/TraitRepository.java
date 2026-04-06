@@ -19,13 +19,7 @@ public class TraitRepository {
     public TraitRepository() {
         this.traits = new HashMap<>();
 
-        parseJson("15");
-    }
-
-    public TraitRepository(String set) {
-        this.traits = new HashMap<>();
-
-        parseJson(set);
+        parseJson("16");
     }
 
     private void parseJson(String set) {
@@ -50,12 +44,9 @@ public class TraitRepository {
                     continue;
                 }
 
-                List<int[]> thresholds = new ArrayList<>();
-                for (CommunityDragonTraitEffects effect : effects) {
-                    int[] innerList = new int[] { effect.getMinUnits(), effect.getMaxUnits() };
-                    thresholds.add(innerList);
-                }
-                //todo this.traits.put(name, new Trait(name, thresholds));
+                Trait trait = new Trait(name,
+                        effects.stream().mapToInt(CommunityDragonTraitEffects::getMinUnits).toArray(), effects.stream().map(CommunityDragonTraitEffects::getStyle).toList());
+                this.traits.put(name, trait);
             }
         } catch (Exception e) {
             e.printStackTrace();

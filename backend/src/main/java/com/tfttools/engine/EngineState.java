@@ -1,87 +1,30 @@
 package com.tfttools.engine;
 
+import com.tfttools.domain.Composition;
+import com.tfttools.domain.Emblem;
 import com.tfttools.domain.Trait;
 import com.tfttools.domain.Unit;
 import com.tfttools.registry.UnitRegistry;
+import lombok.Getter;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public class EngineState {
-    private final Set<Unit> currentComp;
-    private final List<Trait> availableEmblems;
-    private final Map<Trait, Integer> currentTraits;
+@Getter
+public class EngineState
+{
+    private final Composition currentComp;
+    private final Set<Emblem> availableEmblems;
+    private final Set<Unit> requiredUnits;
     private final int tactitionLevel;
-    private final Set<Unit> core;
-    private final UnitRegistry unitRegistry;
 
-    public EngineState(Set<Unit> comp, List<Unit> requiredUnits, List<Trait> availableEmblems, int tactitionLevel, UnitRegistry unitRegistry) {
+    public EngineState(Composition comp, Set<Unit> requiredUnits, Set<Emblem> availableEmblems, int tactitionLevel)
+    {
         this.currentComp = comp;
+        this.requiredUnits = requiredUnits;
         this.availableEmblems = availableEmblems;
-        this.currentTraits = new HashMap<>();
         this.tactitionLevel = tactitionLevel;
-        this.unitRegistry = unitRegistry;
-        this.core = new HashSet<>(requiredUnits);
-
-        initTraits();
-        addCoreToComp();
-    }
-
-    private void addCoreToComp() {
-        this.core.forEach(this::addUnitToComp);
-    }
-
-    private void initTraits(){
-        for (Trait trait : unitRegistry.getAllTraits()) {
-            currentTraits.put(trait, 0);
-        }
-
-        for (Trait trait : availableEmblems) {
-            currentTraits.put(trait, currentTraits.get(trait) + 1);
-        }
-
-        for (Unit unit : core) {
-            for (Trait trait : unit.getTraits()) {
-                currentTraits.put(trait, currentTraits.get(trait) + 1);
-            }
-        }
-    }
-
-    public int getTactitionLevel() {
-        return tactitionLevel;
-    }
-
-    public Map<Trait, Integer> getCurrentTraits() {
-        return currentTraits;
-    }
-
-    public Set<Unit> getComp() {
-        return new HashSet<>(currentComp);
-    }
-
-    public void addUnitToComp(Unit unit) {
-        currentComp.add(unit);
-
-        for (Trait trait : unit.getTraits()) {
-            currentTraits.put(trait, currentTraits.get(trait) + 1);
-        }
-    }
-
-    public void resetCurrentComp() {
-        this.currentComp.retainAll(this.core);
-        this.currentTraits.clear();
-
-        initTraits();
-    }
-
-    public Set<Unit> getCore() {
-        return core;
-    }
-
-    public boolean addToCore(Unit unit) {
-        return core.add(unit);
-    }
-
-    public List<Trait> getAvailableEmblems() {
-        return availableEmblems;
     }
 }

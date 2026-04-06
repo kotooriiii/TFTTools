@@ -1,7 +1,9 @@
 package com.tfttools.controller;
 
+import com.tfttools.dto.CompositionDTO;
 import com.tfttools.dto.HorizontalDTO;
 import com.tfttools.dto.UnitDTO;
+import com.tfttools.service.CompositionService;
 import com.tfttools.service.UnitService;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +14,10 @@ import java.util.List;
 public class ToolsController
 {
 
-    private final UnitService unitService;
+    private final CompositionService compositionService;
 
-    public ToolsController(UnitService unitService) {
-        this.unitService = unitService;
+    public ToolsController(CompositionService compositionService) {
+        this.compositionService = compositionService;
     }
 
     /**
@@ -25,7 +27,7 @@ public class ToolsController
      * @param horizontalDTO
      */
     @PostMapping("/horizontal")
-    public List<List<UnitDTO>> getHorizontalComps(@RequestBody HorizontalDTO horizontalDTO) {
-        return unitService.getHorizontalComps(horizontalDTO);
+    public List<CompositionDTO> getHorizontalComps(@RequestBody HorizontalDTO horizontalDTO) {
+        return compositionService.generateCompositions(horizontalDTO);
     }
 }

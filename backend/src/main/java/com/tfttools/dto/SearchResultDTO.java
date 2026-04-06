@@ -10,7 +10,7 @@ import java.util.List;
  */
 @Getter
 public class SearchResultDTO {
-    private final List<ChampionDTO> championDTO;
+    private final List<UnitDTO> championDTO;
     private final List<TraitDTO> traitList;
 
     public SearchResultDTO() {
@@ -18,7 +18,7 @@ public class SearchResultDTO {
         this.traitList = Collections.emptyList();
     }
 
-    public SearchResultDTO(List<ChampionDTO> championList, List<TraitDTO> traitList) {
+    public SearchResultDTO(List<UnitDTO> championList, List<TraitDTO> traitList) {
         this.championDTO = championList;
         this.traitList = traitList;
     }
