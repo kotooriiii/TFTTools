@@ -33,7 +33,7 @@ public class EngineStrategyManager
 
         this.strategies.forEach(strategy ->
         {
-            List<Composition> comps = strategy.buildCompositions(new HashSet<>(unitPool), engineConfiguration, context);
+            List<Composition> comps = strategy.buildCompositions(new HashSet<>(unitPool), context);
             allStrategyComps.addAll(comps);
         });
 

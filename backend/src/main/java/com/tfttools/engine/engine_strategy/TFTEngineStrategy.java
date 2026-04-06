@@ -12,10 +12,9 @@ public interface TFTEngineStrategy
     /**
      * Build a single composition using this strategy
      * @param unitPool Available units to choose from
-     * @param engineConfiguration Configuration parameters
      * @param strategyContext Shared context between strategies
      * @return A completed composition
      */
-    List<Composition> buildCompositions(Set<Unit> unitPool, EngineConfiguration engineConfiguration, StrategyContext strategyContext);
+    List<Composition> buildCompositions(Set<Unit> unitPool, StrategyContext strategyContext);
 
 }
