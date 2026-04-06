@@ -10,5 +10,4 @@ import java.util.List;
 public class CommunityDragonSet {
     private List<CommunityDragonChampions> champions;
     private List<CommunityDragonTraits> traits;
-
 }

@@ -9,12 +9,16 @@ import java.util.Set;
  */
 @Getter
 public class UnitDTO {
-    private final String unit;
+    private final String displayName;
     private final Set<TraitDTO> traits;
 
-    public UnitDTO(String unit, Set<TraitDTO> traits) {
-        this.unit = unit;
+    public UnitDTO(String displayName, Set<TraitDTO> traits) {
+        this.displayName = displayName;
         this.traits = traits;
+    }
+
+    public UnitDTO(String displayName) {
+        this(displayName, null);
     }
 
 }

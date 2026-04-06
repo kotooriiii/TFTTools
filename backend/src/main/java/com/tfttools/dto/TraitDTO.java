@@ -21,4 +21,10 @@ public class TraitDTO {
     {
         return activationThresholds;
     }
+
+    @Override
+    public String toString()
+    {
+        return getDisplayName();
+    }
 }

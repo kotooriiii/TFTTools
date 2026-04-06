@@ -1,52 +1,42 @@
 package com.tfttools.domain;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import lombok.Getter;
 
-public enum Emblem implements Namable
+@Getter
+public class Emblem implements Nameable
 {
-    BILGEWATER("Bilgewater"),
-    DEMACIA("Demacia"),
-    FRELJORD("Freljord"),
-    IONIA("Ionia"),
-    IXTAL("Ixtal"),
-    NOXUS("Noxus"),
-    PILTOVER("Piltover"),
-    VOID("Void"),
-    YORDLE("Yordle"),
-    ZAUN("Zaun"),
-
-    ARCANIST("Arcanist"),
-    BRUISER("Bruiser"),
-    DEFENDER("Defender"),
-    DISRUPTOR("Disruptor"),
-    GUNSLINGER("Gunslinger"),
-    INVOKER("Invoker"),
-    JUGGERNAUT("Juggernaut"),
-    LONGSHOT("Longshot"),
-    QUICKSTRIKER("Quickstriker"),
-    SLAYER("Slayer"),
-    VANQUISHER("Vanquisher"),
-    WARDEN("Warden");
-
     private final String displayName;
+    private final Trait trait;
 
-    Emblem(String displayName) { this.displayName = displayName; }
-
-    private static final Map<String, Emblem> BY_DISPLAY_NAME = Arrays.stream(values()).collect(Collectors.toMap(Emblem::getDisplayName, Function.identity()));
-
-    public static Emblem fromDisplayName(String displayName) {
-        return BY_DISPLAY_NAME.get(displayName);
+    public Emblem(String displayName, Trait trait)
+    {
+        this.displayName = displayName;
+        this.trait = trait;
     }
 
+    @Override
     public String getDisplayName() {
         return displayName;
     }
 
     @Override
-    public String toString() {
-        return getDisplayName();
+    public String toString()
+    {
+        return this.displayName;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Emblem emblem = (Emblem) o;
+        return getDisplayName().equals(emblem.getDisplayName());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return getDisplayName().hashCode();
     }
 }
