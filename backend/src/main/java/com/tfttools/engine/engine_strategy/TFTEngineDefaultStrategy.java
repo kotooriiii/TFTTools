@@ -14,12 +14,11 @@ import java.util.*;
 public class TFTEngineDefaultStrategy implements TFTEngineStrategy
 {
     @Override
-    public List<Composition> buildCompositions(Set<Unit> unitPool, EngineConfiguration configuration,
-                                               StrategyContext context)
+    public List<Composition> buildCompositions(Set<Unit> unitPool, StrategyContext context)
     {
         List<Composition> compositions = new ArrayList<>();
 
-        for (int i = 0; i < configuration.getCompSize(); i++)
+        for (int i = 0; i < context.getEngineConfiguration().getCompSize(); i++)
         {
             Composition comp = buildComposition(new HashSet<>(unitPool), context, compositions);
             compositions.add(comp);
@@ -35,9 +34,9 @@ public class TFTEngineDefaultStrategy implements TFTEngineStrategy
 
         Heuristic heuristic = registry.builder()
                 .with(
-                        registry.createRequiredUnitsWeight(engineState),
                         registry.createRequiredTraitsWeight(engineState),
-                        registry.createTraitsAddedWeight(engineState)
+                        registry.createRequiredUnitsWeight(engineState),
+                        registry.createTraitsAddedWeightWithEmblems(engineState, registry.createEmblemWeightScorer(engineState))
                 )
                 .withTieBreaker(
                         registry.createDiversityTieBreaker(previousComps)
