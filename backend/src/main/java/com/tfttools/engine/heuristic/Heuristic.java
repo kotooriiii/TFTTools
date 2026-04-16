@@ -3,6 +3,7 @@ package com.tfttools.engine.heuristic;
 import com.tfttools.domain.Unit;
 import com.tfttools.engine.heuristic.tiebreaker.TieBreakerScorer;
 import com.tfttools.engine.heuristic.weight.EngineWeightScorer;
+import com.tfttools.engine.heuristic.weight.StatefulEngineWeightScorer;
 import lombok.Getter;
 
 import java.util.List;
@@ -21,5 +22,16 @@ public class Heuristic {
         return weights.stream()
                 .mapToInt(weight -> weight.getWeight(unit))
                 .sum();
+    }
+
+    public void notifyUnitChosen(Unit unit)
+    {
+        for(EngineWeightScorer engineWeightScorer :weights)
+        {
+            if(engineWeightScorer instanceof StatefulEngineWeightScorer)
+            {
+                ((StatefulEngineWeightScorer)engineWeightScorer).onUnitChosen(unit);
+            }
+        }
     }
 }

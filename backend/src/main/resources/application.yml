@@ -8,3 +8,12 @@ cors:
   allowed-methods: "*"
   allowed-headers: "*"
   exposed-headers: "*"
+
+tft:
+  communitydragon:
+    url: "https://raw.communitydragon.org/latest/cdragon/tft/en_us.json"
+    cache:
+      duration:
+        hours: 1  # Cache for 1 hour
+    fallback:
+      enabled: true  # Use local resource as fallback if URL fails

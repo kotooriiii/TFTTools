@@ -11,6 +11,7 @@ public class Composition
     private final Map<Trait, Integer> traits;
 
 
+
     public Composition()
     {
         this(new ArrayList<>());
@@ -66,6 +67,15 @@ public class Composition
                 traits.computeIfPresent(trait, (key, value) -> value - 1 == 0 ? null : value - 1));
     }
 
+    public void remove (Trait trait)
+    {
+        for(Unit unit : getUnits())
+        {
+            if(unit.getTraits().contains(trait))
+                remove(unit);
+        }
+    }
+
     public void clear()
     {
         units.clear();
@@ -76,6 +86,7 @@ public class Composition
     {
         return this.units.contains(unit);
     }
+
 
     @Override
     public boolean equals(Object obj)

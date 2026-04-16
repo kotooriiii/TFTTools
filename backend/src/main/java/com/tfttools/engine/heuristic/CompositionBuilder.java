@@ -20,13 +20,10 @@ public class CompositionBuilder {
     public Composition buildWith(UnitSelector unitSelector) {
         while (!terminatorManager.shouldTerminate(engineState.getCurrentComp()) 
                && unitSelector.hasUnitsAvailable()) {
-            
-            Unit nextUnit = unitSelector.pickNextUnit();
-            if (nextUnit == null) break;
-            
-            engineState.getCurrentComp().add(nextUnit);
+
+            unitSelector.pickNextUnit(engineState);
         }
 
-        return new Composition(engineState.getCurrentComp());
+        return engineState.getCurrentComp();
     }
 }

@@ -4,7 +4,6 @@ import com.tfttools.domain.EngineConfiguration;
 import com.tfttools.engine.heuristic.WeightRegistry;
 import com.tfttools.engine.manager.*;
 import com.tfttools.engine.EngineState;
-import com.tfttools.registry.UnitRegistry;
 import com.tfttools.domain.Composition;
 import lombok.Getter;
 
@@ -28,9 +27,7 @@ public class StrategyContext {
     public EngineState createEngineState() {
         return new EngineState(
                 new Composition(),
-                engineConfiguration.getRequiredUnits(),
-                engineConfiguration.getEmblems(),
-                engineConfiguration.getTactitionLevel()
+                engineConfiguration
         );
     }
 

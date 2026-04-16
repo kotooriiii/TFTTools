@@ -8,7 +8,9 @@ import com.tfttools.dto.EmblemDTO;
 import com.tfttools.dto.HorizontalDTO;
 import com.tfttools.dto.TraitDTO;
 import com.tfttools.dto.UnitDTO;
-import com.tfttools.registry.UnitRegistry;
+import com.tfttools.repository.EmblemRepository;
+import com.tfttools.repository.TraitRepository;
+import com.tfttools.repository.UnitRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -17,11 +19,15 @@ import java.util.stream.Collectors;
 @Component
 public class EngineConfigurationAdapter
 {
-    private final UnitRegistry unitRegistry;
+    private final UnitRepository unitRepository;
+    private final TraitRepository traitRepository;
+    private final EmblemRepository emblemRepository;
 
-    public EngineConfigurationAdapter(UnitRegistry unitRegistry)
+    public EngineConfigurationAdapter(UnitRepository unitRepository, TraitRepository traitRepository, EmblemRepository emblemRepository)
     {
-        this.unitRegistry = unitRegistry;
+        this.unitRepository = unitRepository;
+        this.traitRepository = traitRepository;
+        this.emblemRepository = emblemRepository;
     }
 
     public EngineConfiguration adaptToEngineConfiguration(HorizontalDTO input)
@@ -72,7 +78,7 @@ public class EngineConfigurationAdapter
         return unitDTOs.stream()
                 .map(unitDTO ->
                 {
-                    Unit unit = unitRegistry.getUnitByName(unitDTO.getDisplayName());
+                    Unit unit = unitRepository.getUnitByName(unitDTO.getDisplayName());
                     if (unit == null)
                     {
                         validation.addError("Unknown " + context + ": " + unitDTO.getDisplayName());
@@ -90,7 +96,7 @@ public class EngineConfigurationAdapter
 
         for (Map.Entry<String, Integer> entry : requiredTraitsDTO.entrySet())
         {
-            Trait trait = unitRegistry.getTraitByName(entry.getKey());
+            Trait trait = traitRepository.getTraitByName(entry.getKey());
             if (trait == null)
             {
                 validation.addError("Unknown required trait: " + entry.getKey());
@@ -115,7 +121,7 @@ private Set<Emblem> adaptEmblems(Set<EmblemDTO> emblemDTOs, ValidationContext va
     return emblemDTOs.stream()
             .map(emblemDTO ->
             {
-                Emblem emblem = unitRegistry.getEmblemByName(emblemDTO.getDisplayName());
+                Emblem emblem = emblemRepository.getEmblemByName(emblemDTO.getDisplayName());
                 if (emblem == null)
                 {
                     validation.addError("Unknown emblem trait: " + emblemDTO.getDisplayName());
@@ -131,7 +137,7 @@ private Set<Trait> adaptTraits(Set<TraitDTO> traitDTOs, ValidationContext valida
     return traitDTOs.stream()
             .map(traitDTO ->
             {
-                Trait trait = unitRegistry.getTraitByName(traitDTO.getDisplayName());
+                Trait trait = traitRepository.getTraitByName(traitDTO.getDisplayName());
                 if (trait == null)
                 {
                     validation.addError("Unknown excluded trait: " + traitDTO.getDisplayName());
