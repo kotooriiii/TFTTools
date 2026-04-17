@@ -16,7 +16,7 @@ public class LuckWeightScorer implements EngineWeightScorer
 
     public LuckWeightScorer(EngineState engineState, float luck) {
         this.engineState = engineState;
-        this.tactitionLevel = engineState.getTactitionLevel();
+        this.tactitionLevel = engineState.getEngineConfiguration().getTactitionLevel();;
         this.luck = luck;
         this.weight = 0;
     }

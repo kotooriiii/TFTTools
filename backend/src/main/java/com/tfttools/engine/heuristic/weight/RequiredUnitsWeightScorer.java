@@ -17,7 +17,7 @@ public class RequiredUnitsWeightScorer implements EngineWeightScorer
     public int getWeight(Unit unit)
     {
         int weight = 0;
-        if (engineState.getRequiredUnits().contains(unit))
+        if (engineState.getEngineConfiguration().getRequiredUnits().contains(unit))
             weight = 1000;
 
         return weight;

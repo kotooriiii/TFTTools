@@ -6,6 +6,8 @@ import com.tfttools.domain.Trait;
 import com.tfttools.dto.CompositionDTO;
 import com.tfttools.dto.TraitDTO;
 import com.tfttools.dto.UnitDTO;
+import com.tfttools.service.TeamPlannerService;
+import com.tfttools.util.CompositionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,13 +25,15 @@ public class CompositionMapper implements Function<Composition, CompositionDTO> 
 
     private final UnitMapper unitMapper;
     private final TraitMapper traitMapper;
+    private final TeamPlannerService teamPlannerService;
 
     @Autowired
-    public CompositionMapper(UnitMapper unitMapper, TraitMapper traitMapper)
-    {
+    public CompositionMapper(UnitMapper unitMapper, TraitMapper traitMapper, TeamPlannerService teamPlannerService) {
         this.unitMapper = unitMapper;
         this.traitMapper = traitMapper;
+        this.teamPlannerService = teamPlannerService;
     }
+
 
     @Override
     public CompositionDTO apply(Composition composition) {
@@ -43,7 +47,9 @@ public class CompositionMapper implements Function<Composition, CompositionDTO> 
                         Map.Entry::getValue
                 ));
 
+        final int activatedTraits = CompositionUtils.getActivatedTraits(composition).size();
+        final String teamCode = teamPlannerService.exportToTeamCode(composition);
 
-        return new CompositionDTO(unitDTOs, traitDTOs);
+        return new CompositionDTO(unitDTOs, traitDTOs, activatedTraits, teamCode);
     }
 }

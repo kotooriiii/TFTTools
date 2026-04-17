@@ -4,6 +4,7 @@ import com.tfttools.domain.Emblem;
 import com.tfttools.domain.Trait;
 import com.tfttools.domain.Unit;
 import com.tfttools.engine.EngineState;
+import com.tfttools.util.CompositionUtils;
 
 import java.util.Optional;
 
@@ -55,49 +56,56 @@ public class TraitsAddedWeightScorer implements EngineWeightScorer
     }
 
     private int calculateTraitWeight(Trait trait) {
-        int nextThreshold = getNextThreshold(trait);
-        Integer currentThreshold = engineState.getCurrentComp().getTraits().getOrDefault(trait, 0);
+        Integer currentTraitCount = engineState.getCurrentComp().getTraits().getOrDefault(trait, 0);
+        int nextThreshold = CompositionUtils.getNextThreshold(trait, currentTraitCount);
 
         //If the current threshold has reached the max or is past the max, then no more traits you can activate.
-        if (currentThreshold > nextThreshold) {
+        if (currentTraitCount > nextThreshold) {
             return 0;
         }
 
-        //If can reach more in the next threshold
-        int difference = nextThreshold - currentThreshold;
-        int currWeight = nextThreshold - difference + 1;
+
+        int currWeight = 0;
 
         //if the next unit to be added increases actives a threshold, then weight should be very desirable.
-        if (difference == 1) {
-            if (!hasReachedFirstThreshold(trait, currentThreshold)) {
-                currWeight *= 5;
+        if (CompositionUtils.willActivateNextThreshold(trait, currentTraitCount)) {
+            if (!CompositionUtils.hasReachedFirstThreshold(trait, currentTraitCount)) {
+                currWeight += 3;
             } else {
-                currWeight *= 2;
+                currWeight += 1;
+            }
+        }
+        else //does not activate but progresses
+        {
+
+            if (!CompositionUtils.hasReachedFirstThreshold(trait, currentTraitCount)) {
+
+                if(currentTraitCount == 0)
+                {
+                    // did not activate, has not reached first threshold,  new trait
+                }
+                else
+                {
+                    //did not activate, has not reached first threshold,  progressing
+                }
+
+                int requiredTurns = nextThreshold - currentTraitCount;
+                int remainingTurns = engineState.getEngineConfiguration().getMaxUnitsOnBoard() - engineState.getCurrentComp().getUnits().size();
+                //if te
+                if(remainingTurns >= requiredTurns)
+                {
+                    int difference = currentTraitCount - CompositionUtils.getPreviousThreshold(trait, currentTraitCount) + 1;
+                    currWeight += difference;
+                }
+            } else {
+                // does not activate, already reached first threshold, doesnot matter
+                currWeight += 0;
             }
         }
 
         return currWeight;
     }
 
-    // ... rest of your existing methods
-    public int getNextThreshold(Trait trait) {
-        int currentThreshold = engineState.getCurrentComp().getTraits().getOrDefault(trait, 0);
 
-        if (currentThreshold == trait.getActivationThresholds()[trait.getActivationThresholds().length - 1])
-            return currentThreshold;
-
-        for (int i = trait.getActivationThresholds().length - 1; i > 0; i--) {
-            int iteratingThreshold = trait.getActivationThresholds()[i];
-            if (currentThreshold >= iteratingThreshold) {
-                return trait.getActivationThresholds()[i + 1];
-            }
-        }
-
-        return trait.getActivationThresholds()[0];
-    }
-
-    public boolean hasReachedFirstThreshold(Trait trait, int currentThreshold) {
-        return currentThreshold >= trait.getActivationThresholds()[0];
-    }
 
 }

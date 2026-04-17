@@ -1,6 +1,6 @@
 package com.tfttools.domain;
 
-import com.tfttools.domain.repository.communitydragon.ChampionStats;
+import com.tfttools.domain.communitydragon.ChampionStats;
 import lombok.Getter;
 
 import java.util.List;
@@ -12,13 +12,15 @@ import java.util.List;
 @Getter
 public class Unit implements Nameable
 {
+    private final String apiName;
     private final String name;
     private final int cost;
     private final Role role;
     private final ChampionStats championStats;
     private final List<Trait> traits;
 
-    public Unit(String name, int cost, Role role, ChampionStats championStats, List<Trait> traits) {
+    public Unit(String apiName, String name, int cost, Role role, ChampionStats championStats, List<Trait> traits) {
+        this.apiName = apiName;
         this.name = name;
         this.cost = cost;
         this.role = role;

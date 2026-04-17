@@ -34,6 +34,7 @@ public class TFTEngineDefaultStrategy implements TFTEngineStrategy
 
         Heuristic heuristic = registry.builder()
                 .with(
+                        registry.createSynergyLookahead(engineState, unitPool),
                         registry.createRequiredTraitsWeight(engineState),
                         registry.createRequiredUnitsWeight(engineState),
                         registry.createTraitsAddedWeightWithEmblems(engineState, registry.createEmblemWeightScorer(engineState))

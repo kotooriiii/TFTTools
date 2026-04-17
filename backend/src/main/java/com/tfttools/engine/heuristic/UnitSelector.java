@@ -1,6 +1,7 @@
 package com.tfttools.engine.heuristic;
 
 import com.tfttools.domain.Unit;
+import com.tfttools.engine.EngineState;
 import com.tfttools.engine.heuristic.tiebreaker.TieBreakerScorer;
 
 import java.util.*;
@@ -19,8 +20,8 @@ public class UnitSelector
     /**
      * Pick the next best unit and remove it from the available pool
      */
-    public Unit pickNextUnit() {
-        if (availableUnits.isEmpty()) return null;
+    public void pickNextUnit(EngineState engineState) {
+        if (availableUnits.isEmpty()) return;
 
         // Calculate weights for all available units
         Map<Unit, Integer> unitWeights = availableUnits.stream()
@@ -32,10 +33,11 @@ public class UnitSelector
         // Find the best unit(s)
         Unit bestUnit = selectBestUnit(unitWeights);
 
-        // Remove from available pool
-        availableUnits.remove(bestUnit);
+        heuristic.notifyUnitChosen(bestUnit);
 
-        return bestUnit;
+        // Remove from available pool
+        availableUnits.remove(bestUnit); //todo maybe avail units should be stored in engine state..?
+        engineState.getCurrentComp().add(bestUnit);
     }
 
     /**

@@ -3,7 +3,6 @@ package com.tfttools.prefixtrie;
 import com.tfttools.domain.Unit;
 import com.tfttools.prefixtrie.PrefixNode;
 import com.tfttools.prefixtrie.PrefixTrie;
-import com.tfttools.registry.UnitRegistry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

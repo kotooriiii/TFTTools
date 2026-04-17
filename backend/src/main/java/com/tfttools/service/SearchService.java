@@ -7,7 +7,9 @@ import com.tfttools.dto.UnitDTO;
 import com.tfttools.mapper.EmblemMapper;
 import com.tfttools.mapper.TraitMapper;
 import com.tfttools.mapper.UnitMapper;
-import com.tfttools.registry.UnitRegistry;
+import com.tfttools.repository.EmblemRepository;
+import com.tfttools.repository.TraitRepository;
+import com.tfttools.repository.UnitRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,15 +19,20 @@ import java.util.stream.Collectors;
 public class SearchService
 {
 
-    private final UnitRegistry unitRegistry;
+    private final UnitRepository unitRepository;
+    private final TraitRepository traitRepository;
+    private final EmblemRepository emblemRepository;
+
     private final UnitMapper unitMapper;
     private final TraitMapper traitMapper;
     private final EmblemMapper emblemMapper;
 
-    public SearchService(UnitRegistry unitRegistry, UnitMapper unitMapper,
-                         TraitMapper traitMapper, EmblemMapper emblemMapper)
+    public SearchService(UnitRepository unitRepository, TraitRepository traitRepository, EmblemRepository emblemRepository,
+                         UnitMapper unitMapper, TraitMapper traitMapper, EmblemMapper emblemMapper)
     {
-        this.unitRegistry = unitRegistry;
+        this.unitRepository = unitRepository;
+        this.traitRepository = traitRepository;
+        this.emblemRepository = emblemRepository;
         this.unitMapper = unitMapper;
         this.traitMapper = traitMapper;
         this.emblemMapper = emblemMapper;
@@ -34,7 +41,7 @@ public class SearchService
 
     public List<UnitDTO> searchChampions(String query)
     {
-        return unitRegistry.getAllChampionsStartingWith(query)
+        return unitRepository.getAllChampionsStartingWith(query)
                 .stream()
                 .map(unitMapper)
                 .collect(Collectors.toList());
@@ -42,7 +49,7 @@ public class SearchService
 
     public List<TraitDTO> searchTraits(String query)
     {
-        return unitRegistry.getAllTraitsStartingWith(query)
+        return traitRepository.getAllTraitsStartingWith(query)
                 .stream()
                 .filter(Trait::isCountable)
                 .map(traitMapper)
@@ -51,7 +58,7 @@ public class SearchService
 
     public List<EmblemDTO> searchEmblems(String query)
     {
-        return unitRegistry.getAllEmblemsStartingWith(query)
+        return emblemRepository.getAllEmblemsStartingWith(query)
                 .stream()
                 .map(emblemMapper)
                 .collect(Collectors.toList());

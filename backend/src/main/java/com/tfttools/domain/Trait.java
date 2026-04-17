@@ -7,15 +7,19 @@ import java.util.List;
 @Getter
 public class Trait implements Nameable
 {
+    private final String apiName;
     private final String name;
     private final int[] thresholds;
     private List<Integer> styles;
+    private boolean isUnique;
 
-    public Trait(String name, int[] thresholds, List<Integer> styles)
+    public Trait(String apiName, String name, int[] thresholds, List<Integer> styles)
     {
+        this.apiName = apiName;
         this.name = name;
         this.thresholds = thresholds;
         this.styles = styles;
+        this.isUnique = apiName.endsWith("UniqueTrait");
     }
 
     @Override
@@ -36,7 +40,7 @@ public class Trait implements Nameable
 
     public boolean isCountable()
     {
-        return styles.stream().allMatch(style -> style != 4);
+        return !isUnique;
     }
 
     public boolean isActivated(int currentTraitCount)
