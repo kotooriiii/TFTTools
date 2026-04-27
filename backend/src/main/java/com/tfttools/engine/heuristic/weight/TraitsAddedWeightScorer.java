@@ -57,7 +57,7 @@ public class TraitsAddedWeightScorer implements EngineWeightScorer
 
     private int calculateTraitWeight(Trait trait) {
         Integer currentTraitCount = engineState.getCurrentComp().getTraits().getOrDefault(trait, 0);
-        int nextThreshold = CompositionUtils.getNextThreshold(trait, currentTraitCount);
+        int nextThreshold = CompositionUtils.INSTANCE.getNextThreshold(trait, currentTraitCount);
 
         //If the current threshold has reached the max or is past the max, then no more traits you can activate.
         if (currentTraitCount > nextThreshold) {
@@ -68,8 +68,8 @@ public class TraitsAddedWeightScorer implements EngineWeightScorer
         int currWeight = 0;
 
         //if the next unit to be added increases actives a threshold, then weight should be very desirable.
-        if (CompositionUtils.willActivateNextThreshold(trait, currentTraitCount)) {
-            if (!CompositionUtils.hasReachedFirstThreshold(trait, currentTraitCount)) {
+        if (CompositionUtils.INSTANCE.willActivateNextThreshold(trait, currentTraitCount)) {
+            if (!CompositionUtils.INSTANCE.hasReachedFirstThreshold(trait, currentTraitCount)) {
                 currWeight += 3;
             } else {
                 currWeight += 1;
@@ -78,7 +78,7 @@ public class TraitsAddedWeightScorer implements EngineWeightScorer
         else //does not activate but progresses
         {
 
-            if (!CompositionUtils.hasReachedFirstThreshold(trait, currentTraitCount)) {
+            if (!CompositionUtils.INSTANCE.hasReachedFirstThreshold(trait, currentTraitCount)) {
 
                 if(currentTraitCount == 0)
                 {
@@ -94,7 +94,7 @@ public class TraitsAddedWeightScorer implements EngineWeightScorer
                 //if te
                 if(remainingTurns >= requiredTurns)
                 {
-                    int difference = currentTraitCount - CompositionUtils.getPreviousThreshold(trait, currentTraitCount) + 1;
+                    int difference = currentTraitCount - CompositionUtils.INSTANCE.getPreviousThreshold(trait, currentTraitCount) + 1;
                     currWeight += difference;
                 }
             } else {

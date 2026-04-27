@@ -14,9 +14,26 @@ public class EngineState
     private final Composition currentComp;
     private final EngineConfiguration engineConfiguration;
 
-    public EngineState(Composition comp, EngineConfiguration engineConfiguration)
+    private final Set<Unit> unitPool;
+
+    public EngineState(Composition comp, EngineConfiguration engineConfiguration, Set<Unit> unitPool)
     {
         this.currentComp = comp;
         this.engineConfiguration = engineConfiguration;
+        this.unitPool = unitPool;
+    }
+
+    /**
+     * Check if any units are still available
+     */
+    public boolean hasUnitsAvailable() {
+        return !getUnitPool().isEmpty();
+    }
+
+    /**
+     * Get count of remaining units
+     */
+    public int getRemainingCount() {
+        return getUnitPool().size();
     }
 }

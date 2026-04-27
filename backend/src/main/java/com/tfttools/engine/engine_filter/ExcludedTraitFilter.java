@@ -18,7 +18,7 @@ public class ExcludedTraitFilter implements EngineFilter
     }
 
     @Override
-    public void filter(List<Unit> unitList)
+    public void filter(Set<Unit> unitList)
     {
         Iterator<Unit> iterator = unitList.iterator();
 

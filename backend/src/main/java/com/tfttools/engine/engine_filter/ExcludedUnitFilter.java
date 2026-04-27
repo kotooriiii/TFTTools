@@ -16,7 +16,7 @@ public class ExcludedUnitFilter implements EngineFilter{
     }
 
     @Override
-    public void filter(List<Unit> unitList) {
-        unitList.removeAll(new HashSet<>(excludedUnits));
+    public void filter(Set<Unit> unitList) {
+        unitList.removeAll(excludedUnits);
     }
 }

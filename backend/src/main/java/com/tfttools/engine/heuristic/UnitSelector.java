@@ -9,11 +9,9 @@ import java.util.stream.Collectors;
 
 public class UnitSelector
 {
-    private final Set<Unit> availableUnits;
     private final Heuristic heuristic;
 
-    public UnitSelector(Set<Unit> availableUnits, Heuristic heuristic) {
-        this.availableUnits = new HashSet<>(availableUnits);
+    public UnitSelector(Heuristic heuristic) {
         this.heuristic = heuristic;
     }
 
@@ -21,10 +19,10 @@ public class UnitSelector
      * Pick the next best unit and remove it from the available pool
      */
     public void pickNextUnit(EngineState engineState) {
-        if (availableUnits.isEmpty()) return;
+        if (engineState.getUnitPool().isEmpty()) return;
 
         // Calculate weights for all available units
-        Map<Unit, Integer> unitWeights = availableUnits.stream()
+        Map<Unit, Integer> unitWeights = engineState.getUnitPool().stream()
                 .collect(Collectors.toMap(
                         unit -> unit,
                         heuristic::getWeight
@@ -36,23 +34,11 @@ public class UnitSelector
         heuristic.notifyUnitChosen(bestUnit);
 
         // Remove from available pool
-        availableUnits.remove(bestUnit); //todo maybe avail units should be stored in engine state..?
+        engineState.getUnitPool().remove(bestUnit);
         engineState.getCurrentComp().add(bestUnit);
     }
 
-    /**
-     * Check if any units are still available
-     */
-    public boolean hasUnitsAvailable() {
-        return !availableUnits.isEmpty();
-    }
 
-    /**
-     * Get count of remaining units
-     */
-    public int getRemainingCount() {
-        return availableUnits.size();
-    }
 
     // O(2n) .. do not do pq.. technicaly its also O(n) but let k = number of ties. so it would be something more like O(n) to build the maxheap + O(klogn) for every tie
     private Unit selectBestUnit(Map<Unit, Integer> unitWeights) {

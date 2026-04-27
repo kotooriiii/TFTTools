@@ -14,27 +14,27 @@ import java.util.*;
 public class TFTEngineDefaultStrategy implements TFTEngineStrategy
 {
     @Override
-    public List<Composition> buildCompositions(Set<Unit> unitPool, StrategyContext context)
+    public List<Composition> buildCompositions(StrategyContext context)
     {
         List<Composition> compositions = new ArrayList<>();
 
         for (int i = 0; i < context.getEngineConfiguration().getCompSize(); i++)
         {
-            Composition comp = buildComposition(new HashSet<>(unitPool), context, compositions);
+            Composition comp = buildComposition(context, compositions);
             compositions.add(comp);
         }
 
         return compositions;
     }
 
-    private Composition buildComposition(Set<Unit> unitPool, StrategyContext context, List<Composition> previousComps)
+    private Composition buildComposition(StrategyContext context, List<Composition> previousComps)
     {
         EngineState engineState = context.createEngineState();
         WeightRegistry registry = context.getWeightRegistry();
 
         Heuristic heuristic = registry.builder()
                 .with(
-                        registry.createSynergyLookahead(engineState, unitPool),
+                        registry.createSynergyLookahead(engineState),
                         registry.createRequiredTraitsWeight(engineState),
                         registry.createRequiredUnitsWeight(engineState),
                         registry.createTraitsAddedWeightWithEmblems(engineState, registry.createEmblemWeightScorer(engineState))
@@ -44,7 +44,7 @@ public class TFTEngineDefaultStrategy implements TFTEngineStrategy
                 )
                 .build();
 
-        UnitSelector unitSelector = new UnitSelector(unitPool, heuristic);
+        UnitSelector unitSelector = new UnitSelector(heuristic);
         CompositionBuilder compositionBuilder = new CompositionBuilder(engineState, context.getEngineTerminatorManager());
 
         return compositionBuilder.buildWith(unitSelector);

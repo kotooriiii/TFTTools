@@ -1,11 +1,15 @@
 package com.tfttools.engine.engine_strategy;
 
 import com.tfttools.domain.EngineConfiguration;
+import com.tfttools.domain.Unit;
 import com.tfttools.engine.heuristic.WeightRegistry;
 import com.tfttools.engine.manager.*;
 import com.tfttools.engine.EngineState;
 import com.tfttools.domain.Composition;
+import com.tfttools.repository.UnitRepository;
 import lombok.Getter;
+
+import java.util.Set;
 
 @Getter
 public class StrategyContext {
@@ -13,11 +17,15 @@ public class StrategyContext {
     private final EngineConfiguration engineConfiguration;
     private final WeightRegistry weightRegistry;
 
+    private final Set<Unit> unitPool;
+
     public StrategyContext(EngineConfiguration engineConfiguration,
-                           EngineTerminatorManager terminatorManager) {
-        this.engineTerminatorManager = terminatorManager;
+                           EngineTerminatorManager terminatorManager, UnitRepository unitRepository, Set<Unit> unitPool) {
         this.engineConfiguration = engineConfiguration;
-        this.weightRegistry = new WeightRegistry(engineConfiguration);
+        this.engineTerminatorManager = terminatorManager;
+        this.unitPool = unitPool;
+
+        this.weightRegistry = new WeightRegistry(engineConfiguration, unitRepository);
 
     }
 
@@ -27,7 +35,8 @@ public class StrategyContext {
     public EngineState createEngineState() {
         return new EngineState(
                 new Composition(),
-                engineConfiguration
+                engineConfiguration,
+                unitPool
         );
     }
 

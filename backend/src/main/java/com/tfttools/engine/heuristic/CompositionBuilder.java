@@ -19,7 +19,7 @@ public class CompositionBuilder {
      */
     public Composition buildWith(UnitSelector unitSelector) {
         while (!terminatorManager.shouldTerminate(engineState.getCurrentComp()) 
-               && unitSelector.hasUnitsAvailable()) {
+               && engineState.hasUnitsAvailable()) {
 
             unitSelector.pickNextUnit(engineState);
         }

@@ -26,14 +26,14 @@ public class EngineStrategyManager
 
     }
 
-    public List<Composition> buildCompositions(Set<Unit> unitPool, EngineConfiguration engineConfiguration,
+    public List<Composition> buildCompositions(EngineConfiguration engineConfiguration,
                                                StrategyContext context)
     {
         List<Composition> allStrategyComps = new ArrayList<>();
 
         this.strategies.forEach(strategy ->
         {
-            List<Composition> comps = strategy.buildCompositions(new HashSet<>(unitPool), context);
+            List<Composition> comps = strategy.buildCompositions(context);
             allStrategyComps.addAll(comps);
         });
 
