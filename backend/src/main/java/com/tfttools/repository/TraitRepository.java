@@ -5,7 +5,10 @@ import com.tfttools.domain.communitydragon.CommunityDragonObject;
 import com.tfttools.domain.communitydragon.CommunityDragonTraitEffects;
 import com.tfttools.domain.communitydragon.CommunityDragonTraits;
 import com.tfttools.prefixtrie.PrefixTrie;
+import com.tfttools.service.TFTSetContextService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -14,9 +17,8 @@ import java.util.Map;
 
 import com.tfttools.service.CommunityDragonDataService;
 
-import static com.tfttools.repository.EmblemRepository.SET_EXAMPLE_NUMBER;
-
 @Component
+@DependsOn("TFTSetContextService")
 public class TraitRepository {
     
     private final Map<String, Trait> traits;
@@ -24,18 +26,23 @@ public class TraitRepository {
     private final PrefixTrie<Trait> traitPrefixTrie;
 
     private final CommunityDragonDataService dataService;
+    private final TFTSetContextService setContextService;
 
     @Autowired
-    public TraitRepository(CommunityDragonDataService dataService) {
+    public TraitRepository(CommunityDragonDataService dataService, TFTSetContextService setContextService) {
         this.traits = new HashMap<>();
 
         this.traitPrefixTrie = new PrefixTrie<>();
 
         this.dataService = dataService;
-        
-        loadTraits(SET_EXAMPLE_NUMBER);
-        this.traits.values().forEach(this.traitPrefixTrie::add);
+        this.setContextService = setContextService;
+    }
 
+    @PostConstruct
+    public void init()
+    {
+        loadTraits(setContextService.getCurrentSetNumber());
+        this.traits.values().forEach(this.traitPrefixTrie::add);
     }
 
     private void loadTraits(String set) {
@@ -66,7 +73,7 @@ public class TraitRepository {
     }
     public void reloadTraits() {
 
-        loadTraits(SET_EXAMPLE_NUMBER);
+        loadTraits(setContextService.getCurrentSetNumber());
     }
 
     public List<Trait> getAllTraits() {

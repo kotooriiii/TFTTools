@@ -3,15 +3,15 @@ package com.tfttools.engine;
 import com.tfttools.domain.Composition;
 import com.tfttools.domain.EngineConfiguration;
 import com.tfttools.domain.Unit;
-import com.tfttools.engine.engine_strategy.StrategyContext;
 import com.tfttools.engine.engine_filter.EngineFilter;
+import com.tfttools.engine.engine_strategy.StrategyContext;
 import com.tfttools.engine.manager.EngineFilterManager;
 import com.tfttools.engine.manager.EngineStrategyManager;
 import com.tfttools.engine.manager.EngineTerminatorManager;
+import com.tfttools.repository.UnitRepository;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TFTEngine
 {
@@ -20,10 +20,12 @@ public class TFTEngine
     private final EngineFilterManager engineFilterManager;
     private final EngineStrategyManager engineStrategyManager;
 
-    private final List<Unit> unitPool;
+    private final UnitRepository unitRepository;
 
-    public TFTEngine(EngineConfiguration engineConfiguration, List<Unit> unitPool) {
+    public TFTEngine(EngineConfiguration engineConfiguration, UnitRepository unitRepository)
+    {
         this.engineConfiguration = engineConfiguration;
+        this.unitRepository = unitRepository;
 
 
         this.engineTerminatorManager = new EngineTerminatorManager(
@@ -37,22 +39,27 @@ public class TFTEngine
         );
 
         this.engineStrategyManager = new EngineStrategyManager();
-
-        // Initialize unit pool
-        this.unitPool = new ArrayList<>(unitPool);
     }
 
     /**
      * Apply all configured filters to the unit pool
+     *
+     * @return
      */
-    private void applyFilters() {
+    private Set<Unit> applyFilters()
+    {
+
+        Set<Unit> allUnits = unitRepository.getAllUnits();
+
         List<EngineFilter> filters = engineFilterManager.getEngineFilters();
 
-        for (EngineFilter engineFilter : filters) {
-            engineFilter.filter(unitPool);
+        for (EngineFilter engineFilter : filters)
+        {
+            engineFilter.filter(allUnits);
         }
-    }
 
+        return allUnits;
+    }
 
 
     /**
@@ -60,16 +67,17 @@ public class TFTEngine
      *
      * @return List of generated compositions
      */
-    public List<Composition> buildCompositions() {
-        applyFilters();
+    public List<Composition> buildCompositions()
+    {
+        Set<Unit> filteredUnitPool = applyFilters();
 
-        StrategyContext strategyContext =  new StrategyContext(
+        StrategyContext strategyContext = new StrategyContext(
                 engineConfiguration,
-                engineTerminatorManager
-        );
+                engineTerminatorManager,
+                unitRepository,
+                filteredUnitPool);
 
         return engineStrategyManager.buildCompositions(
-                new HashSet<>(unitPool),
                 engineConfiguration,
                 strategyContext
         );

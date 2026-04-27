@@ -6,7 +6,10 @@ import com.tfttools.domain.communitydragon.CommunityDragonItems;
 import com.tfttools.domain.communitydragon.CommunityDragonObject;
 import com.tfttools.prefixtrie.PrefixTrie;
 import com.tfttools.service.CommunityDragonDataService;
+import com.tfttools.service.TFTSetContextService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -14,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+@DependsOn("TFTSetContextService")
 public class EmblemRepository
 {
 
@@ -23,11 +27,12 @@ public class EmblemRepository
 
     private final TraitRepository traitRepository;
     private final CommunityDragonDataService dataService;
+    private final TFTSetContextService setContextService;
 
-    public static String SET_EXAMPLE_NUMBER="17";
     @Autowired
     public EmblemRepository(TraitRepository traitRepository,
-                            CommunityDragonDataService dataService)
+                            CommunityDragonDataService dataService,
+                            TFTSetContextService setContextService)
     {
         this.emblems = new HashMap<>();
 
@@ -35,10 +40,14 @@ public class EmblemRepository
 
         this.traitRepository = traitRepository;
         this.dataService = dataService;
+        this.setContextService = setContextService;
+    }
 
-        loadEmblems(SET_EXAMPLE_NUMBER);
+    @PostConstruct
+    public void init()
+    {
+        loadEmblems(setContextService.getCurrentSetNumber());
         emblems.values().forEach(this.emblemPrefixTrie::add);
-
     }
 
     private void loadEmblems(String set)
@@ -77,7 +86,7 @@ public class EmblemRepository
     }
 
     public void reloadEmblems() {
-        loadEmblems(SET_EXAMPLE_NUMBER);
+        loadEmblems(setContextService.getCurrentSetNumber());
     }
 
     public List<Emblem> getAllEmblems()

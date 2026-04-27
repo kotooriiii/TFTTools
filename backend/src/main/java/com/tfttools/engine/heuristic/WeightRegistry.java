@@ -6,6 +6,7 @@ import com.tfttools.domain.Unit;
 import com.tfttools.engine.EngineState;
 import com.tfttools.engine.heuristic.tiebreaker.DiversityTieBreaker;
 import com.tfttools.engine.heuristic.weight.*;
+import com.tfttools.repository.UnitRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,15 +14,15 @@ import java.util.Set;
 
 public class WeightRegistry {
     private final EngineConfiguration configuration;
+    private final UnitRepository unitRepository;
 
-    public WeightRegistry(EngineConfiguration configuration) {
+    public WeightRegistry(EngineConfiguration configuration, UnitRepository unitRepository) {
         this.configuration = configuration;
+        this.unitRepository = unitRepository;
     }
 
-
-    public SynergyLookaheadWeightScorer createSynergyLookahead(EngineState engineState, Set<Unit> unitPool)
-    {
-        return new SynergyLookaheadWeightScorer(engineState, unitPool);
+    public SynergyLookaheadWeightScorer createSynergyLookahead(EngineState engineState) {
+        return new SynergyLookaheadWeightScorer(engineState, unitRepository); // Pass it here
     }
 
     public EmblemWeightScorer createEmblemWeightScorer(EngineState engineState)

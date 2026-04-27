@@ -4,43 +4,36 @@ import com.tfttools.domain.Composition;
 import com.tfttools.domain.Trait;
 import com.tfttools.domain.Unit;
 import com.tfttools.engine.EngineState;
+import com.tfttools.repository.UnitRepository;
 import com.tfttools.util.CompositionUtils;
 
 import java.util.*;
 
 public class SynergyLookaheadWeightScorer implements StatefulEngineWeightScorer
 {
-    private final EngineState engineState;
     private static final int MAX_DEPTH = 2;
-    private final Set<Unit> unitPool;
-    private final Map<Trait, List<Unit>> traitToUnits;
 
-    private final Map<Unit, Integer> synergyWeight; //todo should be something stateful ?
+    private final EngineState engineState;
 
-    public SynergyLookaheadWeightScorer(EngineState engineState, Set<Unit> unitPool)
+    private final Map<Unit, Integer> synergyWeight;
+
+    private final UnitRepository unitRepository;
+
+    public SynergyLookaheadWeightScorer(EngineState engineState, UnitRepository unitRepository)
     {
         this.engineState = engineState;
-        this.unitPool = unitPool;
-        this.traitToUnits = new HashMap<>();
+        this.unitRepository = unitRepository;
         this.synergyWeight = new HashMap<>();
 
-        for (Unit unit : unitPool)
-        {
-            for (Trait trait : unit.getTraits())
-            {
-                this.traitToUnits.computeIfAbsent(trait, k -> new ArrayList<>()).add(unit);
-            }
-        }
-
-    }//todo cost value
+    }
 
     @Override
     public void onUnitChosen(Unit unit)
     {
-        if(engineState.getCurrentComp().getUnits().isEmpty())
+        if (engineState.getCurrentComp().getUnits().isEmpty())
             return;
 
-        if(engineState.getCurrentComp().getUnits().size() >= 2)
+        if (engineState.getCurrentComp().getUnits().size() >= 2)
             return;
 
         synergyWeight.clear();
@@ -50,9 +43,10 @@ public class SynergyLookaheadWeightScorer implements StatefulEngineWeightScorer
         List<Unit> currentUnitsAndCandidate = new ArrayList<>(currentComp.getUnits());
         currentUnitsAndCandidate.add(unit);
 
-        List<Trait> activatableTraits = CompositionUtils.getTraitsReachingFirstThresholdWhenUnitAdded(currentComp, unit);
+        List<Trait> activatableTraits = CompositionUtils.INSTANCE.getTraitsReachingFirstThresholdWhenUnitAdded(currentComp, unit);
 
-        List<Unit> synergies = getSynergies(currentUnitsAndCandidate, activatableTraits, MAX_DEPTH); //todo targons dont get added in synergies.. should they.. thye wont ever make it in thats why
+        // Note : Units with one trait that activate immediately (think TFTSet16 Targon), would not be added here. Which is fine, because getWeight(Unit) only works if a trait was activated.
+        List<Unit> synergies = getSynergies(currentUnitsAndCandidate, activatableTraits, MAX_DEPTH);
 
         synergies.forEach(synergyUnit -> synergyWeight.put(synergyUnit, synergies.size()));
 
@@ -63,29 +57,32 @@ public class SynergyLookaheadWeightScorer implements StatefulEngineWeightScorer
     {
         Composition currentComp = engineState.getCurrentComp();
 
-        List<Trait> activatableTraits = CompositionUtils.getTraitsReachingFirstThresholdWhenUnitAdded(currentComp, unit);
+        List<Trait> activatableTraits = CompositionUtils.INSTANCE.getTraitsReachingFirstThresholdWhenUnitAdded(currentComp, unit);
 
-        if (currentComp.getUnits().isEmpty()) return 0; //todo maybe ? should it work empty. undefined behavior atm
+        //I suppose the idea here that if we are adding a unit in, we want at least 2 (subject to change to other criteria) units in the composition before we start thinking about synergies
+        if (currentComp.getUnits().isEmpty()) return 0;
 
-        if(activatableTraits.isEmpty()  ||  (!synergyWeight.isEmpty() && !synergyWeight.containsKey(unit))) //todo could be activtable is targon, but it was not in the map
+        //If there is no trait being activated, we can skip.
+        // If there is, and the unit we are trying to activate was not in our synergy map, then skip it.
+        if (activatableTraits.isEmpty() || (!synergyWeight.isEmpty() && !synergyWeight.containsKey(unit)))
             return 0;
 
-        //todo somewhere inthe code need to wrry about exclusion
         List<Unit> currentUnitsAndCandidate = new ArrayList<>(currentComp.getUnits());
         currentUnitsAndCandidate.add(unit);
 
-        activatableTraits.addAll(CompositionUtils.getActivatedTraits(engineState.getCurrentComp()));
+        activatableTraits.addAll(CompositionUtils.INSTANCE.getActivatedTraits(engineState.getCurrentComp()));
 
         List<Unit> synergies = getSynergies(currentUnitsAndCandidate, activatableTraits, MAX_DEPTH);
         return synergyWeight.isEmpty() ? synergies.size() : synergyWeight.getOrDefault(unit, 0);
     }
 
-    public List<Unit> getSynergies(List<Unit> units, List<Trait> excludedTraits, int depth) {
-        if (depth <= 0) {
+    public List<Unit> getSynergies(List<Unit> units, List<Trait> excludedTraits, int depth)
+    {
+        if (depth <= 0)
+        {
             return Collections.emptyList();
         }
 
-        Set<Unit> allUnits = new HashSet<>();
         Set<Trait> visitedTraits = new HashSet<>(excludedTraits);
 
         List<Trait> uniqueTraits = units.stream().flatMap(unit -> unit.getTraits().stream()).distinct().toList();
@@ -93,29 +90,27 @@ public class SynergyLookaheadWeightScorer implements StatefulEngineWeightScorer
 
         Composition composition = new Composition();
 
-        for (int currentDepth = 0; currentDepth < depth && !currentLevel.isEmpty(); currentDepth++) {
+        for (int currentDepth = 0; currentDepth < depth && !currentLevel.isEmpty(); currentDepth++)
+        {
             Queue<Trait> nextLevel = new LinkedList<>();
 
             List<Unit> attemptedUnits = new ArrayList<>();
 
-            while (!currentLevel.isEmpty()) {
+            while (!currentLevel.isEmpty())
+            {
                 Trait trait = currentLevel.poll();
 
-                if (!visitedTraits.add(trait)) {
+                if (!visitedTraits.add(trait))
+                {
                     continue; // Skip if already visited
                 }
 
-                List<Unit> unitsWithTrait = getUnitsByTrait(trait);
+                List<Unit> unitsWithTrait = unitRepository.getUnitsByTrait(trait, engineState.getUnitPool());
                 attemptedUnits.addAll(unitsWithTrait);
-
-//todo make sure if the triat == 1, amke sure that the unit is not completing any other of its traits.
             }
 
             composition = new Composition(new ArrayList<>(attemptedUnits));
-            CompositionUtils compositionUtils = new CompositionUtils();
-            compositionUtils.reduceCompositionToSynergies(composition);
-
-            allUnits.addAll(composition.getUnits());
+            CompositionUtils.INSTANCE.reduceCompositionToSynergies(composition);
 
             // Add traits from units to next level
             composition.getUnits().stream()
@@ -129,10 +124,4 @@ public class SynergyLookaheadWeightScorer implements StatefulEngineWeightScorer
 
         return composition.getUnits();
     }
-
-    private List<Unit> getUnitsByTrait(Trait trait)
-    {
-        return traitToUnits.getOrDefault(trait, Collections.emptyList());
-    }
-
 }

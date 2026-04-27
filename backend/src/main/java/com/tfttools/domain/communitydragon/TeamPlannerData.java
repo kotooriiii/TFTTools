@@ -23,5 +23,4 @@ public class TeamPlannerData {
     public List<TeamPlannerChampion> getSetData(String setName) {
         return sets != null ? sets.get(setName) : null;
     }
-
 }

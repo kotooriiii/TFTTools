@@ -47,7 +47,7 @@ public class CompositionMapper implements Function<Composition, CompositionDTO> 
                         Map.Entry::getValue
                 ));
 
-        final int activatedTraits = CompositionUtils.getActivatedTraits(composition).size();
+        final int activatedTraits = CompositionUtils.INSTANCE.getActivatedTraits(composition).size();
         final String teamCode = teamPlannerService.exportToTeamCode(composition);
 
         return new CompositionDTO(unitDTOs, traitDTOs, activatedTraits, teamCode);

@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-//todo singleton
-public class CompositionUtils
+public enum CompositionUtils
 {
+    INSTANCE;
 
     public void reduceCompositionToSynergies(Composition composition)
     {
@@ -30,7 +30,7 @@ public class CompositionUtils
      * @return true if adding the unit would activate at least one trait's first threshold
      */
 
-    public static boolean wouldUnitActivateAnyTraitFirstThreshold(Composition composition, Unit unit)
+    public boolean wouldUnitActivateAnyTraitFirstThreshold(Composition composition, Unit unit)
     {
         return !getTraitsReachingFirstThresholdWhenUnitAdded(composition, unit).isEmpty();
     }
@@ -46,7 +46,7 @@ public class CompositionUtils
      * @return A list of traits that would reach their first threshold when this unit is added
      */
 
-    public static List<Trait> getTraitsReachingFirstThresholdWhenUnitAdded(Composition composition, Unit unit)
+    public List<Trait> getTraitsReachingFirstThresholdWhenUnitAdded(Composition composition, Unit unit)
     {
         Map<Trait, Integer> compTraits = composition.getTraits();
         List<Trait> unitTraits = unit.getTraits();
@@ -78,7 +78,7 @@ public class CompositionUtils
      * @param currentTraitCount Current count of this trait in the composition
      * @return true if adding one more unit with this trait will activate the next threshold
      */
-    public static boolean willActivateNextThreshold(Trait trait, int currentTraitCount)
+    public boolean willActivateNextThreshold(Trait trait, int currentTraitCount)
     {
         int nextThreshold = getNextThreshold(trait, currentTraitCount);
 
@@ -98,7 +98,7 @@ public class CompositionUtils
     /**
      * Gets the next threshold for a trait given current count
      */
-    public static int getNextThreshold(Trait trait, int currentTraitCount)
+    public int getNextThreshold(Trait trait, int currentTraitCount)
     {
         int[] thresholds = trait.getActivationThresholds();
 
@@ -120,11 +120,11 @@ public class CompositionUtils
         return thresholds[0]; // Fallback to first threshold
     }
 
-    public static int getPreviousThreshold(Trait trait, int currentTraitCount)
+    public int getPreviousThreshold(Trait trait, int currentTraitCount)
     {
         int[] thresholds = trait.getActivationThresholds();
 
-        if(currentTraitCount <= thresholds[0])
+        if (currentTraitCount <= thresholds[0])
             return 0;
 
         for (int i = 1; i < thresholds.length; i++)
@@ -135,20 +135,20 @@ public class CompositionUtils
             }
         }
 
-        return thresholds[thresholds.length - 1]; //todo this or - 2
+        return thresholds[thresholds.length - 1];
     }
 
-    public static boolean hasReachedFirstThreshold(Trait trait, int currentThreshold)
+    public boolean hasReachedFirstThreshold(Trait trait, int currentThreshold)
     {
         return currentThreshold >= trait.getActivationThresholds()[0];
     }
 
-    public static List<Trait> getActivatedTraits(Composition composition)
+    public List<Trait> getActivatedTraits(Composition composition)
     {
         return getActivatedTraits(composition, false);
     }
 
-    public static List<Trait> getActivatedTraits(Composition composition, boolean shouldCountUniqueTraits)
+    public List<Trait> getActivatedTraits(Composition composition, boolean shouldCountUniqueTraits)
     {
         Map<Trait, Integer> traits = composition.getTraits();
         return traits.keySet().stream().filter(trait -> shouldCountUniqueTraits || trait.isCountable()).filter(trait -> hasReachedFirstThreshold(trait, traits.get(trait))).toList();

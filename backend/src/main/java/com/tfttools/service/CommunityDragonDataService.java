@@ -31,6 +31,8 @@ public class CommunityDragonDataService {
     @Value("${tft.communitydragon.fallback.enabled:true}")
     private boolean fallbackEnabled;
 
+    private final TFTSetContextService setContextService;
+
     private final CommunityDragonWebClient webClient;
 
     private CommunityDragonObject cachedData;
@@ -40,8 +42,10 @@ public class CommunityDragonDataService {
     private String lastModified;
 
     @Autowired
-    public CommunityDragonDataService(CommunityDragonWebClient webClient) {
+    public CommunityDragonDataService(CommunityDragonWebClient webClient, TFTSetContextService setContextService)
+    {
         this.webClient = webClient;
+        this.setContextService = setContextService;
     }
 
     public CommunityDragonObject getCommunityDragonData() {
@@ -112,7 +116,7 @@ public class CommunityDragonDataService {
                         logger.error("Error fetching from web client: {}\n\n{}", ex.getMessage(), ex.getStackTrace());
                         return Mono.empty();
                     })
-                    .block(); // Convert to blocking for existing API compatibility
+                    .block();
 
             if (result != null) {
                 logger.debug("Successfully fetched Community Dragon data");
@@ -144,6 +148,7 @@ public class CommunityDragonDataService {
     public void invalidateCache() {
         logger.info("Cache invalidated, will refresh on next request");
         cachedData = null;
+        cachedTeamPlannerData = null;
         lastFetchTime = null;
         lastModified = null;
     }

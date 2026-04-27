@@ -15,6 +15,7 @@ public class DataRefreshService {
     
     private final CommunityDragonDataService dataService;
     private final TeamPlannerService teamPlannerService;
+    private final TFTSetContextService setContextService;
 
     private final TraitRepository traitRepository;
     private final UnitRepository unitRepository;
@@ -22,15 +23,18 @@ public class DataRefreshService {
 
     @Autowired
     public DataRefreshService(CommunityDragonDataService dataService,
-                             TraitRepository traitRepository,
-                             UnitRepository unitRepository,
-                             EmblemRepository emblemRepository,
-                             TeamPlannerService teamPlannerService) {
+                              TraitRepository traitRepository,
+                              UnitRepository unitRepository,
+                              EmblemRepository emblemRepository,
+                              TeamPlannerService teamPlannerService,
+                              TFTSetContextService setContextService)
+    {
         this.dataService = dataService;
         this.traitRepository = traitRepository;
         this.unitRepository = unitRepository;
         this.emblemRepository = emblemRepository;
         this.teamPlannerService = teamPlannerService;
+        this.setContextService = setContextService;
     }
     
     public void refreshAllData() {
@@ -41,9 +45,10 @@ public class DataRefreshService {
             dataService.invalidateCache();
             
             // 2. Force fetch fresh data
-            dataService.getCommunityDragonData();
             dataService.getTeamPlannerData();
-            
+            setContextService.initialize();
+            dataService.getCommunityDragonData();
+
             // 3. Reload all repositories in the correct order
             // Traits first (no dependencies)
             traitRepository.reloadTraits();

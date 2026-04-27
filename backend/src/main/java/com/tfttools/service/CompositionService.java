@@ -30,7 +30,7 @@ public class CompositionService {
         // Adapter handles validation and conversion
         EngineConfiguration config = adapter.adaptToEngineConfiguration(horizontalDTO);
 
-        TFTEngine engine = new TFTEngine(config, unitRepository.getAllUnits());
+        TFTEngine engine = new TFTEngine(config, unitRepository);
 
         return engine.buildCompositions().stream().map(compositionMapper).toList();
     }
