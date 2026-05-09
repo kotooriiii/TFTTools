@@ -2,7 +2,6 @@ package com.tfttools.engine.heuristic;
 
 import com.tfttools.domain.Composition;
 import com.tfttools.domain.EngineConfiguration;
-import com.tfttools.domain.Unit;
 import com.tfttools.engine.EngineState;
 import com.tfttools.engine.heuristic.tiebreaker.DiversityTieBreaker;
 import com.tfttools.engine.heuristic.weight.*;
@@ -10,7 +9,6 @@ import com.tfttools.repository.UnitRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class WeightRegistry {
     private final EngineConfiguration configuration;

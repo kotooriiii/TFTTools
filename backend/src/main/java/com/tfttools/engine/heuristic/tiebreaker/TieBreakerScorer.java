@@ -1,6 +1,6 @@
 package com.tfttools.engine.heuristic.tiebreaker;
 
-import com.tfttools.engine.heuristic.UnitScorer;
+import com.tfttools.engine.heuristic.weight.UnitScorer;
 
 /**
  * Marker interface for tiebreaker scorers

@@ -1,25 +1,50 @@
-package com.tfttools.engine.heuristic;
+package com.tfttools.engine.engine_search;
 
+import com.tfttools.domain.Composition;
 import com.tfttools.domain.Unit;
 import com.tfttools.engine.EngineState;
+import com.tfttools.engine.heuristic.Heuristic;
+import com.tfttools.engine.manager.EngineTerminatorManager;
 import com.tfttools.engine.heuristic.tiebreaker.TieBreakerScorer;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class UnitSelector
-{
+public class GreedySearchEngine {
     private final Heuristic heuristic;
+    private final EngineState engineState;
+    private final EngineTerminatorManager terminatorManager;
 
-    public UnitSelector(Heuristic heuristic) {
+    public GreedySearchEngine(Heuristic heuristic, 
+                             EngineState engineState,
+                             EngineTerminatorManager terminatorManager) {
         this.heuristic = heuristic;
+        this.engineState = engineState;
+        this.terminatorManager = terminatorManager;
     }
 
-    /**
-     * Pick the next best unit and remove it from the available pool
-     */
-    public void pickNextUnit(EngineState engineState) {
-        if (engineState.getUnitPool().isEmpty()) return;
+    public List<Composition> buildCompositions() {
+        while (!terminatorManager.shouldTerminate(engineState.getCurrentComp()) 
+               && engineState.hasUnitsAvailable()) {
+
+            Unit bestUnit = selectNextUnit();
+            if (bestUnit == null) {
+                break;
+            }
+
+            // Notify heuristic and update state
+            heuristic.notifyUnitChosen(bestUnit);
+            engineState.getUnitPool().remove(bestUnit);
+            engineState.getCurrentComp().add(bestUnit);
+        }
+
+        return List.of(engineState.getCurrentComp());
+    }
+
+    private Unit selectNextUnit() {
+        if (engineState.getUnitPool().isEmpty()) {
+            return null;
+        }
 
         // Calculate weights for all available units
         Map<Unit, Integer> unitWeights = engineState.getUnitPool().stream()
@@ -28,19 +53,9 @@ public class UnitSelector
                         heuristic::getWeight
                 ));
 
-        // Find the best unit(s)
-        Unit bestUnit = selectBestUnit(unitWeights);
-
-        heuristic.notifyUnitChosen(bestUnit);
-
-        // Remove from available pool
-        engineState.getUnitPool().remove(bestUnit);
-        engineState.getCurrentComp().add(bestUnit);
+        return selectBestUnit(unitWeights);
     }
 
-
-
-    // O(2n) .. do not do pq.. technicaly its also O(n) but let k = number of ties. so it would be something more like O(n) to build the maxheap + O(klogn) for every tie
     private Unit selectBestUnit(Map<Unit, Integer> unitWeights) {
         // Find the maximum weight - O(n)
         int maxWeight = unitWeights.values().stream()
@@ -83,7 +98,7 @@ public class UnitSelector
             // Keep only units with the maximum score
             remainingCandidates = remainingCandidates.stream()
                     .filter(unit -> scores.get(unit) == maxScore)
-                    .collect(Collectors.toList());
+                    .toList();
         }
 
         // If we still have ties after all tiebreakers, pick randomly
