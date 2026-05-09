@@ -2,7 +2,6 @@ package com.tfttools.engine.heuristic.tiebreaker;
 
 import com.tfttools.domain.Composition;
 import com.tfttools.domain.Unit;
-import com.tfttools.engine.heuristic.tiebreaker.TieBreakerScorer;
 
 import java.util.List;
 

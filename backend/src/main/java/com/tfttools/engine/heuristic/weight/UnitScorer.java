@@ -1,4 +1,4 @@
-package com.tfttools.engine.heuristic;
+package com.tfttools.engine.heuristic.weight;
 
 import com.tfttools.domain.Unit;
 

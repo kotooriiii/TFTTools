@@ -3,10 +3,7 @@ package com.tfttools.engine;
 import com.tfttools.domain.*;
 import lombok.Getter;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 public class EngineState
@@ -35,5 +32,14 @@ public class EngineState
      */
     public int getRemainingCount() {
         return getUnitPool().size();
+    }
+
+    public EngineState copy()
+    {
+        return new EngineState(
+                new Composition(this.getCurrentComp().getUnits()),
+                this.getEngineConfiguration(),
+                new HashSet<>(this.getUnitPool())
+        );
     }
 }
