@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
  * Maps internal {@link Unit} object to {@link UnitDTO} object
  */
 @Component
-public class UnitMapper implements Function<Unit, UnitDTO> {
+public class UnitMapperSimple implements Function<Unit, UnitDTO> {
     private final TraitMapper traitMapper;
 
-    public UnitMapper(TraitMapper traitMapper) {
+    public UnitMapperSimple(TraitMapper traitMapper) {
         this.traitMapper = traitMapper;
     }
 
