@@ -22,8 +22,8 @@ public class UnitController {
     }
 
     @GetMapping
-    public List<UnitDTO> getAllUnits() {
-        return unitService.getAllUnits();
+    public List<UnitDTO> getAllUnits(@RequestParam(defaultValue = "true") String simple) {
+        return unitService.getAllUnits(simple);
     }
 
     /**
