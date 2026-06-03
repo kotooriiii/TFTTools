@@ -1,5 +1,6 @@
 package com.tfttools.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.tfttools.domain.Role;
 import com.tfttools.domain.Unit;
 import com.tfttools.domain.communitydragon.ChampionStats;
@@ -29,6 +30,7 @@ public class UnitDTO {
         this(displayName, traits, null, null);
     }
 
+    @JsonCreator
     public UnitDTO(String displayName) {
         this(displayName, null, null, null);
     }
