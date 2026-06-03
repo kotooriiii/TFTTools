@@ -14,13 +14,13 @@ public class ChampionStats
     private int armor;
 
     @JsonProperty(value = "attack_speed")
-    private int attackSpeed;
+    private float attackSpeed;
 
     @JsonProperty(value = "crit_chance")
-    private int critChance;
+    private float critChance;
 
     @JsonProperty(value = "crit_multiplier")
-    private int critMultiplier;
+    private float critMultiplier;
 
     @JsonProperty(value = "damage")
     private int damage;
