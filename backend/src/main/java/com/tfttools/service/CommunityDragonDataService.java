@@ -31,8 +31,6 @@ public class CommunityDragonDataService {
     @Value("${tft.communitydragon.fallback.enabled:true}")
     private boolean fallbackEnabled;
 
-    private final TFTSetContextService setContextService;
-
     private final CommunityDragonWebClient webClient;
 
     private CommunityDragonObject cachedData;
@@ -42,10 +40,9 @@ public class CommunityDragonDataService {
     private String lastModified;
 
     @Autowired
-    public CommunityDragonDataService(CommunityDragonWebClient webClient, TFTSetContextService setContextService)
+    public CommunityDragonDataService(CommunityDragonWebClient webClient)
     {
         this.webClient = webClient;
-        this.setContextService = setContextService;
     }
 
     public CommunityDragonObject getCommunityDragonData() {

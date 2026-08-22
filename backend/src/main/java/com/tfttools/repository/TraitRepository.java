@@ -62,9 +62,21 @@ public class TraitRepository {
                 if(effects.isEmpty() && !apiName.contains("UndeterminedTrait")) //todo MF is Conduit/Challenger/Replicator
                     continue;
 
+                int[] thresholds = effects.stream().mapToInt(CommunityDragonTraitEffects::getMinUnits).toArray();
+                List<Integer> styles = effects.stream().map(CommunityDragonTraitEffects::getStyle).toList();
+
+                if(apiName.equals("TFT17_MissFortuneUndeterminedTrait"))
+                {
+                    thresholds = new int[1];
+                    styles = List.of(0);
+                }
+
                 Trait trait = new Trait(apiName, name,
-                        effects.stream().mapToInt(CommunityDragonTraitEffects::getMinUnits).toArray(), 
-                        effects.stream().map(CommunityDragonTraitEffects::getStyle).toList());
+                        thresholds,
+                        styles);
+
+
+
                 this.traits.put(name, trait);
             }
         } catch (Exception e) {

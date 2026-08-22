@@ -29,7 +29,7 @@ public class TFTEngine
 
 
         this.engineTerminatorManager = new EngineTerminatorManager(
-                engineConfiguration.getTactitionLevel(),
+                engineConfiguration.getTacticianLevel(),
                 engineConfiguration.getCrowns()
         );
 

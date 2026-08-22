@@ -16,14 +16,14 @@ public class EngineConfiguration
     private final Set<Trait> excludedTraits;
     private final Set<Unit> excludedUnits;
     private final int costOfBoard;
-    private final int tactitionLevel;
+    private final int tacticianLevel;
     private final int crowns;
     private final Set<Emblem> emblems;
     private final float luck;
 
     public int getMaxUnitsOnBoard()
     {
-        return tactitionLevel + crowns;
+        return tacticianLevel + crowns;
     }
 
     public boolean hasRequiredUnits()

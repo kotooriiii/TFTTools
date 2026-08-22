@@ -3,9 +3,7 @@ package com.tfttools.engine.manager;
 import com.tfttools.domain.Composition;
 import com.tfttools.domain.EngineConfiguration;
 import com.tfttools.domain.Trait;
-import com.tfttools.engine.engine_strategy.StrategyContext;
-import com.tfttools.engine.engine_strategy.TFTEngineBeamSearchStrategy;
-import com.tfttools.engine.engine_strategy.TFTEngineStrategy;
+import com.tfttools.engine.engine_strategy.*;
 
 import java.util.*;
 
@@ -17,8 +15,9 @@ public class EngineStrategyManager
     public EngineStrategyManager()
     {
         this.strategies = List.of(
-                new TFTEngineBeamSearchStrategy(12)
-                //new TFTEngineDefaultStrategy()
+                //new TFTEngineExhaustiveSearchStrategy()
+                //new TFTEngineBeamSearchStrategy(12)
+                new TFTEngineGreedySearchStrategy()
                 // Add more strategies here
         );
         this.validationManager = new CompositionValidationManager();

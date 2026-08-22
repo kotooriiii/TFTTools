@@ -10,13 +10,13 @@ import java.util.List;
 public class LuckWeightScorer implements EngineWeightScorer
 {
     private final EngineState engineState;
-    private final int tactitionLevel;
+    private final int tacticianLevel;
     private final float luck;
     private int weight;
 
     public LuckWeightScorer(EngineState engineState, float luck) {
         this.engineState = engineState;
-        this.tactitionLevel = engineState.getEngineConfiguration().getTactitionLevel();;
+        this.tacticianLevel = engineState.getEngineConfiguration().getTacticianLevel();;
         this.luck = luck;
         this.weight = 0;
     }
@@ -25,7 +25,7 @@ public class LuckWeightScorer implements EngineWeightScorer
     public int getWeight(Unit unit) {
         int cost = unit.getCost();
 
-        List<Float> reweightedProbabilities = reweight(RollingChances.PROBABILITIES.getProbability(tactitionLevel), 2);
+        List<Float> reweightedProbabilities = reweight(RollingChances.PROBABILITIES.getProbability(tacticianLevel), 2);
 
         this.weight = Math.round(reweightedProbabilities.get(Math.min(5, cost) - 1) * 10);
 

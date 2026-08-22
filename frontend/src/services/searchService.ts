@@ -1,5 +1,40 @@
 import { EmblemItem, TraitItem, SearchItem, ApiEmblemResponse, ApiTraitResponse, ApiChampionResponse} from '../types/searchTypes';
 
+// Types for horizontal composition API
+export interface UnitDTO {
+    displayName: string;
+    traits?: TraitDTO[];
+}
+
+export interface TraitDTO {
+    displayName: string;
+    activationThresholds: number[];
+}
+
+export interface EmblemDTO {
+    displayName: string;
+}
+
+export interface HorizontalDTO {
+    compSize: number;
+    requiredTraits: Record<string, number>;
+    requiredChampions: UnitDTO[];
+    excludedTraits: TraitDTO[];
+    excludedChampions: UnitDTO[];
+    costOfBoard: number;
+    tacticianLevel: number;
+    crowns: number;
+    emblems: EmblemDTO[];
+    luck: number;
+}
+
+export interface CompositionDTO {
+    units: UnitDTO[];
+    traits: Record<string, number>;
+    activatedTraits: number;
+    teamCode: string;
+}
+
 interface MultiSearchConfig<TResponse, TResult> {
     endpoint: string;
     responseMappers: readonly {
@@ -86,6 +121,28 @@ const searchConfigs = {
         ]
     } satisfies MultiSearchConfig<ApiChampionResponse | ApiTraitResponse, SearchItem>
 } as const
+
+// Horizontal composition generation API call
+export const generateHorizontalComposition = async (horizontalData: HorizontalDTO): Promise<CompositionDTO[]> => {
+    try {
+        const response = await fetch('http://localhost:8080/tools/horizontal', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(horizontalData)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`API request failed: ${response.status}`);
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error('Error generating horizontal composition:', error);
+        throw error;
+    }
+};
 
 // All methods created the same way - completely consistent!
 export const searchService = {
