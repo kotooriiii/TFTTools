@@ -17,11 +17,12 @@ The backend exposes composition-building and search endpoints backed by an in-me
 - **Stack**: Java 17, Spring Boot 3.2, Maven, PostgreSQL (user accounts)
 - **Run it**:
   ```
+  cp .env.example .env   # first time only - local-dev default credentials
   docker compose up -d   # starts Postgres (used for user accounts)
   cd backend
   mvn spring-boot:run
   ```
-  The API starts on `http://localhost:8080`. A `.env` file at the repo root holds local-dev-only default credentials for `docker-compose.yml` and `application.yml`.
+  The API starts on `http://localhost:8080`. `.env` (gitignored) holds credentials for `docker-compose.yml` and `application.yml`; `.env.example` has the defaults to copy from.
 
 ### Notable endpoints
 

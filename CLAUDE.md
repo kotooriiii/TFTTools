@@ -20,7 +20,8 @@ Both the backend and frontend must run simultaneously for the app to work end to
 
 ### Backend (from repo root, then `backend/`)
 ```
-docker compose up -d       # starts Postgres (used for user accounts); repo-root .env holds local-dev credentials
+cp .env.example .env       # first time only - local-dev credentials, .env is gitignored
+docker compose up -d       # starts Postgres (used for user accounts)
 cd backend
 mvn spring-boot:run       # run the API on :8080
 mvn test                  # run all tests
