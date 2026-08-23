@@ -8,13 +8,13 @@ const ROW_SPACING = HEX_HEIGHT * 0.75;
 const MARGIN = HEX_SIZE;
 
 export interface HexCoord {
-    col: number;
     row: number;
+    col: number;
 }
 
-export const hexId = (col: number, row: number): string => `${col}-${row}`;
+export const hexId = (row: number, col: number): string => `${row}-${col}`;
 
-export const getHexCenter = (col: number, row: number): { x: number; y: number } => {
+export const getHexCenter = (row: number, col: number): { x: number; y: number } => {
     const rowOffset = row % 2 === 1 ? HEX_WIDTH / 2 : 0;
     const x = MARGIN + HEX_WIDTH / 2 + col * HEX_WIDTH + rowOffset;
     const y = MARGIN + HEX_HEIGHT / 2 + row * ROW_SPACING;
@@ -38,7 +38,7 @@ export const generateHexCoords = (): HexCoord[] => {
     const coords: HexCoord[] = [];
     for (let row = 0; row < HEX_ROWS; row++) {
         for (let col = 0; col < HEX_COLS; col++) {
-            coords.push({ col, row });
+            coords.push({ row, col });
         }
     }
     return coords;

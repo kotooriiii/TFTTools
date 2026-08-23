@@ -3,30 +3,32 @@ import { ChampionData } from '../../types/compBuilderTypes';
 import { getHexCenter, getHexPoints, getCostColor, getInitials, hexId, HEX_SIZE } from './hexUtils';
 
 interface HexTileProps {
-    col: number;
     row: number;
+    col: number;
     champion: ChampionData | null;
     isDragOver: boolean;
-    onDrop: (e: React.DragEvent, id: string) => void;
-    onDragOver: (e: React.DragEvent, id: string) => void;
-    onDragLeave: () => void;
-    onDragStart: (e: React.DragEvent, id: string, champion: ChampionData) => void;
-    onRemove: (id: string) => void;
+    readOnly?: boolean;
+    onDrop?: (e: React.DragEvent, id: string) => void;
+    onDragOver?: (e: React.DragEvent, id: string) => void;
+    onDragLeave?: () => void;
+    onDragStart?: (e: React.DragEvent, id: string, champion: ChampionData) => void;
+    onRemove?: (id: string) => void;
 }
 
 export const HexTile: React.FC<HexTileProps> = ({
-                                                      col,
                                                       row,
+                                                      col,
                                                       champion,
                                                       isDragOver,
+                                                      readOnly = false,
                                                       onDrop,
                                                       onDragOver,
                                                       onDragLeave,
                                                       onDragStart,
                                                       onRemove
                                                   }) => {
-    const id = hexId(col, row);
-    const { x, y } = getHexCenter(col, row);
+    const id = hexId(row, col);
+    const { x, y } = getHexCenter(row, col);
     const points = getHexPoints(x, y);
     const fillColor = champion ? getCostColor(champion.cost) : (isDragOver ? '#d9c9a3' : '#efe8da');
 
@@ -38,9 +40,9 @@ export const HexTile: React.FC<HexTileProps> = ({
                 fillOpacity={champion ? 0.25 : 1}
                 stroke={isDragOver ? '#f1c40f' : '#8a7860'}
                 strokeWidth={isDragOver ? 3 : 1.5}
-                onDrop={(e) => onDrop(e, id)}
-                onDragOver={(e) => onDragOver(e, id)}
-                onDragLeave={onDragLeave}
+                onDrop={readOnly ? undefined : (e) => onDrop?.(e, id)}
+                onDragOver={readOnly ? undefined : (e) => onDragOver?.(e, id)}
+                onDragLeave={readOnly ? undefined : onDragLeave}
                 style={{ transition: 'fill 0.15s ease, stroke 0.15s ease' }}
             />
             {champion && (
@@ -51,10 +53,10 @@ export const HexTile: React.FC<HexTileProps> = ({
                     height={HEX_SIZE * 2}
                 >
                     <div
-                        draggable
-                        onDragStart={(e) => onDragStart(e, id, champion)}
-                        onClick={() => onRemove(id)}
-                        title={`${champion.displayName} — click to remove`}
+                        draggable={!readOnly}
+                        onDragStart={readOnly ? undefined : (e) => onDragStart?.(e, id, champion)}
+                        onClick={readOnly ? undefined : () => onRemove?.(id)}
+                        title={readOnly ? champion.displayName : `${champion.displayName} — click to remove`}
                         style={{
                             width: '100%',
                             height: '100%',
@@ -63,7 +65,7 @@ export const HexTile: React.FC<HexTileProps> = ({
                             justifyContent: 'center',
                             flexDirection: 'column',
                             gap: 2,
-                            cursor: 'grab',
+                            cursor: readOnly ? 'default' : 'grab',
                             userSelect: 'none'
                         }}
                     >

@@ -4,6 +4,7 @@ import { EmblemItem, TraitItem, SearchItem, ApiEmblemResponse, ApiTraitResponse,
 export interface UnitDTO {
     displayName: string;
     traits?: TraitDTO[];
+    cost?: number;
 }
 
 export interface TraitDTO {
@@ -13,6 +14,12 @@ export interface TraitDTO {
 
 export interface EmblemDTO {
     displayName: string;
+}
+
+export interface UnitPlacementDTO {
+    unit: UnitDTO;
+    row: number;
+    col: number;
 }
 
 export interface HorizontalDTO {
@@ -33,6 +40,7 @@ export interface CompositionDTO {
     traits: Record<string, number>;
     activatedTraits: number;
     teamCode: string;
+    placements: UnitPlacementDTO[];
 }
 
 interface MultiSearchConfig<TResponse, TResult> {

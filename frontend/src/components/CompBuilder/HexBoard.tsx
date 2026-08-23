@@ -5,19 +5,21 @@ import { HexTile } from './HexTile';
 
 interface HexBoardProps {
     board: Record<string, ChampionData>;
-    dragOverHexId: string | null;
-    onDrop: (e: React.DragEvent, id: string) => void;
-    onDragOver: (e: React.DragEvent, id: string) => void;
-    onDragLeave: () => void;
-    onHexDragStart: (e: React.DragEvent, id: string, champion: ChampionData) => void;
-    onRemove: (id: string) => void;
+    dragOverHexId?: string | null;
+    readOnly?: boolean;
+    onDrop?: (e: React.DragEvent, id: string) => void;
+    onDragOver?: (e: React.DragEvent, id: string) => void;
+    onDragLeave?: () => void;
+    onHexDragStart?: (e: React.DragEvent, id: string, champion: ChampionData) => void;
+    onRemove?: (id: string) => void;
 }
 
 const hexCoords = generateHexCoords();
 
 export const HexBoard: React.FC<HexBoardProps> = ({
                                                         board,
-                                                        dragOverHexId,
+                                                        dragOverHexId = null,
+                                                        readOnly = false,
                                                         onDrop,
                                                         onDragOver,
                                                         onDragLeave,
@@ -30,15 +32,16 @@ export const HexBoard: React.FC<HexBoardProps> = ({
             width="100%"
             style={{ maxWidth: 780 }}
         >
-            {hexCoords.map(({ col, row }) => {
-                const id = hexId(col, row);
+            {hexCoords.map(({ row, col }) => {
+                const id = hexId(row, col);
                 return (
                     <HexTile
                         key={id}
-                        col={col}
                         row={row}
+                        col={col}
                         champion={board[id] ?? null}
                         isDragOver={dragOverHexId === id}
+                        readOnly={readOnly}
                         onDrop={onDrop}
                         onDragOver={onDragOver}
                         onDragLeave={onDragLeave}
