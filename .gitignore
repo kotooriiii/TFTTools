@@ -13,6 +13,11 @@ frontend/node_modules/
 *.iws
 *.iml
 *.ipr
+.idea/vcs.xml
+.idea/encodings.xml
+.idea/misc.xml
+.idea/inspectionProfiles/Project_Default.xml
+.idea/workspace.xml
 
 ### Eclipse ###
 .apt_generated
@@ -38,3 +43,7 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Local env ###
+.env
+

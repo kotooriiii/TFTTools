@@ -12,14 +12,17 @@ TFTTools/
 └── frontend/   React + TypeScript UI (Vite)
 ```
 
-Both the backend and frontend must run simultaneously for the app to work end to end. Frontend expects the backend on `http://localhost:8080`; backend has no auth and CORS is wide open (`cors.allowed-origins: "*"` in `application.yml`) — this is a local dev tool, not a deployed service.
+Both the backend and frontend must run simultaneously for the app to work end to end. Frontend expects the backend on `http://localhost:8080`; CORS is wide open (`cors.allowed-origins: "*"` in `application.yml`) — this is a local dev tool, not a deployed service. The backend has real JWT-based user authentication on `/auth/**` (signup/login/me, backed by Postgres — see `com.tfttools.auth`), but all pre-existing tool endpoints remain intentionally unauthenticated; no per-endpoint auth was added to them.
 
 `backend/docs/TFTEngine.pdf` has background on the composition-building engine design — read it before making non-trivial changes to `backend/src/main/java/com/tfttools/engine/`.
 
 ## Commands
 
-### Backend (from `backend/`)
+### Backend (from repo root, then `backend/`)
 ```
+cp .env.example .env       # first time only - local-dev credentials, .env is gitignored
+docker compose up -d       # starts Postgres (used for user accounts)
+cd backend
 mvn spring-boot:run       # run the API on :8080
 mvn test                  # run all tests
 mvn test -Dtest=ClassName # run a single test class
@@ -42,6 +45,7 @@ npm run preview
 ### Backend: data flow
 
 1. **`CommunityDragonWebClient`** fetches raw JSON from Community Dragon (`tft.communitydragon.url` in `application.yml`); `CommunityDragonDataService` caches it (`tft.communitydragon.cache.duration.hours`) and falls back to the bundled resource `backend/src/main/resources/com/tfttools/domain/repository/communitydragon/en_us.json` if the live fetch fails.
+   - This is separate from `com.tfttools.auth`, which holds real Postgres-backed persistence (`User` JPA entity, `UserRepository extends JpaRepository`) for accounts — don't confuse `auth.repository.UserRepository` (Spring Data, DB-backed) with `TraitRepository`/`UnitRepository`/`EmblemRepository` above (in-memory, Community-Dragon-backed).
 2. **`TFTSetContextService`** determines the current active TFT set number from that data.
 3. Repositories (`TraitRepository` → `UnitRepository` → `EmblemRepository`, in that dependency order) build in-memory domain objects (`Trait`, `Unit`, `Emblem`) from the raw Community Dragon data at `@PostConstruct`.
 4. **`DataRefreshService.refreshAllData()`** invalidates the cache and reloads everything in the same dependency order (traits → units → emblems → team planner codes) when a manual refresh is triggered.
