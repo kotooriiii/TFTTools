@@ -1,15 +1,32 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { ChampionData } from '../types/compBuilderTypes';
 import { unitService } from '../services/unitService';
 import { ChampionRoster } from '../components/CompBuilder/ChampionRoster';
 import { HexBoard } from '../components/CompBuilder/HexBoard';
 import { TraitSynergyPanel } from '../components/CompBuilder/TraitSynergyPanel';
 
+interface CompBuilderNavState {
+    seedBoard?: Record<string, ChampionData>;
+}
+
 const CompBuilderTool: React.FC = () => {
+    const location = useLocation();
+
     const [champions, setChampions] = useState<ChampionData[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [board, setBoard] = useState<Record<string, ChampionData>>({});
+
+    useEffect(() => {
+        const seedBoard = (location.state as CompBuilderNavState | null)?.seedBoard;
+        if (seedBoard) {
+            setBoard(seedBoard);
+        }
+        // location.key is unique per navigation entry (even revisits of this same
+        // route), so this reseeds on every "Edit in Comp Builder" handoff.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [location.key]);
 
     const [draggedChampion, setDraggedChampion] = useState<ChampionData | null>(null);
     const [draggedFromHexId, setDraggedFromHexId] = useState<string | null>(null);

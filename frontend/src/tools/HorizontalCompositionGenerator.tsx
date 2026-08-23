@@ -1,7 +1,8 @@
 import React, {useRef, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import {AnimatePresence, motion} from 'framer-motion';
 import {EmblemItem} from '../types/searchTypes';
-import {CompositionDTO, generateHorizontalComposition, HorizontalDTO} from '../services/searchService';
+import {CompositionDTO, generateHorizontalComposition, HorizontalDTO, UnitPlacementDTO} from '../services/searchService';
 
 import {EmblemSearchBox, EmblemSearchBoxHandle} from "../components/HorizontalCompositionGenerator/EmblemSearchBox.tsx";
 import {TraitSearchBox, TraitSearchBoxHandle} from '../components/HorizontalCompositionGenerator/TraitSearchBox.tsx';
@@ -9,6 +10,9 @@ import {
     ChampionSearchBox,
     ChampionSearchBoxHandle
 } from "../components/HorizontalCompositionGenerator/ChampionSearchBox.tsx";
+import {HexBoard} from '../components/CompBuilder/HexBoard';
+import {hexId} from '../components/CompBuilder/hexUtils';
+import {ChampionData} from '../types/compBuilderTypes';
 
 interface BasicInputs
 {
@@ -63,8 +67,28 @@ const getTraitBreakdown = (composition: CompositionDTO) =>
         .sort((a, b) => Number(b.active) - Number(a.active) || b.count - a.count);
 };
 
+/**
+ * hexId takes (col, row), but UnitPlacementDTO carries row before col — easy to
+ * transpose, so the argument order below is deliberate, not a typo.
+ */
+const placementsToBoard = (placements: UnitPlacementDTO[]): Record<string, ChampionData> =>
+{
+    const board: Record<string, ChampionData> = {};
+    placements.forEach(placement =>
+    {
+        board[hexId(placement.col, placement.row)] = {
+            displayName: placement.unit.displayName,
+            cost: placement.unit.cost ?? 0,
+            traits: placement.unit.traits ?? []
+        };
+    });
+    return board;
+};
+
 const HorizontalCompositionGenerator: React.FC = () =>
 {
+    const navigate = useNavigate();
+
     const [basicInputs, setBasicInputs] = useState<BasicInputs>({
         tacticianLevel: 1,
         requiredChampions: [],
@@ -493,16 +517,9 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                     </span>
                                                 </div>
 
-                                                {/* Units */}
-                                                <div className="flex flex-wrap gap-2 mb-4">
-                                                    {composition.units.map((unit) => (
-                                                        <span
-                                                            key={unit.displayName}
-                                                            className="px-3 py-1 bg-accent/50 rounded-full text-sm font-medium text-foreground"
-                                                        >
-                                                            {unit.displayName}
-                                                        </span>
-                                                    ))}
+                                                {/* Hex Board */}
+                                                <div className="flex justify-center mb-4">
+                                                    <HexBoard board={placementsToBoard(composition.placements)} readOnly />
                                                 </div>
 
                                                 {/* Trait Breakdown */}
@@ -525,20 +542,25 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                     </div>
                                                 )}
 
-                                                {/* Team Code */}
-                                                {composition.teamCode && (
-                                                    <div className="flex items-center gap-2">
-                                                        <code className="flex-1 px-3 py-2 bg-accent/50 rounded-md text-sm text-foreground overflow-x-auto whitespace-nowrap">
-                                                            {composition.teamCode}
-                                                        </code>
+                                                {/* Team Code + Comp Builder handoff */}
+                                                <div className="flex items-center gap-2">
+                                                    {composition.teamCode && (
                                                         <button
                                                             onClick={() => navigator.clipboard.writeText(composition.teamCode)}
                                                             className="px-3 py-2 bg-secondary text-secondary-foreground rounded-md text-sm font-medium hover:bg-secondary/90 transition-colors duration-200"
                                                         >
-                                                            Copy
+                                                            Copy Team Code
                                                         </button>
-                                                    </div>
-                                                )}
+                                                    )}
+                                                    <button
+                                                        onClick={() => navigate('/tools/comp-builder', {
+                                                            state: {seedBoard: placementsToBoard(composition.placements)}
+                                                        })}
+                                                        className="px-3 py-2 bg-accent text-foreground rounded-md text-sm font-medium hover:bg-accent/80 transition-colors duration-200"
+                                                    >
+                                                        Edit in Comp Builder
+                                                    </button>
+                                                </div>
                                             </motion.div>
                                         );
                                     })}
