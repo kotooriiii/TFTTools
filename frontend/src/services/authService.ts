@@ -64,6 +64,20 @@ export const authService = {
         return await response.json();
     },
 
+    async loginWithGoogle(code: string): Promise<AuthResponse> {
+        const response = await fetch('http://localhost:8080/auth/oauth/google', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code })
+        });
+
+        if (!response.ok) {
+            throw await parseErrorBody(response);
+        }
+
+        return await response.json();
+    },
+
     async me(token: string): Promise<UserResponse> {
         const response = await fetch('http://localhost:8080/auth/me', {
             headers: { Authorization: `Bearer ${token}` }

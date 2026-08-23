@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useGoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../contexts/AuthContext';
 import { AuthApiError } from '../services/authService';
 
 export const LoginPage: React.FC = () => {
-    const { login } = useAuth();
+    const { login, loginWithGoogle } = useAuth();
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
@@ -26,6 +27,20 @@ export const LoginPage: React.FC = () => {
             setIsSubmitting(false);
         }
     };
+
+    const googleLogin = useGoogleLogin({
+        flow: 'auth-code',
+        onSuccess: async (response) => {
+            setError(null);
+            try {
+                await loginWithGoogle(response.code);
+                navigate('/');
+            } catch (err) {
+                setError(err instanceof AuthApiError ? err.message : 'Google sign-in failed');
+            }
+        },
+        onError: () => setError('Google sign-in failed'),
+    });
 
     return (
         <div className="flex justify-center items-start pt-24 min-h-screen">
@@ -63,6 +78,20 @@ export const LoginPage: React.FC = () => {
                         className="mt-2 bg-secondary text-primary rounded-lg py-2.5 font-medium cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50"
                     >
                         {isSubmitting ? 'Logging in...' : 'Log In'}
+                    </button>
+
+                    <div className="flex items-center gap-3">
+                        <div className="flex-1 h-px bg-border" />
+                        <span className="text-xs text-secondary">or</span>
+                        <div className="flex-1 h-px bg-border" />
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={() => googleLogin()}
+                        className="border border-border rounded-lg py-2.5 font-medium cursor-pointer hover:bg-accent/10 transition-colors"
+                    >
+                        Continue with Google
                     </button>
                 </form>
 
