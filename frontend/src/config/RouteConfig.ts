@@ -2,6 +2,7 @@ import React from 'react';
 import {HomePage} from '../pages/HomePage';
 import GraphCanvasTool from '../tools/GraphCanvasTool';
 import HorizontalCompositionGenerator from "../tools/HorizontalCompositionGenerator.tsx";
+import CompBuilderTool from "../tools/CompBuilderTool.tsx";
 
 export interface RouteConfig
 {
@@ -37,6 +38,14 @@ export const ROUTE_CONFIG: RouteConfig[] = [
         icon: '🧬',
         description: 'Generate horizontal compositions based in filter criteria',
         component: HorizontalCompositionGenerator
+    },
+    {
+        id: 'comp-builder',
+        path: '/tools/comp-builder',
+        name: 'Comp Builder',
+        icon: '⬡',
+        description: 'Search champions and traits and drag them onto a hex board to build compositions',
+        component: CompBuilderTool
     }
 ];
 

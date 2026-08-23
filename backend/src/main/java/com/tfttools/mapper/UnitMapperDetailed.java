@@ -29,7 +29,8 @@ public class UnitMapperDetailed implements Function<Unit, UnitDTO> {
                 unit.getDisplayName(),
                 unit.getTraits().stream().map(traitMapper).collect(Collectors.toSet()),
                 unit.getChampionStats(),
-                unit.getRole()
+                unit.getRole(),
+                unit.getCost()
         );
     }
 }
