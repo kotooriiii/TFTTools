@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../contexts/AuthContext';
 import { AuthApiError } from '../services/authService';
+import { GoogleIcon } from '../components/GoogleIcon';
 
 export const LoginPage: React.FC = () => {
     const { login, loginWithGoogle } = useAuth();
@@ -89,8 +90,9 @@ export const LoginPage: React.FC = () => {
                     <button
                         type="button"
                         onClick={() => googleLogin()}
-                        className="border border-border rounded-lg py-2.5 font-medium cursor-pointer hover:bg-accent/10 transition-colors"
+                        className="flex items-center justify-center gap-2 border border-border rounded-lg py-2.5 font-medium cursor-pointer hover:bg-accent/10 transition-colors"
                     >
+                        <GoogleIcon />
                         Continue with Google
                     </button>
                 </form>
