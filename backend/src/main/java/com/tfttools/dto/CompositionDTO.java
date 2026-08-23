@@ -12,12 +12,14 @@ public class CompositionDTO
     private final Map<TraitDTO, Integer> traits;
     private final int activatedTraits;
     private final String teamCode;
+    private final List<UnitPlacementDTO> placements;
 
-    public CompositionDTO(List<UnitDTO> units, Map<TraitDTO, Integer> traits, int activatedTraits, String teamCode)
+    public CompositionDTO(List<UnitDTO> units, Map<TraitDTO, Integer> traits, int activatedTraits, String teamCode, List<UnitPlacementDTO> placements)
     {
         this.units = units;
         this.traits = traits;
         this.activatedTraits = activatedTraits;
         this.teamCode = teamCode;
+        this.placements = placements;
     }
 }
