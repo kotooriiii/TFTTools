@@ -67,3 +67,33 @@ When adding a new engine capability, the typical touch points are: a new `Engine
 - `src/services/` makes direct `fetch` calls to `http://localhost:8080` (no shared API client/base-URL config yet — new services should follow the existing pattern in `filterService.ts`/`searchService.ts`).
 - `src/hooks/search/` contains generic + specialized (`EmblemSearchHook`, `ItemSearchHook`) search hooks used by the popup search panels in `src/components/search/`.
 - Theming goes through `src/contexts/ThemeContext.tsx` + `src/themes/themeConfigurations.ts`; styling uses Tailwind CSS v4 (via `@tailwindcss/vite`) plus `App.css`/`index.css`.
+
+# Project Conventions
+
+## Branching
+- Branch naming: `username_jiraticket_shortdesc`
+    - Example: `kotooriiii_TFTTOOLS-1234_fix-memory-leak`
+    - If no Jira ticket exists yet, use `na` in place of the ticket: `kotooriiii_na_fix-memory-leak`
+
+## Commits
+- Message style is not strict — write concise, meaningful commit messages.
+- Always append the Jira ticket at the end of the message.
+    - If no ticket exists, default to `N/A`.
+    - Example: 
+      ```
+      Fix native memory leak in Jersey client pooling.
+      
+      JIRA: TFTTOOLS-1234
+      ```
+    - Example (no ticket):
+      ```
+      Fix native memory leak in Jersey client pooling.
+
+      JIRA: N/A
+      ```
+## Git Safety Rules
+- NEVER commit directly to `master` or `develop`.
+- ALWAYS work on a feature branch following the naming convention above.
+- ALWAYS open a PR for changes — never push directly to protected branches.
+- NEVER merge any PR. The user merges manually after review.
+- When a PR is ready, write a clear PR description (summary, why, testing done, linked Jira ticket) but stop there — do not merge.
