@@ -32,7 +32,6 @@ interface AdvancedInputs
 interface TFTCompositionResult
 {
     compositions: CompositionDTO[];
-    timestamp: string;
 }
 
 /**
@@ -59,11 +58,15 @@ const getTraitBreakdown = (composition: CompositionDTO) =>
 {
     const thresholds = getTraitThresholds(composition);
     return Object.entries(composition.traits)
-        .map(([trait, count]) => ({
-            trait,
-            count,
-            active: (thresholds[trait] ?? []).some(threshold => count >= threshold)
-        }))
+        .map(([trait, count]) => {
+            const sortedThresholds = [...(thresholds[trait] ?? [])].sort((a, b) => a - b);
+            return {
+                trait,
+                count,
+                active: sortedThresholds.some(threshold => count >= threshold),
+                nextThreshold: sortedThresholds.find(threshold => threshold > count) ?? null
+            };
+        })
         .sort((a, b) => Number(b.active) - Number(a.active) || b.count - a.count);
 };
 
@@ -164,8 +167,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
             const compositions = await generateHorizontalComposition(horizontalData);
 
             setResult({
-                compositions: compositions ?? [],
-                timestamp: new Date().toLocaleString()
+                compositions: compositions ?? []
             });
         } catch (err) {
             console.error('Error generating composition:', err);
@@ -482,14 +484,11 @@ const HorizontalCompositionGenerator: React.FC = () =>
                             transition={{duration: 0.5, ease: "easeOut"}}
                             className="bg-card border border-border rounded-lg p-6 shadow-sm"
                         >
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center justify-center mb-4">
                                 <h3 className="text-2xl font-semibold text-foreground flex items-center">
                                     <span className="text-green-600 mr-2">⚔️</span>
                                     TFT Composition Results
                                 </h3>
-                                <div className="text-sm text-muted-foreground">
-                                    {result.timestamp}
-                                </div>
                             </div>
 
                             {result.compositions.length === 0 ? (
@@ -508,42 +507,42 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                 animate={{opacity: 1, y: 0}}
                                                 transition={{delay: 0.1 * index}}
                                             >
-                                                <div className="flex items-center justify-between mb-3">
-                                                    <h4 className="text-lg font-semibold text-foreground">
-                                                        Composition {index + 1}
-                                                    </h4>
-                                                    <span className="text-sm text-muted-foreground">
-                                                        {composition.activatedTraits} active traits
-                                                    </span>
-                                                </div>
+                                                <h4 className="text-lg font-semibold text-foreground text-center mb-3">
+                                                    Composition {index + 1}
+                                                </h4>
 
-                                                {/* Hex Board */}
-                                                <div className="flex justify-center mb-4">
+                                                {/* Hex Board + Active Traits sidebar */}
+                                                <div className="flex justify-center gap-4 mb-4">
                                                     <HexBoard board={placementsToBoard(composition.placements)} readOnly />
-                                                </div>
 
-                                                {/* Trait Breakdown */}
-                                                {traitBreakdown.length > 0 && (
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-                                                        {traitBreakdown.map((trait) => (
-                                                            <div
-                                                                key={trait.trait}
-                                                                className={`flex items-center justify-between p-3 rounded-lg border ${
-                                                                    trait.active ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'
-                                                                }`}
-                                                            >
-                                                                <span className="font-medium">{trait.trait}</span>
-                                                                <div className="flex items-center gap-2">
-                                                                    <span className="text-sm">{trait.count}</span>
-                                                                    {trait.active && <span className="text-green-600">✓</span>}
-                                                                </div>
+                                                    {traitBreakdown.length > 0 && (
+                                                        <div className="w-56 shrink-0 border-l border-border bg-primary p-3 rounded-r-lg">
+                                                            <h5 className="text-sm font-bold text-primary mb-3">Active Traits</h5>
+                                                            <div className="flex flex-col gap-2">
+                                                                {traitBreakdown.map((trait) => (
+                                                                    <div
+                                                                        key={trait.trait}
+                                                                        className="rounded-lg px-3 py-2 flex items-center justify-between"
+                                                                        style={{
+                                                                            backgroundColor: trait.active ? 'rgba(76,175,80,0.15)' : 'rgba(0,0,0,0.04)',
+                                                                            border: `1px solid ${trait.active ? '#4CAF50' : 'transparent'}`
+                                                                        }}
+                                                                    >
+                                                                        <span className={`text-xs font-semibold ${trait.active ? 'text-primary' : 'text-secondary'}`}>
+                                                                            {trait.trait}
+                                                                        </span>
+                                                                        <span className="text-xs font-mono text-secondary">
+                                                                            {trait.count}{trait.nextThreshold ? ` / ${trait.nextThreshold}` : ''}
+                                                                        </span>
+                                                                    </div>
+                                                                ))}
                                                             </div>
-                                                        ))}
-                                                    </div>
-                                                )}
+                                                        </div>
+                                                    )}
+                                                </div>
 
                                                 {/* Team Code + Comp Builder handoff */}
-                                                <div className="flex items-center gap-2">
+                                                <div className="flex items-center justify-center gap-2">
                                                     {composition.teamCode && (
                                                         <button
                                                             onClick={() => navigator.clipboard.writeText(composition.teamCode)}
