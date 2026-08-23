@@ -3,10 +3,12 @@ package com.tfttools.auth.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tfttools.auth.dto.AuthResponse;
 import com.tfttools.auth.dto.LoginRequest;
+import com.tfttools.auth.dto.OAuthLoginRequest;
 import com.tfttools.auth.dto.SignupRequest;
 import com.tfttools.auth.dto.UserResponse;
 import com.tfttools.auth.exception.DuplicateEmailException;
 import com.tfttools.auth.exception.InvalidCredentialsException;
+import com.tfttools.auth.exception.UnsupportedOAuthProviderException;
 import com.tfttools.auth.security.JwtTokenProvider;
 import com.tfttools.auth.service.AuthService;
 import com.tfttools.repository.TraitRepository;
@@ -123,6 +125,34 @@ class AuthControllerTest
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.error").value("Invalid email or password"));
+    }
+
+    @Test
+    void oauthLogin_validCode_returns200WithToken() throws Exception
+    {
+        OAuthLoginRequest request = new OAuthLoginRequest("auth-code");
+        UserResponse user = new UserResponse(3L, "googleuser", "googleuser@example.com", Instant.now());
+        when(authService.loginWithOAuth("google", "auth-code")).thenReturn(new AuthResponse("signed-jwt", user));
+
+        mockMvc.perform(post("/auth/oauth/google")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").value("signed-jwt"));
+    }
+
+    @Test
+    void oauthLogin_unsupportedProvider_returns400() throws Exception
+    {
+        OAuthLoginRequest request = new OAuthLoginRequest("auth-code");
+        when(authService.loginWithOAuth("bogus", "auth-code"))
+                .thenThrow(new UnsupportedOAuthProviderException("Unknown OAuth provider: bogus"));
+
+        mockMvc.perform(post("/auth/oauth/bogus")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Unknown OAuth provider: bogus"));
     }
 
     @Test
