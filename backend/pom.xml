@@ -108,6 +108,15 @@
             <artifactId>spring-webflux</artifactId>
         </dependency>
 
+        <!-- Apache HttpClient 5: TestRestTemplate falls back to it when present, avoiding a long-standing
+             JDK HttpURLConnection bug where a POST followed by a non-2xx response throws
+             HttpRetryException ("cannot retry due to server authentication, in streaming mode"). -->
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Testcontainers, for Postgres-backed integration tests (version pinned to Spring Boot 3.2.5's managed version) -->
         <dependency>
             <groupId>org.testcontainers</groupId>
