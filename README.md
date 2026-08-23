@@ -14,19 +14,23 @@ TFTTools/
 
 The backend exposes composition-building and search endpoints backed by an in-memory engine that reasons about traits, units, and emblems pulled from Community Dragon.
 
-- **Stack**: Java 17, Spring Boot 3.2, Maven
+- **Stack**: Java 17, Spring Boot 3.2, Maven, PostgreSQL (user accounts)
 - **Run it**:
   ```
+  docker compose up -d   # starts Postgres (used for user accounts)
   cd backend
   mvn spring-boot:run
   ```
-  The API starts on `http://localhost:8080`.
+  The API starts on `http://localhost:8080`. A `.env` file at the repo root holds local-dev-only default credentials for `docker-compose.yml` and `application.yml`.
 
 ### Notable endpoints
 
 | Endpoint | Method | Description |
 |---|---|---|
 | `/tools/horizontal` | `POST` | Generates horizontal team compositions given required traits, champions, and board constraints |
+| `/auth/signup` | `POST` | Creates a new user account |
+| `/auth/login` | `POST` | Logs in and returns a JWT |
+| `/auth/me` | `GET` | Returns the current user (requires `Authorization: Bearer <token>`) |
 
 ## Frontend
 
