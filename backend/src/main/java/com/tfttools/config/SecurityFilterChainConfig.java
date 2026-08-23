@@ -96,7 +96,8 @@ public class SecurityFilterChainConfig
                             ).permitAll().requestMatchers(
                                     HttpMethod.POST,
                                     "/auth/signup",
-                                    "/auth/login"
+                                    "/auth/login",
+                                    "/auth/oauth/*"
                             ).permitAll().requestMatchers(
                                     HttpMethod.GET,
                                     "/auth/me"

@@ -16,6 +16,11 @@ jwt:
   secret: ${JWT_SECRET:tfttools-local-dev-secret-please-change-me-32bytes-min}
   expiration-ms: 604800000 # 7 days
 
+google:
+  oauth:
+    client-id: ${GOOGLE_CLIENT_ID:}
+    client-secret: ${GOOGLE_CLIENT_SECRET:}
+
 server:
   port: 8080
   error:

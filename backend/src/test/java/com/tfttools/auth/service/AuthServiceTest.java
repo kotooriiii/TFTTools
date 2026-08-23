@@ -7,6 +7,10 @@ import com.tfttools.auth.dto.SignupRequest;
 import com.tfttools.auth.dto.UserResponse;
 import com.tfttools.auth.exception.DuplicateEmailException;
 import com.tfttools.auth.exception.InvalidCredentialsException;
+import com.tfttools.auth.exception.OAuthAuthenticationException;
+import com.tfttools.auth.exception.UnsupportedOAuthProviderException;
+import com.tfttools.auth.oauth.OAuthProvider;
+import com.tfttools.auth.oauth.OAuthUserInfo;
 import com.tfttools.auth.repository.UserRepository;
 import com.tfttools.auth.security.JwtTokenProvider;
 import org.junit.jupiter.api.Test;
@@ -17,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,12 +45,16 @@ class AuthServiceTest
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
+    @Mock
+    private OAuthProvider oauthProvider;
+
     private AuthService authService;
 
     @org.junit.jupiter.api.BeforeEach
     void setUp()
     {
-        authService = new AuthService(userRepository, passwordEncoder, jwtTokenProvider);
+        when(oauthProvider.getProviderKey()).thenReturn("google");
+        authService = new AuthService(userRepository, passwordEncoder, jwtTokenProvider, List.of(oauthProvider));
     }
 
     @Test
@@ -116,6 +125,101 @@ class AuthServiceTest
     }
 
     @Test
+    void login_throwsExplicitMessage_whenAccountIsGoogleOnly()
+    {
+        User user = existingOAuthUser();
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+
+        assertThatThrownBy(() -> authService.login(new LoginRequest(user.getEmail(), "whatever")))
+                .isInstanceOf(InvalidCredentialsException.class)
+                .hasMessageContaining("Google sign-in");
+
+        verify(passwordEncoder, never()).matches(anyString(), anyString());
+    }
+
+    @Test
+    void loginWithOAuth_createsNewUser_whenNoExistingAccount()
+    {
+        OAuthUserInfo info = new OAuthUserInfo("google-sub-1", "newgoogle@example.com", true, "New Googler");
+        when(oauthProvider.exchangeCodeForUserInfo("auth-code")).thenReturn(info);
+        when(userRepository.findByOauthProviderAndOauthSubjectId("google", "google-sub-1")).thenReturn(Optional.empty());
+        when(userRepository.findByEmail("newgoogle@example.com")).thenReturn(Optional.empty());
+        when(userRepository.save(any(User.class))).thenAnswer(invocation ->
+        {
+            User u = invocation.getArgument(0);
+            u.setId(2L);
+            return u;
+        });
+        when(jwtTokenProvider.generateToken(2L)).thenReturn("signed-jwt");
+
+        AuthResponse response = authService.loginWithOAuth("google", "auth-code");
+
+        assertThat(response.token()).isEqualTo("signed-jwt");
+        assertThat(response.user().email()).isEqualTo("newgoogle@example.com");
+
+        ArgumentCaptor<User> savedUser = ArgumentCaptor.forClass(User.class);
+        verify(userRepository).save(savedUser.capture());
+        assertThat(savedUser.getValue().getPasswordHash()).isNull();
+        assertThat(savedUser.getValue().getOauthProvider()).isEqualTo("google");
+        assertThat(savedUser.getValue().getOauthSubjectId()).isEqualTo("google-sub-1");
+    }
+
+    @Test
+    void loginWithOAuth_matchesReturningUser_byProviderAndSubjectId()
+    {
+        User user = existingOAuthUser();
+        OAuthUserInfo info = new OAuthUserInfo(user.getOauthSubjectId(), user.getEmail(), true, "Existing Googler");
+        when(oauthProvider.exchangeCodeForUserInfo("auth-code")).thenReturn(info);
+        when(userRepository.findByOauthProviderAndOauthSubjectId("google", user.getOauthSubjectId())).thenReturn(Optional.of(user));
+        when(jwtTokenProvider.generateToken(user.getId())).thenReturn("signed-jwt");
+
+        AuthResponse response = authService.loginWithOAuth("google", "auth-code");
+
+        assertThat(response.token()).isEqualTo("signed-jwt");
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void loginWithOAuth_linksExistingPasswordAccount_byEmail()
+    {
+        User user = existingUser();
+        OAuthUserInfo info = new OAuthUserInfo("google-sub-9", user.getEmail(), true, "Existing User");
+        when(oauthProvider.exchangeCodeForUserInfo("auth-code")).thenReturn(info);
+        when(userRepository.findByOauthProviderAndOauthSubjectId("google", "google-sub-9")).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(userRepository.save(user)).thenReturn(user);
+        when(jwtTokenProvider.generateToken(user.getId())).thenReturn("signed-jwt");
+
+        AuthResponse response = authService.loginWithOAuth("google", "auth-code");
+
+        assertThat(response.token()).isEqualTo("signed-jwt");
+        assertThat(user.getOauthProvider()).isEqualTo("google");
+        assertThat(user.getOauthSubjectId()).isEqualTo("google-sub-9");
+        assertThat(user.getPasswordHash()).isEqualTo("hashed-password");
+    }
+
+    @Test
+    void loginWithOAuth_throwsWhenEmailNotVerified()
+    {
+        OAuthUserInfo info = new OAuthUserInfo("google-sub-2", "unverified@example.com", false, "Unverified");
+        when(oauthProvider.exchangeCodeForUserInfo("auth-code")).thenReturn(info);
+
+        assertThatThrownBy(() -> authService.loginWithOAuth("google", "auth-code"))
+                .isInstanceOf(OAuthAuthenticationException.class);
+
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void loginWithOAuth_throwsForUnknownProvider()
+    {
+        assertThatThrownBy(() -> authService.loginWithOAuth("discord", "auth-code"))
+                .isInstanceOf(UnsupportedOAuthProviderException.class);
+
+        verify(oauthProvider, never()).exchangeCodeForUserInfo(anyString());
+    }
+
+    @Test
     void getCurrentUser_returnsUserWhenFound()
     {
         User user = existingUser();
@@ -142,6 +246,18 @@ class AuthServiceTest
         user.setUsername("existing");
         user.setEmail("existing@example.com");
         user.setPasswordHash("hashed-password");
+        user.setCreatedAt(Instant.now());
+        return user;
+    }
+
+    private static User existingOAuthUser()
+    {
+        User user = new User();
+        user.setId(8L);
+        user.setUsername("googleuser");
+        user.setEmail("googleuser@example.com");
+        user.setOauthProvider("google");
+        user.setOauthSubjectId("google-sub-7");
         user.setCreatedAt(Instant.now());
         return user;
     }

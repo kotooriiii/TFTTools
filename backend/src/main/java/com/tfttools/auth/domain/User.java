@@ -34,8 +34,19 @@ public class User
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    /**
+     * Null for accounts that have only ever signed in via an OAuth provider.
+     */
     private String passwordHash;
+
+    /**
+     * Null unless an OAuth identity has been linked (via OAuth signup, or auto-linking
+     * an OAuth sign-in to an existing password account with a matching verified email).
+     */
+    private String oauthProvider;
+
+    @Column(unique = true)
+    private String oauthSubjectId;
 
     @Column(nullable = false)
     private Instant createdAt;

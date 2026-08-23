@@ -30,6 +30,18 @@ public class AuthExceptionHandler
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
     }
 
+    @ExceptionHandler(OAuthAuthenticationException.class)
+    public ResponseEntity<Map<String, String>> handleOAuthAuthentication(OAuthAuthenticationException e)
+    {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
+    }
+
+    @ExceptionHandler(UnsupportedOAuthProviderException.class)
+    public ResponseEntity<Map<String, String>> handleUnsupportedOAuthProvider(UnsupportedOAuthProviderException e)
+    {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException e)
     {
