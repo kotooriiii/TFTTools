@@ -31,22 +31,22 @@ public class CompositionPositioningService {
     // Assignment priority: tanks claim the front first, specialists are placed last.
     private static final List<Zone> ZONE_PRIORITY = List.of(Zone.TANK, Zone.FIGHTER, Zone.CARRY, Zone.CASTER, Zone.SPECIALIST);
 
-    private record Hex(int col, int row) {
+    private record Hex(int row, int col) {
     }
 
     private static final List<Hex> ALL_HEXES = buildAllHexes();
 
-    private static final Hex TANK_ANCHOR = new Hex(3, 0);
-    private static final Hex FIGHTER_ANCHOR = new Hex(3, 1);
+    private static final Hex TANK_ANCHOR = new Hex(0, 3);
+    private static final Hex FIGHTER_ANCHOR = new Hex(1, 3);
     private static final Hex SPECIALIST_ANCHOR = new Hex(3, 3);
     // Both back corners - Carry gets first pick (processed before Caster), Caster inherits whichever is left.
-    private static final List<Hex> CARRY_CASTER_ANCHORS = List.of(new Hex(0, 3), new Hex(6, 3));
+    private static final List<Hex> CARRY_CASTER_ANCHORS = List.of(new Hex(3, 0), new Hex(3, 6));
 
     private static List<Hex> buildAllHexes() {
         List<Hex> hexes = new ArrayList<>();
         for (int row = 0; row < HEX_ROWS; row++) {
             for (int col = 0; col < HEX_COLS; col++) {
-                hexes.add(new Hex(col, row));
+                hexes.add(new Hex(row, col));
             }
         }
         return hexes;
@@ -88,8 +88,8 @@ public class CompositionPositioningService {
         return ALL_HEXES.stream()
                 .filter(hex -> !occupied.contains(hex))
                 .min(Comparator.comparingInt((Hex hex) -> hexDistance(anchor, hex))
-                        .thenComparingInt(Hex::col)
-                        .thenComparingInt(Hex::row))
+                        .thenComparingInt(Hex::row)
+                        .thenComparingInt(Hex::col))
                 .orElseThrow(() -> new IllegalStateException("No unoccupied hex available on the board"));
     }
 
@@ -99,7 +99,7 @@ public class CompositionPositioningService {
         return (Math.abs(cubeA[0] - cubeB[0]) + Math.abs(cubeA[1] - cubeB[1]) + Math.abs(cubeA[2] - cubeB[2])) / 2;
     }
 
-    // Offset (col, row) -> cube coordinates, "odd-r" layout (odd rows shifted right),
+    // Offset (row, col) -> cube coordinates, "odd-r" layout (odd rows shifted right),
     // matching hexUtils.ts's getHexCenter row % 2 === 1 offset.
     private static int[] toCube(Hex hex) {
         int x = hex.col() - (hex.row() - (hex.row() & 1)) / 2;

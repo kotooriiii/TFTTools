@@ -32,13 +32,13 @@ export const HexBoard: React.FC<HexBoardProps> = ({
             width="100%"
             style={{ maxWidth: 780 }}
         >
-            {hexCoords.map(({ col, row }) => {
-                const id = hexId(col, row);
+            {hexCoords.map(({ row, col }) => {
+                const id = hexId(row, col);
                 return (
                     <HexTile
                         key={id}
-                        col={col}
                         row={row}
+                        col={col}
                         champion={board[id] ?? null}
                         isDragOver={dragOverHexId === id}
                         readOnly={readOnly}

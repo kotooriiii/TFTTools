@@ -3,8 +3,8 @@ import { ChampionData } from '../../types/compBuilderTypes';
 import { getHexCenter, getHexPoints, getCostColor, getInitials, hexId, HEX_SIZE } from './hexUtils';
 
 interface HexTileProps {
-    col: number;
     row: number;
+    col: number;
     champion: ChampionData | null;
     isDragOver: boolean;
     readOnly?: boolean;
@@ -16,8 +16,8 @@ interface HexTileProps {
 }
 
 export const HexTile: React.FC<HexTileProps> = ({
-                                                      col,
                                                       row,
+                                                      col,
                                                       champion,
                                                       isDragOver,
                                                       readOnly = false,
@@ -27,8 +27,8 @@ export const HexTile: React.FC<HexTileProps> = ({
                                                       onDragStart,
                                                       onRemove
                                                   }) => {
-    const id = hexId(col, row);
-    const { x, y } = getHexCenter(col, row);
+    const id = hexId(row, col);
+    const { x, y } = getHexCenter(row, col);
     const points = getHexPoints(x, y);
     const fillColor = champion ? getCostColor(champion.cost) : (isDragOver ? '#d9c9a3' : '#efe8da');
 

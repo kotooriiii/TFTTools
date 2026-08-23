@@ -70,16 +70,12 @@ const getTraitBreakdown = (composition: CompositionDTO) =>
         .sort((a, b) => Number(b.active) - Number(a.active) || b.count - a.count);
 };
 
-/**
- * hexId takes (col, row), but UnitPlacementDTO carries row before col — easy to
- * transpose, so the argument order below is deliberate, not a typo.
- */
 const placementsToBoard = (placements: UnitPlacementDTO[]): Record<string, ChampionData> =>
 {
     const board: Record<string, ChampionData> = {};
     placements.forEach(placement =>
     {
-        board[hexId(placement.col, placement.row)] = {
+        board[hexId(placement.row, placement.col)] = {
             displayName: placement.unit.displayName,
             cost: placement.unit.cost ?? 0,
             traits: placement.unit.traits ?? []
