@@ -1,3 +1,21 @@
+spring:
+  config:
+    import: "optional:file:../.env[.properties]"
+  datasource:
+    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB:tfttools}
+    username: ${POSTGRES_USER:tfttools}
+    password: ${POSTGRES_PASSWORD:tfttools_dev_password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: false
+
+jwt:
+  secret: ${JWT_SECRET:tfttools-local-dev-secret-please-change-me-32bytes-min}
+  expiration-ms: 604800000 # 7 days
+
 server:
   port: 8080
   error:
