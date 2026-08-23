@@ -7,7 +7,8 @@ import com.tfttools.dto.SearchResultDTO;
 import com.tfttools.dto.TraitDTO;
 import com.tfttools.dto.UnitDTO;
 import com.tfttools.mapper.TraitMapper;
-import com.tfttools.mapper.UnitMapper;
+import com.tfttools.mapper.UnitMapperDetailed;
+import com.tfttools.mapper.UnitMapperSimple;
 import com.tfttools.prefixtrie.PrefixTrieUtils;
 import com.tfttools.repository.TraitRepository;
 import com.tfttools.repository.UnitRepository;
@@ -28,15 +29,17 @@ public class UnitService
     private final UnitRepository unitRepository;
     private final TraitRepository traitRepository;
 
-    private final UnitMapper unitMapper;
+    private final UnitMapperSimple unitMapperSimple;
+    private final UnitMapperDetailed unitMapperDetailed;
     private final TraitMapper traitMapper;
 
     public UnitService(UnitRepository unitRepository, TraitRepository traitRepository,
-                       UnitMapper unitMapper, TraitMapper traitMapper)
+                       UnitMapperSimple unitMapperSimple, UnitMapperDetailed unitMapperDetailed, TraitMapper traitMapper)
     {
         this.unitRepository = unitRepository;
         this.traitRepository = traitRepository;
-        this.unitMapper = unitMapper;
+        this.unitMapperSimple = unitMapperSimple;
+        this.unitMapperDetailed = unitMapperDetailed;
         this.traitMapper = traitMapper;
     }
 
@@ -45,9 +48,13 @@ public class UnitService
      *
      * @return List of {@link UnitDTO}
      */
-    public List<UnitDTO> getAllUnits()
+    public List<UnitDTO> getAllUnits(String simple)
     {
-        return unitRepository.getAllUnits().stream().map(unitMapper).collect(Collectors.toList());
+        if (PrefixTrieUtils.removePunctuation(simple).equalsIgnoreCase("true")) {
+            return unitRepository.getAllUnits().stream().map(unitMapperSimple).collect(Collectors.toList());
+        } else {
+            return unitRepository.getAllUnits().stream().map(unitMapperDetailed).collect(Collectors.toList());
+        }
     }
 
     public List<TraitDTO> getAllTraits()
@@ -69,7 +76,7 @@ public class UnitService
             return new SearchResultDTO();
         }
 
-        List<UnitDTO> champs = unitRepository.getAllChampionsStartingWith(search).stream().map(unitMapper).collect(Collectors.toList());
+        List<UnitDTO> champs = unitRepository.getAllChampionsStartingWith(search).stream().map(unitMapperSimple).collect(Collectors.toList());
         List<TraitDTO> traits = traitRepository.getAllTraitsStartingWith(search).stream().map(traitMapper).collect(Collectors.toList());
 
         return new SearchResultDTO(champs, traits);
@@ -106,7 +113,7 @@ public class UnitService
             traitList.forEach(trait -> filteredUnits.retainAll(new HashSet<>(unitRepository.getUnitsByTrait(trait))));
         }
 
-        return filteredUnits.stream().map(unitMapper).collect(Collectors.toList());
+        return filteredUnits.stream().map(unitMapperSimple).collect(Collectors.toList());
     }
 
 

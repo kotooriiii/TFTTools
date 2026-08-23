@@ -15,7 +15,12 @@ public enum Role {
     APSPECIALIST("APSpecialist"),
     ADSPECIALIST("ADSpecialist"),
     ADCARRY("ADCarry"),
-    APCARRY("APCarry");
+    APCARRY("APCarry"),
+    HYBRIDCASTER("HybridCaster"),
+    HYBRIDTANK("HybridTank"),
+    HYBRIDFIGHTER("HybridFighter"),
+    HYBRIDSPECIALIST("HybridSpecialist"),
+    HYBRIDCARRY("HybridCarry");
 
     private final String displayName;
 
