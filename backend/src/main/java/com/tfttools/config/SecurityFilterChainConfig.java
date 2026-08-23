@@ -72,8 +72,17 @@ public class SecurityFilterChainConfig
                     // behavior, unchanged). Verified empirically that unmatched requests are denied
                     // (403) under the current Spring Security version - e.g. GET /cdragon/cache/status
                     // and GET /units/traits already return 403 today with no auth changes at all. Not
-                    // touching that pre-existing gap here; only /auth/** rules are new.
+                    // touching that pre-existing gap here; only /auth/** rules (and /error, below) are new.
                     authorizationManagerRequestMatcherRegistry
+                            // /error must be explicitly permitted (for all methods - a forward preserves
+                            // the original request's HTTP method). Any unhandled exception in ANY
+                            // controller forwards here, and that forward re-enters this same filter
+                            // chain as a new request; without this, an unmatched/denied /error pass
+                            // silently overwrites the real status (e.g. a 404 or 500) with a 403. This
+                            // was already happening on master before this ticket - not new behavior,
+                            // just previously-undiscovered because nothing permitted /error.
+                            .requestMatchers("/error")
+                            .permitAll()
                             .requestMatchers(
                                     HttpMethod.GET,
                                     "/units/filter",
