@@ -66,7 +66,7 @@ public class EngineConfigurationAdapter
                 .excludedTraits(excludedTraits)
                 .excludedUnits(excludedUnits)
                 .costOfBoard(horizontalDTO.costOfBoard())
-                .tactitionLevel(horizontalDTO.tactitionLevel())
+                .tacticianLevel(horizontalDTO.tacticianLevel())
                 .crowns(horizontalDTO.crowns())
                 .emblems(emblems)
                 .luck(horizontalDTO.luck())
@@ -156,10 +156,10 @@ private void validateBusinessRules(HorizontalDTO horizontalDTO, ValidationContex
         validation.addError("Invalid comp size: " + horizontalDTO.compSize());
     }
 
-    // Validate tactition level
-    if (horizontalDTO.tactitionLevel() < 1 || horizontalDTO.tactitionLevel() > 10)
+    // Validate tactician level
+    if (horizontalDTO.tacticianLevel() < 1 || horizontalDTO.tacticianLevel() > 10)
     {
-        validation.addError("Invalid tactition level: " + horizontalDTO.tactitionLevel());
+        validation.addError("Invalid tactician level: " + horizontalDTO.tacticianLevel());
     }
 
     // Validate luck

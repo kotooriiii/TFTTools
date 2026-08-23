@@ -1,6 +1,7 @@
 import React, {useRef, useState} from 'react';
 import {AnimatePresence, motion} from 'framer-motion';
 import {EmblemItem} from '../types/searchTypes';
+import {CompositionDTO, generateHorizontalComposition, HorizontalDTO} from '../services/searchService';
 
 import {EmblemSearchBox, EmblemSearchBoxHandle} from "../components/HorizontalCompositionGenerator/EmblemSearchBox.tsx";
 import {TraitSearchBox, TraitSearchBoxHandle} from '../components/HorizontalCompositionGenerator/TraitSearchBox.tsx';
@@ -26,14 +27,41 @@ interface AdvancedInputs
 
 interface TFTCompositionResult
 {
-    composition: string;
-    totalCost: number;
-    averageLevel: number;
-    traitBreakdowns: { trait: string; count: number; active: boolean }[];
-    goldEfficiency: number;
-    strengthRating: number;
+    compositions: CompositionDTO[];
     timestamp: string;
 }
+
+/**
+ * The map response for `composition.traits` loses each trait's activation
+ * thresholds (its key is serialized to just the trait name), so we recover
+ * them from the units' own trait data, which still carries the thresholds.
+ */
+const getTraitThresholds = (composition: CompositionDTO): Record<string, number[]> =>
+{
+    const thresholds: Record<string, number[]> = {};
+    composition.units.forEach(unit =>
+    {
+        unit.traits?.forEach(trait =>
+        {
+            if (!thresholds[trait.displayName]) {
+                thresholds[trait.displayName] = trait.activationThresholds;
+            }
+        });
+    });
+    return thresholds;
+};
+
+const getTraitBreakdown = (composition: CompositionDTO) =>
+{
+    const thresholds = getTraitThresholds(composition);
+    return Object.entries(composition.traits)
+        .map(([trait, count]) => ({
+            trait,
+            count,
+            active: (thresholds[trait] ?? []).some(threshold => count >= threshold)
+        }))
+        .sort((a, b) => Number(b.active) - Number(a.active) || b.count - a.count);
+};
 
 const HorizontalCompositionGenerator: React.FC = () =>
 {
@@ -57,6 +85,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
     const [isCalculating, setIsCalculating] = useState(false);
     const [isResetting, setIsResetting] = useState(false);
     const [result, setResult] = useState<TFTCompositionResult | null>(null);
+    const [error, setError] = useState<string | null>(null);
     const [resetKey, setResetKey] = useState(0);
 
 
@@ -64,15 +93,12 @@ const HorizontalCompositionGenerator: React.FC = () =>
 
     // Search states for emblems
     const emblemSearchRef = useRef<EmblemSearchBoxHandle>(null);
-    const selectedEmblems = emblemSearchRef.current?.getSelectedEmblems() || [];
 
     // Search states for traits
     const traitSearchRef = useRef<TraitSearchBoxHandle>(null);
-    const selectedTraits = traitSearchRef.current?.getSelectedTraits() || [];
 
     // Search states for champions
     const championSearchRef = useRef<ChampionSearchBoxHandle>(null);
-    const selectedChampions = championSearchRef.current?.getSelectedChampions() || [];
 
 
 
@@ -81,26 +107,48 @@ const HorizontalCompositionGenerator: React.FC = () =>
     {
         setIsCalculating(true);
         setResult(null);
+        setError(null);
 
-        // Simulate API call delay
-        setTimeout(() =>
-        {
-            const mockResult: TFTCompositionResult = {
-                composition: `Level ${basicInputs.tacticianLevel} composition with ${basicInputs.requiredChampions.length} required champions`,
-                totalCost: basicInputs.tacticianLevel * 2 + basicInputs.requiredChampions.length * 3,
-                averageLevel: Math.floor(Math.random() * 3) + 1,
-                traitBreakdowns: basicInputs.requiredTraits.map(trait => ({
-                    trait: trait.trait,
-                    count: trait.count,
-                    active: trait.count >= 3
+        try {
+            // Collect data from refs
+            const selectedChampions = championSearchRef.current?.getSelectedChampions() || [];
+            const selectedTraits = traitSearchRef.current?.getSelectedTraits() || [];
+            const selectedEmblems = emblemSearchRef.current?.getSelectedEmblems() || [];
+
+            // Map frontend data to backend HorizontalDTO format
+            const horizontalData: HorizontalDTO = {
+                compSize: 8, // Default composition size, could be made configurable
+                requiredTraits: selectedTraits.reduce((acc, trait) => {
+                    acc[trait.displayName] = trait.count;
+                    return acc;
+                }, {} as Record<string, number>),
+                requiredChampions: selectedChampions.map(champion => ({
+                    displayName: champion.displayName
                 })),
-                goldEfficiency: Math.floor(Math.random() * 30 + 70),
-                strengthRating: Math.floor(Math.random() * 40 + 60),
-                timestamp: new Date().toLocaleString()
+                excludedTraits: [], // Not implemented in UI yet
+                excludedChampions: [], // Not implemented in UI yet
+                costOfBoard: advancedInputs.targetGold,
+                tacticianLevel: basicInputs.tacticianLevel,
+                crowns: advancedInputs.crownsPans,
+                emblems: selectedEmblems.map(emblem => ({
+                    displayName: emblem.displayName
+                })),
+                luck: advancedInputs.luck
             };
-            setResult(mockResult);
+
+            // Make API call and render exactly what the backend returned
+            const compositions = await generateHorizontalComposition(horizontalData);
+
+            setResult({
+                compositions: compositions ?? [],
+                timestamp: new Date().toLocaleString()
+            });
+        } catch (err) {
+            console.error('Error generating composition:', err);
+            setError('Error generating composition. Please try again.');
+        } finally {
             setIsCalculating(false);
-        }, 1500);
+        }
     };
 
     const resetForm = async () =>
@@ -108,6 +156,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
         setIsResetting(true);
 
         setResult(null);
+        setError(null);
 
         setTimeout(() =>
         {
@@ -383,6 +432,22 @@ const HorizontalCompositionGenerator: React.FC = () =>
                     </div>
                 </motion.div>
 
+                {/* Error Card */}
+                <AnimatePresence>
+                    {error && (
+                        <motion.div
+                            initial={{opacity: 0, y: 30, scale: 0.95}}
+                            animate={{opacity: 1, y: 0, scale: 1}}
+                            exit={{opacity: 0, y: -30, scale: 0.95}}
+                            transition={{duration: 0.5, ease: "easeOut"}}
+                            className="bg-red-50 border border-red-200 rounded-lg p-6 shadow-sm mb-6"
+                        >
+                            <div className="text-sm font-medium text-red-800 mb-1">Error</div>
+                            <div className="text-red-700">{error}</div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
                 {/* Results Card */}
                 <AnimatePresence>
                     {result && (
@@ -403,103 +468,82 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                <motion.div
-                                    className="bg-accent/50 rounded-lg p-4"
-                                    initial={{opacity: 0, x: -20}}
-                                    animate={{opacity: 1, x: 0}}
-                                    transition={{delay: 0.1}}
-                                >
-                                    <div className="text-sm font-medium text-muted-foreground mb-1">Composition</div>
-                                    <div className="text-lg font-semibold text-foreground">{result.composition}</div>
-                                </motion.div>
-
-                                <motion.div
-                                    className="bg-blue-50 rounded-lg p-4"
-                                    initial={{opacity: 0, x: -20}}
-                                    animate={{opacity: 1, x: 0}}
-                                    transition={{delay: 0.2}}
-                                >
-                                    <div className="text-sm font-medium text-muted-foreground mb-1">Total Cost</div>
-                                    <div className="text-lg font-semibold text-blue-700">{result.totalCost} Gold</div>
-                                </motion.div>
-
-                                <motion.div
-                                    className="bg-purple-50 rounded-lg p-4"
-                                    initial={{opacity: 0, x: -20}}
-                                    animate={{opacity: 1, x: 0}}
-                                    transition={{delay: 0.3}}
-                                >
-                                    <div className="text-sm font-medium text-muted-foreground mb-1">Average Unit Level
-                                    </div>
-                                    <div className="text-lg font-semibold text-purple-700">⭐ {result.averageLevel}</div>
-                                </motion.div>
-
-                                <motion.div
-                                    className="bg-orange-50 rounded-lg p-4"
-                                    initial={{opacity: 0, x: -20}}
-                                    animate={{opacity: 1, x: 0}}
-                                    transition={{delay: 0.4}}
-                                >
-                                    <div className="text-sm font-medium text-muted-foreground mb-1">Gold Efficiency
-                                    </div>
-                                    <div className="text-lg font-semibold text-orange-700">{result.goldEfficiency}%
-                                    </div>
-                                </motion.div>
-
-                                <motion.div
-                                    className="bg-emerald-50 rounded-lg p-4"
-                                    initial={{opacity: 0, x: -20}}
-                                    animate={{opacity: 1, x: 0}}
-                                    transition={{delay: 0.5}}
-                                >
-                                    <div className="text-sm font-medium text-muted-foreground mb-1">Strength Rating
-                                    </div>
-                                    <div
-                                        className="text-lg font-semibold text-emerald-700">{result.strengthRating}/100
-                                    </div>
-                                </motion.div>
-                            </div>
-
-                            {/* Trait Breakdowns */}
-                            {result.traitBreakdowns.length > 0 && (
-                                <motion.div
-                                    className="mt-6"
-                                    initial={{opacity: 0, y: 20}}
-                                    animate={{opacity: 1, y: 0}}
-                                    transition={{delay: 0.6}}
-                                >
-                                    <h4 className="text-lg font-semibold text-foreground mb-3">Trait Synergies</h4>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                        {result.traitBreakdowns.map((trait) => (
-                                            <div
-                                                key={trait.trait}
-                                                className={`flex items-center justify-between p-3 rounded-lg ${
-                                                    trait.active ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'
-                                                } border`}
-                                            >
-                                                <span className="font-medium">{trait.trait}</span>
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-sm">{trait.count}</span>
-                                                    {trait.active && <span className="text-green-600">✓</span>}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </motion.div>
-                            )}
-
-                            <motion.div
-                                className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg"
-                                initial={{opacity: 0, y: 20}}
-                                animate={{opacity: 1, y: 0}}
-                                transition={{delay: 0.7}}
-                            >
-                                <div className="text-sm font-medium text-green-800 mb-2">Status</div>
-                                <div className="text-green-700">
-                                    ✅ TFT composition generated successfully. Ready for ranked play!
+                            {result.compositions.length === 0 ? (
+                                <div className="p-4 bg-accent/50 rounded-lg text-foreground">
+                                    No valid compositions found with the given parameters.
                                 </div>
-                            </motion.div>
+                            ) : (
+                                <div className="space-y-6">
+                                    {result.compositions.map((composition, index) => {
+                                        const traitBreakdown = getTraitBreakdown(composition);
+                                        return (
+                                            <motion.div
+                                                key={composition.teamCode || index}
+                                                className="border border-border rounded-lg p-4"
+                                                initial={{opacity: 0, y: 20}}
+                                                animate={{opacity: 1, y: 0}}
+                                                transition={{delay: 0.1 * index}}
+                                            >
+                                                <div className="flex items-center justify-between mb-3">
+                                                    <h4 className="text-lg font-semibold text-foreground">
+                                                        Composition {index + 1}
+                                                    </h4>
+                                                    <span className="text-sm text-muted-foreground">
+                                                        {composition.activatedTraits} active traits
+                                                    </span>
+                                                </div>
+
+                                                {/* Units */}
+                                                <div className="flex flex-wrap gap-2 mb-4">
+                                                    {composition.units.map((unit) => (
+                                                        <span
+                                                            key={unit.displayName}
+                                                            className="px-3 py-1 bg-accent/50 rounded-full text-sm font-medium text-foreground"
+                                                        >
+                                                            {unit.displayName}
+                                                        </span>
+                                                    ))}
+                                                </div>
+
+                                                {/* Trait Breakdown */}
+                                                {traitBreakdown.length > 0 && (
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                                                        {traitBreakdown.map((trait) => (
+                                                            <div
+                                                                key={trait.trait}
+                                                                className={`flex items-center justify-between p-3 rounded-lg border ${
+                                                                    trait.active ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'
+                                                                }`}
+                                                            >
+                                                                <span className="font-medium">{trait.trait}</span>
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-sm">{trait.count}</span>
+                                                                    {trait.active && <span className="text-green-600">✓</span>}
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+
+                                                {/* Team Code */}
+                                                {composition.teamCode && (
+                                                    <div className="flex items-center gap-2">
+                                                        <code className="flex-1 px-3 py-2 bg-accent/50 rounded-md text-sm text-foreground overflow-x-auto whitespace-nowrap">
+                                                            {composition.teamCode}
+                                                        </code>
+                                                        <button
+                                                            onClick={() => navigator.clipboard.writeText(composition.teamCode)}
+                                                            className="px-3 py-2 bg-secondary text-secondary-foreground rounded-md text-sm font-medium hover:bg-secondary/90 transition-colors duration-200"
+                                                        >
+                                                            Copy
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </motion.div>
+                                        );
+                                    })}
+                                </div>
+                            )}
                         </motion.div>
                     )}
                 </AnimatePresence>

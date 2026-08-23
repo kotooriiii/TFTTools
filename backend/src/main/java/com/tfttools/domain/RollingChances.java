@@ -29,7 +29,7 @@ public enum RollingChances {
         return probabilities;
     }
 
-    public List<Float> getProbability(int tactitionLevel) {
-        return probabilities.get(tactitionLevel);
+    public List<Float> getProbability(int tacticianLevel) {
+        return probabilities.get(tacticianLevel);
     }
 }

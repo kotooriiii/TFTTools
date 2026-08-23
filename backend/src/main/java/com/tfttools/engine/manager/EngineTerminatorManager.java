@@ -10,9 +10,9 @@ import java.util.List;
 public class EngineTerminatorManager {
     private final List<EngineTerminator> engineTerminators;
 
-    public EngineTerminatorManager(int tactitionLevel, int crowns) {
+    public EngineTerminatorManager(int tacticianLevel, int crowns) {
         this.engineTerminators = new ArrayList<>();
-        CompSizeEngineTerminator compSizeEngineTerminator = new CompSizeEngineTerminator(tactitionLevel, crowns);
+        CompSizeEngineTerminator compSizeEngineTerminator = new CompSizeEngineTerminator(tacticianLevel, crowns);
         this.engineTerminators.add(compSizeEngineTerminator);
     }
 

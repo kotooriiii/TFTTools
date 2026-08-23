@@ -73,7 +73,7 @@ const GraphCanvasTool: React.FC = () =>
 
         // Check if unit already exists on canvas
         const existingVertex = vertices.find(vertex => 
-            vertex.unitData?.champion === dragAndDrop.draggedUnit?.champion
+            vertex.unitData?.displayName === dragAndDrop.draggedUnit?.displayName
         );
 
         if (existingVertex) {
