@@ -13,7 +13,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -31,6 +33,32 @@ public class SecurityFilterChainConfig
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Default Spring Security behavior (403 via Http403ForbiddenEntryPoint) everywhere except
+     * /auth/**, which returns 401 as required by the auth endpoints' acceptance criteria.
+     */
+    private AuthenticationEntryPoint authAuthenticationEntryPoint()
+    {
+        Http403ForbiddenEntryPoint defaultEntryPoint = new Http403ForbiddenEntryPoint();
+        return (request, response, authException) ->
+        {
+            if (request.getRequestURI().startsWith("/auth/"))
+            {
+                // Write directly rather than response.sendError(...): sendError triggers Tomcat's
+                // error-page forward to /error, which re-enters this same filter chain, gets denied
+                // again (no rule permits /error), and re-invokes this entry point for that second
+                // pass - overwriting the intended 401 with the default entry point's 403.
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"error\":\"Unauthorized\"}");
+            }
+            else
+            {
+                defaultEntryPoint.commence(request, response, authException);
+            }
+        };
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception
@@ -41,9 +69,10 @@ public class SecurityFilterChainConfig
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                 {
                     // NOTE: there is deliberately no trailing anyRequest() rule here (pre-existing
-                    // behavior). Spring Security treats an unmatched request as implicitly allowed,
-                    // which is why e.g. /cdragon/** already works with no entry below. Any path that
-                    // must require auth (like /auth/me) has to be listed explicitly with .authenticated().
+                    // behavior, unchanged). Verified empirically that unmatched requests are denied
+                    // (403) under the current Spring Security version - e.g. GET /cdragon/cache/status
+                    // and GET /units/traits already return 403 today with no auth changes at all. Not
+                    // touching that pre-existing gap here; only /auth/** rules are new.
                     authorizationManagerRequestMatcherRegistry
                             .requestMatchers(
                                     HttpMethod.GET,
@@ -64,9 +93,11 @@ public class SecurityFilterChainConfig
                                     "/auth/me"
                             ).authenticated();
                 })
+                // Scoped to /auth/** only, so every other (pre-existing) denied path keeps returning
+                // the default 403 it already returned before this ticket - only /auth/me needs the
+                // clean 401 required by its acceptance criteria.
                 .exceptionHandling(exceptionHandlingConfigurer -> exceptionHandlingConfigurer
-                        .authenticationEntryPoint((request, response, authException) ->
-                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")))
+                        .authenticationEntryPoint(authAuthenticationEntryPoint()))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
