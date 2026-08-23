@@ -17,7 +17,7 @@ export const Sidebar: React.FC<SidebarProps> = ({currentPath, onNavigate}) =>
         <motion.div 
             animate={{width: isCollapsed ? 48 : 200}}
             transition={{duration: 0.2, ease: "easeInOut"}}
-            className="h-screen bg-primary border-r border-border flex flex-col"
+            className="h-full bg-primary border-r border-border flex flex-col"
         >
             {/* Header */}
             <div className={`
