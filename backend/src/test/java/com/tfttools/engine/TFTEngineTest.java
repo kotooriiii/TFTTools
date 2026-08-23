@@ -4,7 +4,6 @@ import com.tfttools.dto.HorizontalDTO;
 import com.tfttools.dto.TraitDTO;
 import com.tfttools.dto.UnitDTO;
 import com.tfttools.mapper.TraitMapper;
-import com.tfttools.mapper.UnitMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

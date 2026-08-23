@@ -27,7 +27,8 @@ public class UnitMapperSimple implements Function<Unit, UnitDTO> {
     public UnitDTO apply(Unit unit) {
         return new UnitDTO(
                 unit.getDisplayName(),
-                unit.getTraits().stream().map(traitMapper).collect(Collectors.toSet())
+                unit.getTraits().stream().map(traitMapper).collect(Collectors.toSet()),
+                unit.getCost()
         );
     }
 }

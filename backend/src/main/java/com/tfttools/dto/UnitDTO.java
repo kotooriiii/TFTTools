@@ -18,21 +18,23 @@ public class UnitDTO {
     private final Set<TraitDTO> traits;
     private final ChampionStats championStats;
     private final Role role;
+    private final int cost;
 
-    public UnitDTO(String displayName, Set<TraitDTO> traits, ChampionStats championStats, Role role) {
+    public UnitDTO(String displayName, Set<TraitDTO> traits, ChampionStats championStats, Role role, int cost) {
         this.displayName = displayName;
         this.traits = traits;
         this.championStats = championStats;
         this.role = role;
+        this.cost = cost;
     }
 
-    public UnitDTO(String displayName, Set<TraitDTO> traits) {
-        this(displayName, traits, null, null);
+    public UnitDTO(String displayName, Set<TraitDTO> traits, int cost) {
+        this(displayName, traits, null, null, cost);
     }
 
     @JsonCreator
     public UnitDTO(String displayName) {
-        this(displayName, null, null, null);
+        this(displayName, null, null, null, 0);
     }
 
 }
