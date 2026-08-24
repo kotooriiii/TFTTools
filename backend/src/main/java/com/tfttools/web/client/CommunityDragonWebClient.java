@@ -13,12 +13,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.Map;
 
 @Service
 public class CommunityDragonWebClient {
-
-
-    //todo future https://raw.communitydragon.org/latest/game/data/characters/ to get img of chars
 
     private final WebClient webClient;
     
@@ -48,6 +46,15 @@ public class CommunityDragonWebClient {
                 .uri("/latest/plugins/rcp-be-lol-game-data/global/default/v1/tftchampions-teamplanner.json")
                 .retrieve()
                 .bodyToMono(TeamPlannerData.class)
+                .timeout(Duration.ofSeconds(30));
+    }
+
+    public Mono<byte[]> fetchChampionIcon(String apiNameLower) {
+        return webClient.get()
+                .uri("/latest/game/assets/characters/{apiNameLower}/hud/{apiNameLower}_square.png",
+                        Map.of("apiNameLower", apiNameLower))
+                .retrieve()
+                .bodyToMono(byte[].class)
                 .timeout(Duration.ofSeconds(30));
     }
 

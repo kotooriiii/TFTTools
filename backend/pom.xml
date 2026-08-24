@@ -115,6 +115,13 @@
             <artifactId>spring-webflux</artifactId>
         </dependency>
 
+        <!-- AWS S3: caches champion HUD icon assets fetched from Community Dragon -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>2.25.60</version>
+        </dependency>
+
         <!-- Apache HttpClient 5: TestRestTemplate falls back to it when present, avoiding a long-standing
              JDK HttpURLConnection bug where a POST followed by a non-2xx response throws
              HttpRetryException ("cannot retry due to server authentication, in streaming mode"). -->

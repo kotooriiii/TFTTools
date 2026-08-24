@@ -2,6 +2,7 @@ package com.tfttools.mapper;
 
 import com.tfttools.domain.Unit;
 import com.tfttools.dto.UnitDTO;
+import com.tfttools.service.ChampionIconCacheService;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
@@ -13,9 +14,11 @@ import java.util.stream.Collectors;
 @Component
 public class UnitMapperSimple implements Function<Unit, UnitDTO> {
     private final TraitMapper traitMapper;
+    private final ChampionIconCacheService championIconCacheService;
 
-    public UnitMapperSimple(TraitMapper traitMapper) {
+    public UnitMapperSimple(TraitMapper traitMapper, ChampionIconCacheService championIconCacheService) {
         this.traitMapper = traitMapper;
+        this.championIconCacheService = championIconCacheService;
     }
 
     /**
@@ -28,7 +31,8 @@ public class UnitMapperSimple implements Function<Unit, UnitDTO> {
         return new UnitDTO(
                 unit.getDisplayName(),
                 unit.getTraits().stream().map(traitMapper).collect(Collectors.toSet()),
-                unit.getCost()
+                unit.getCost(),
+                championIconCacheService.getIconUrl(unit.getApiName())
         );
     }
 }

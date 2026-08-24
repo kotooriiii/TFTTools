@@ -7,6 +7,7 @@ import com.tfttools.domain.communitydragon.ChampionStats;
 import com.tfttools.domain.communitydragon.CommunityDragonChampions;
 import com.tfttools.domain.communitydragon.CommunityDragonObject;
 import com.tfttools.prefixtrie.PrefixTrie;
+import com.tfttools.service.ChampionIconCacheService;
 import com.tfttools.service.CommunityDragonDataService;
 import com.tfttools.service.TFTSetContextService;
 import jakarta.annotation.PostConstruct;
@@ -32,9 +33,10 @@ public class UnitRepository
     private final TraitRepository traitRepository;
     private final CommunityDragonDataService dataService;
     private final TFTSetContextService setContextService;
+    private final ChampionIconCacheService championIconCacheService;
 
     @Autowired
-    public UnitRepository(TraitRepository traitRepository, CommunityDragonDataService dataService, TFTSetContextService setContextService)
+    public UnitRepository(TraitRepository traitRepository, CommunityDragonDataService dataService, TFTSetContextService setContextService, ChampionIconCacheService championIconCacheService)
     {
         this.units = new HashMap<>();
         this.unitPrefixTrie = new PrefixTrie<>();
@@ -42,6 +44,7 @@ public class UnitRepository
         this.traitRepository = traitRepository;
         this.dataService = dataService;
         this.setContextService = setContextService;
+        this.championIconCacheService = championIconCacheService;
     }
 
     @PostConstruct
@@ -51,6 +54,8 @@ public class UnitRepository
         this.units.values().forEach(this.unitPrefixTrie::add);
 
         registerTraitToUnitsMapping();
+
+        championIconCacheService.ensureAllCached(getAllUnits());
     }
 
     private void registerTraitToUnitsMapping()
