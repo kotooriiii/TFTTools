@@ -22,6 +22,7 @@ export interface ColorPalette {
 export interface Theme {
   name: string;
   colors: ColorPalette;
+  experimental?: boolean;
 }
 
 interface ThemeContextType {

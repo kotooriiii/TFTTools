@@ -3,6 +3,9 @@ import { createRoot } from 'react-dom/client'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import './index.css'
 import App from './App.tsx'
+import { registerThemeFeatureFlagConsoleHelpers } from './utils/featureFlags'
+
+registerThemeFeatureFlagConsoleHelpers()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
