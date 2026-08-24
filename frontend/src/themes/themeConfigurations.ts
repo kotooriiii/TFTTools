@@ -9,19 +9,19 @@ export const themes: Record<string, Theme> = {
                     bg:
                         {
                             primary: '#E7EFC7',   // Grass
-                            secondary: '#DCEAF0', // Sky
-                            accent: '#EDE0C8'      // Dirt
+                            secondary: '#DDEAE3', // Misty sky
+                            accent: '#F0DEC2'      // Pale straw dirt
                         },
                     text:
                         {
-                            primary: '#3B3B1A',
-                            secondary: '#8A784E',
-                            accent: '#3B3B1A'
+                            primary: '#3A4A38',
+                            secondary: '#7E8A70',
+                            accent: '#3A4A38'
                         },
-                    border: '#AEC8A4',        // Soft sage green for borders
-                    success: '#4CAF50',
-                    warning: '#FF9800',
-                    error: '#F44336'
+                    border: '#A8C4AE',        // Soft misty sage for borders
+                    success: '#7BC47F',
+                    warning: '#E0A85C',
+                    error: '#E17B72'
                 }
         },
         dark: {
