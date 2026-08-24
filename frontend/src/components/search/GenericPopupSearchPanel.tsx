@@ -38,7 +38,7 @@ export const GenericPopupSearchPanel = <T,>({
                 ref={ref}
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-primary border-2 border-border rounded-xl p-5 w-[500px] max-w-[90vw] max-h-[400px] shadow-lg backdrop-blur-md pointer-events-auto"
+                className="bg-primary border border-border rounded-xl p-5 w-[500px] max-w-[90vw] max-h-[400px] shadow-lg backdrop-blur-md pointer-events-auto"
             >
                 {/* Search Input */}
                 <div className="mb-4">
@@ -47,7 +47,7 @@ export const GenericPopupSearchPanel = <T,>({
                         placeholder={placeholder}
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
-                        className="w-full p-3 border-2 border-border rounded-lg text-base text-primary bg-primary outline-none focus:ring-2 focus:ring-border"
+                        className="w-full p-3 border border-border rounded-lg text-base text-primary bg-primary outline-none focus:ring-2 focus:ring-border"
                     />
                 </div>
 
