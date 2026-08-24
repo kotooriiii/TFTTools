@@ -1,10 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getToolsForSidebar } from '../config/RouteConfig';
+import { getToolsForNav } from '../config/RouteConfig';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const allTools = getToolsForSidebar();
+  const allTools = getToolsForNav();
   const toolsOnly = allTools.filter(tool => tool.id !== 'home');
 
   const handleToolSelect = (tool: any) => {
