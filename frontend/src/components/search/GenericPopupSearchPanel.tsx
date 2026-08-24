@@ -47,7 +47,7 @@ export const GenericPopupSearchPanel = <T,>({
                         placeholder={placeholder}
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
-                        className="w-full p-3 border border-border rounded-lg text-base text-primary bg-primary outline-none focus:ring-2 focus:ring-border"
+                        className="w-full p-3 border border-border rounded-lg text-base text-primary bg-primary outline-none focus:ring-1 focus:ring-border"
                     />
                 </div>
 

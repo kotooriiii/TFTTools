@@ -56,7 +56,7 @@ export const LoginPage: React.FC = () => {
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full p-2.5 border border-border rounded-lg bg-primary text-primary text-sm outline-none focus:ring-2 focus:ring-border"
+                            className="w-full p-2.5 border border-border rounded-lg bg-primary text-primary text-sm outline-none focus:ring-1 focus:ring-border"
                         />
                     </div>
 
@@ -67,7 +67,7 @@ export const LoginPage: React.FC = () => {
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full p-2.5 border border-border rounded-lg bg-primary text-primary text-sm outline-none focus:ring-2 focus:ring-border"
+                            className="w-full p-2.5 border border-border rounded-lg bg-primary text-primary text-sm outline-none focus:ring-1 focus:ring-border"
                         />
                     </div>
 

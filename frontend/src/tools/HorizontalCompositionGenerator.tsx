@@ -345,7 +345,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                     ...prev,
                                                     crownsPans: parseInt(e.target.value)
                                                 }))}
-                                                className="w-full px-3 py-2 border border-border rounded-md bg-primary text-primary focus:outline-none focus:ring-2 focus:ring-border focus:border-transparent"
+                                                className="w-full px-3 py-2 border border-border rounded-md bg-primary text-primary focus:outline-none focus:ring-1 focus:ring-border "
                                             />
                                         </div>
 
@@ -363,7 +363,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                     ...prev,
                                                     luck: parseFloat(e.target.value)
                                                 }))}
-                                                className="w-full px-3 py-2 border border-border rounded-md bg-primary text-primary focus:outline-none focus:ring-2 focus:ring-border focus:border-transparent"
+                                                className="w-full px-3 py-2 border border-border rounded-md bg-primary text-primary focus:outline-none focus:ring-1 focus:ring-border "
                                             />
                                         </div>
 
@@ -380,7 +380,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                     ...prev,
                                                     targetGold: parseInt(e.target.value)
                                                 }))}
-                                                className="w-full px-3 py-2 border border-border rounded-md bg-primary text-primary focus:outline-none focus:ring-2 focus:ring-border focus:border-transparent"
+                                                className="w-full px-3 py-2 border border-border rounded-md bg-primary text-primary focus:outline-none focus:ring-1 focus:ring-border "
                                             />
                                         </div>
                                     </div>
