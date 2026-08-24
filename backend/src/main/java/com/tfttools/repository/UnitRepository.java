@@ -101,7 +101,7 @@ public class UnitRepository
                     continue;
                 }
 
-                this.units.put(name, new Unit(apiName, name, cost, role, championStats, traits));
+                this.units.put(name, new Unit(apiName, name, cost, role, championStats, traits, champions.getTileIcon()));
             }
         } catch (Exception e)
         {

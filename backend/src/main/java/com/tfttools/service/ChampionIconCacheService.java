@@ -48,8 +48,7 @@ public class ChampionIconCacheService
      */
     public String getIconUrl(String apiName)
     {
-        String base = cdnBaseUrl.endsWith("/") ? cdnBaseUrl.substring(0, cdnBaseUrl.length() - 1) : cdnBaseUrl;
-        return base + "/" + iconKey(apiName);
+        return cdnBaseUrl + "/" + iconKey(apiName);
     }
 
     /**
@@ -62,7 +61,7 @@ public class ChampionIconCacheService
         CompletableFuture.runAsync(() -> units.forEach(unit -> {
             try
             {
-                ensureCached(unit.getApiName());
+                ensureCached(unit);
             } catch (Exception e)
             {
                 logger.warn("Failed to cache champion icon for {}", unit.getApiName(), e);
@@ -70,8 +69,9 @@ public class ChampionIconCacheService
         }));
     }
 
-    private void ensureCached(String apiName)
+    private void ensureCached(Unit unit)
     {
+        String apiName = unit.getApiName();
         String key = iconKey(apiName);
 
         if (objectExists(key))
@@ -79,7 +79,18 @@ public class ChampionIconCacheService
             return;
         }
 
-        byte[] iconBytes = communityDragonWebClient.fetchChampionIcon(apiName.toLowerCase()).block();
+        String tileIconPath = unit.getTileIconPath();
+        if (tileIconPath == null || tileIconPath.isBlank() || tileIconPath.equalsIgnoreCase("None"))
+        {
+            throw new IllegalStateException("No tileIcon available from Community Dragon for " + apiName);
+        }
+
+        // Community Dragon serves raw game assets by lowercasing the ASSETS-relative path and swapping
+        // the extension to .png - the tileIcon's actual filename does not always match the apiName
+        // (e.g. Rhaast's HUD icon is stored as TFT17_Kayn_Slay_Square.tex, sharing Kayn's alternate-form assets).
+        String assetPath = tileIconPath.toLowerCase().replace(".tex", ".png");
+
+        byte[] iconBytes = communityDragonWebClient.fetchChampionIcon(assetPath).block();
         if (iconBytes == null || iconBytes.length == 0)
         {
             throw new IllegalStateException("Community Dragon returned no image data for " + apiName);

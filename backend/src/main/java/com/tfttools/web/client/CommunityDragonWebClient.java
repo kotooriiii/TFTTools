@@ -13,7 +13,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.util.Map;
 
 @Service
 public class CommunityDragonWebClient {
@@ -49,10 +48,13 @@ public class CommunityDragonWebClient {
                 .timeout(Duration.ofSeconds(30));
     }
 
-    public Mono<byte[]> fetchChampionIcon(String apiNameLower) {
+    /**
+     * @param lowercaseAssetPath a Community Dragon game asset path, lowercased with the extension already
+     *                           swapped to .png (e.g. "assets/characters/tft17_rhaast/hud/tft17_kayn_slay_square.png")
+     */
+    public Mono<byte[]> fetchChampionIcon(String lowercaseAssetPath) {
         return webClient.get()
-                .uri("/latest/game/assets/characters/{apiNameLower}/hud/{apiNameLower}_square.png",
-                        Map.of("apiNameLower", apiNameLower))
+                .uri("/latest/game/" + lowercaseAssetPath)
                 .retrieve()
                 .bodyToMono(byte[].class)
                 .timeout(Duration.ofSeconds(30));
