@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {motion} from 'framer-motion';
-import {getToolsForSidebar} from '../config/RouteConfig';
+import {getToolsForNav} from '../config/RouteConfig';
 
 interface SidebarProps
 {
@@ -11,7 +11,7 @@ interface SidebarProps
 export const Sidebar: React.FC<SidebarProps> = ({currentPath, onNavigate}) =>
 {
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const tools = getToolsForSidebar();
+    const tools = getToolsForNav();
 
     return (
         <motion.div 

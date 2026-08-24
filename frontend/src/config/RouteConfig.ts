@@ -17,7 +17,7 @@ export interface RouteConfig
     icon: string;
     description?: string;
     component: React.ComponentType;
-    hideFromSidebar?: boolean;
+    hideFromNav?: boolean;
 }
 
 export const ROUTE_CONFIG: RouteConfig[] = [
@@ -59,7 +59,7 @@ export const ROUTE_CONFIG: RouteConfig[] = [
         name: 'Log In',
         icon: '🔑',
         component: LoginPage,
-        hideFromSidebar: true
+        hideFromNav: true
     },
     {
         id: 'signup',
@@ -67,7 +67,7 @@ export const ROUTE_CONFIG: RouteConfig[] = [
         name: 'Sign Up',
         icon: '📝',
         component: SignupPage,
-        hideFromSidebar: true
+        hideFromNav: true
     },
     {
         id: 'profile',
@@ -75,7 +75,7 @@ export const ROUTE_CONFIG: RouteConfig[] = [
         name: 'Profile',
         icon: '👤',
         component: ProfilePage,
-        hideFromSidebar: true
+        hideFromNav: true
     },
     {
         id: 'settings',
@@ -83,7 +83,7 @@ export const ROUTE_CONFIG: RouteConfig[] = [
         name: 'Settings',
         icon: '⚙️',
         component: SettingsPage,
-        hideFromSidebar: true
+        hideFromNav: true
     },
     {
         id: 'my-comps',
@@ -91,12 +91,12 @@ export const ROUTE_CONFIG: RouteConfig[] = [
         name: 'My Comps',
         icon: '📁',
         component: MyCompsPage,
-        hideFromSidebar: true
+        hideFromNav: true
     }
 ];
 
-// Helper to get just the tool info (for sidebar)
-export const getToolsForSidebar = () =>
+// Helper to get just the tool info (for nav)
+export const getToolsForNav = () =>
     ROUTE_CONFIG
-        .filter(tool => !tool.hideFromSidebar)
+        .filter(tool => !tool.hideFromNav)
         .map(({component: _component, ...tool}) => tool);
