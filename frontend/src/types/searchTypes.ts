@@ -1,5 +1,6 @@
 export interface SearchItem {
     displayName: string;
+    iconUrl?: string;
 }
 
 export type ChampionItem = SearchItem;
@@ -25,4 +26,5 @@ export interface ApiTraitResponse {
 
 export interface ApiChampionResponse {
     displayName: string;
+    iconUrl?: string;
 }

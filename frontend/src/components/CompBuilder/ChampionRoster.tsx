@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ChampionData } from '../../types/compBuilderTypes';
-import { getCostColor, getInitials } from './hexUtils';
+import { getCostColor } from './hexUtils';
+import { ChampionPortrait } from '../ChampionPortrait';
 
 interface ChampionRosterProps {
     champions: ChampionData[];
@@ -80,12 +81,11 @@ export const ChampionRoster: React.FC<ChampionRosterProps> = ({
                                             opacity: isPlaced ? 0.45 : 1
                                         }}
                                     >
-                                        <div
-                                            className="w-9 h-9 rounded-full flex items-center justify-center text-white text-[10px] font-bold"
-                                            style={{ backgroundColor: '#3B3B1A' }}
-                                        >
-                                            {getInitials(champion.displayName)}
-                                        </div>
+                                        <ChampionPortrait
+                                            displayName={champion.displayName}
+                                            iconUrl={champion.iconUrl}
+                                            size={36}
+                                        />
                                         <div className="text-[10px] text-center leading-tight text-primary truncate w-full">
                                             {champion.displayName}
                                         </div>
