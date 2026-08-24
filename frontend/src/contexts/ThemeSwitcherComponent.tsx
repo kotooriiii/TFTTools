@@ -1,7 +1,6 @@
 // src/components/ThemeSwitcher.tsx
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from './ThemeContext.tsx';
 import { themes } from '../themes/themeConfigurations';
-import {useEffect} from "react";
 
 export const ThemeSwitcher: React.FC = () => {
   const { theme, setTheme } = useTheme();

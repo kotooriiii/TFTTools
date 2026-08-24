@@ -6,18 +6,15 @@ target/
 frontend/node_modules/
 
 ### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
-*.iws
-*.iml
-*.ipr
-.idea/vcs.xml
-.idea/encodings.xml
-.idea/misc.xml
-.idea/inspectionProfiles/Project_Default.xml
-.idea/workspace.xml
+# Ignore all files in the .idea folder
+.idea/
+
+# EXCEPT these files and folders to share project configurations
+!.idea/runConfigurations/
+!.idea/codeStyles/
+!.idea/vcs.xml
+!.idea/misc.xml
+!.idea/modules.xml
 
 ### Eclipse ###
 .apt_generated
@@ -47,3 +44,25 @@ build/
 ### Local env ###
 .env
 
+# ==============================================================================
+# Claude Code Configuration (.gitignore)
+# ==============================================================================
+
+# 1. Ignore all private local settings, cache, and history
+.claude/settings.local.json
+.claude.json
+.claude.json.backup.*
+.claude/history.jsonl
+.claude/backups/
+.claude/cache/
+.claude/debug/
+
+# 2. Prevent git from tracking automated conversation logs
+.claude/sessions/
+
+# 3. Explicitly allow sharing team-wide guidelines and shared configurations
+!.claude/
+!.claude/settings.json
+!.claude/CLAUDE.md
+!CLAUDE.md
+!.claude/commands/

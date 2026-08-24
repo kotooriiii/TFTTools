@@ -37,7 +37,6 @@ export const GraphSVG = forwardRef<SVGSVGElement, GraphSVGProps>(({
                                                                       edges,
                                                                       onCanvasDrop,
                                                                       onCanvasDragOver,
-                                                                      draggedUnit,
                                                                       isPanning,
                                                                       panOffset,
                                                                       panVelocity,

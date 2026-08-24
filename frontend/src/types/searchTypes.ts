@@ -2,8 +2,7 @@ export interface SearchItem {
     displayName: string;
 }
 
-export interface ChampionItem extends SearchItem {
-}
+export type ChampionItem = SearchItem;
 
 export interface TraitItem extends SearchItem {
     count: number;
