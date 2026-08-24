@@ -5,6 +5,7 @@ export interface UnitDTO {
     displayName: string;
     traits?: TraitDTO[];
     cost?: number;
+    iconUrl?: string;
 }
 
 export interface TraitDTO {

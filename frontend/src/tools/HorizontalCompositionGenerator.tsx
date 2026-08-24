@@ -78,7 +78,8 @@ const placementsToBoard = (placements: UnitPlacementDTO[]): Record<string, Champ
         board[hexId(placement.row, placement.col)] = {
             displayName: placement.unit.displayName,
             cost: placement.unit.cost ?? 0,
-            traits: placement.unit.traits ?? []
+            traits: placement.unit.traits ?? [],
+            iconUrl: placement.unit.iconUrl
         };
     });
     return board;
