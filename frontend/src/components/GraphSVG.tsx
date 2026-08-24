@@ -62,7 +62,7 @@ export const GraphSVG = forwardRef<SVGSVGElement, GraphSVGProps>(({
             left: 0,
             width: '100%',
             height: '100%',
-            backgroundColor: '#C3A995',
+            backgroundColor: 'var(--color-bg-secondary)',
             overflow: 'hidden'
         }}>
             <svg
