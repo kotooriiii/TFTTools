@@ -8,17 +8,17 @@ export const themes: Record<string, Theme> = {
                 {
                     bg:
                         {
-                            primary: '#E7EFC7',   // Grass
-                            secondary: '#DDEAE3', // Misty sky
-                            accent: '#F0DEC2'      // Pale straw dirt
+                            primary: '#FDEDE3',
+                            secondary: '#FDE3EA',
+                            accent: '#FFF1D6'
                         },
                     text:
                         {
-                            primary: '#3A4A38',
-                            secondary: '#7E8A70',
-                            accent: '#3A4A38'
+                            primary: '#6B4A3E',
+                            secondary: '#A9806E',
+                            accent: '#6B4A3E'
                         },
-                    border: '#A8C4AE',        // Soft misty sage for borders
+                    border: '#F3C9B6',
                     success: '#7BC47F',
                     warning: '#E0A85C',
                     error: '#E17B72'
@@ -30,17 +30,17 @@ export const themes: Record<string, Theme> = {
                 {
                     bg:
                         {
-                            primary: '#2B3324',   // Night grass
-                            secondary: '#26313A', // Night sky
-                            accent: '#3A2E22'      // Dark soil
+                            primary: '#3A2A24',   // Dusk peach
+                            secondary: '#3D2530', // Dusk blush
+                            accent: '#3D3220'      // Dusk cream
                         },
                     text:
                         {
-                            primary: '#EDE6D6',
-                            secondary: '#B5AE8E',
-                            accent: '#EDE6D6'
+                            primary: '#F0DDD0',
+                            secondary: '#C2A08F',
+                            accent: '#F0DDD0'
                         },
-                    border: '#4B5240',        // Muted olive borders
+                    border: '#5A4038',        // Muted rose-brown borders
                     success: '#7BC47F',
                     warning: '#E0A85C',
                     error: '#E17B72'
@@ -77,17 +77,17 @@ export const themes: Record<string, Theme> = {
                 {
                     bg:
                         {
-                            primary: '#FDEDE3',
-                            secondary: '#FDE3EA',
-                            accent: '#FFF1D6'
+                            primary: '#E7EFC7',   // Grass
+                            secondary: '#DDEAE3', // Misty sky
+                            accent: '#F0DEC2'      // Pale straw dirt
                         },
                     text:
                         {
-                            primary: '#6B4A3E',
-                            secondary: '#A9806E',
-                            accent: '#6B4A3E'
+                            primary: '#3A4A38',
+                            secondary: '#7E8A70',
+                            accent: '#3A4A38'
                         },
-                    border: '#F3C9B6',
+                    border: '#A8C4AE',        // Soft misty sage for borders
                     success: '#7BC47F',
                     warning: '#E0A85C',
                     error: '#E17B72'
