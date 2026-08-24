@@ -65,7 +65,7 @@ export const SignupPage: React.FC = () => {
                             required
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="w-full p-2.5 border border-border rounded-lg bg-white text-sm outline-none focus:ring-2 focus:ring-accent"
+                            className="w-full p-2.5 border border-border rounded-lg bg-primary text-primary text-sm outline-none focus:ring-1 focus:ring-border"
                         />
                         {fieldErrors.username && <div className="text-error text-xs mt-1">{fieldErrors.username}</div>}
                     </div>
@@ -77,7 +77,7 @@ export const SignupPage: React.FC = () => {
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full p-2.5 border border-border rounded-lg bg-white text-sm outline-none focus:ring-2 focus:ring-accent"
+                            className="w-full p-2.5 border border-border rounded-lg bg-primary text-primary text-sm outline-none focus:ring-1 focus:ring-border"
                         />
                         {fieldErrors.email && <div className="text-error text-xs mt-1">{fieldErrors.email}</div>}
                     </div>
@@ -89,7 +89,7 @@ export const SignupPage: React.FC = () => {
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full p-2.5 border border-border rounded-lg bg-white text-sm outline-none focus:ring-2 focus:ring-accent"
+                            className="w-full p-2.5 border border-border rounded-lg bg-primary text-primary text-sm outline-none focus:ring-1 focus:ring-border"
                         />
                         {fieldErrors.password && <div className="text-error text-xs mt-1">{fieldErrors.password}</div>}
                     </div>

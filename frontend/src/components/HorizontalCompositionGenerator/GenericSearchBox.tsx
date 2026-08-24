@@ -83,7 +83,7 @@ export const GenericSearchBox = <T, >({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
-                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full px-3 py-2 border border-border rounded-md bg-primary text-primary focus:outline-none focus:ring-1 focus:ring-border "
                 placeholder={config.placeholder}
             />
 

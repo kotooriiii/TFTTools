@@ -19,7 +19,7 @@ export const UnitPopupSearchPanel = forwardRef<HTMLDivElement, UnitSearchPanelPr
                 {item.type === 'champion' ? '🗡️' : '⭐'}
             </span>
             <div>
-                <div className="font-bold text-main text-sm">
+                <div className="font-bold text-primary text-sm">
                     {item.displayName}
                 </div>
                 <div className="text-xs text-secondary capitalize">
@@ -30,14 +30,14 @@ export const UnitPopupSearchPanel = forwardRef<HTMLDivElement, UnitSearchPanelPr
     );
 
     const renderSelectedItem = (item: SelectedItem, onRemove: () => void) => (
-        <div className={`flex items-center gap-1.5 text-white px-2.5 py-1.5 rounded-2xl text-xs font-bold ${
-            item.type === 'champion' ? 'bg-champion-bg' : 'bg-trait-bg'
+        <div className={`flex items-center gap-1.5 text-primary px-2.5 py-1.5 rounded-2xl text-xs font-bold ${
+            item.type === 'champion' ? 'bg-secondary' : 'bg-accent'
         }`}>
             <span>{item.type === 'champion' ? '🗡️' : '⭐'}</span>
             <span>{item.name}</span>
             <button
                 onClick={onRemove}
-                className="bg-transparent border-none text-white cursor-pointer text-sm p-0 ml-1 hover:opacity-70 transition-opacity"
+                className="bg-transparent border-none text-primary cursor-pointer text-sm p-0 ml-1 hover:opacity-70 transition-opacity"
             >
                 ×
             </button>

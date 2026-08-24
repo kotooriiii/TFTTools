@@ -38,7 +38,7 @@ export const GenericPopupSearchPanel = <T,>({
                 ref={ref}
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-primary border-2 border-primary rounded-xl p-5 w-[500px] max-w-[90vw] max-h-[400px] shadow-lg backdrop-blur-md pointer-events-auto"
+                className="bg-primary border border-border rounded-xl p-5 w-[500px] max-w-[90vw] max-h-[400px] shadow-lg backdrop-blur-md pointer-events-auto"
             >
                 {/* Search Input */}
                 <div className="mb-4">
@@ -47,14 +47,14 @@ export const GenericPopupSearchPanel = <T,>({
                         placeholder={placeholder}
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
-                        className="w-full p-3 border-2 border-main rounded-lg text-base text-main bg-white outline-none focus:border-focus theme-focus"
+                        className="w-full p-3 border border-border rounded-lg text-base text-primary bg-primary outline-none focus:ring-1 focus:ring-border"
                     />
                 </div>
 
                 {/* Selected Items */}
                 {selectedItems.length > 0 && (
                     <div className="mb-4">
-                        <h4 className="m-0 mb-2 text-sm font-bold text-main">
+                        <h4 className="m-0 mb-2 text-sm font-bold text-primary">
                             Selected Filters:
                         </h4>
                         <div className="flex flex-wrap gap-2">
@@ -81,13 +81,13 @@ export const GenericPopupSearchPanel = <T,>({
 
                 {/* Search Results */}
                 {!isLoading && searchResultItems.length > 0 && (
-                    <div className="max-h-[200px] overflow-y-auto border border-gray-200 rounded-lg theme-scrollbar">
+                    <div className="max-h-[200px] overflow-y-auto border border-border rounded-lg custom-scrollbar">
                         {searchResultItems.map((result) => (
                             <motion.div
                                 key={getItemKey(result)}
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                className="cursor-pointer border-b border-gray-100 last:border-b-0 hover:bg-surface-hover"
+                                className="cursor-pointer border-b border-border last:border-b-0 hover:bg-accent/50"
                                 onClick={() => onAddSelectedItem(result)}
                             >
                                 {renderSearchItem(result)}
