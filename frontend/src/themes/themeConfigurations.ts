@@ -8,9 +8,9 @@ export const themes: Record<string, Theme> = {
                 {
                     bg:
                         {
-                            primary: '#E7EFC7',
-                            secondary: '#c7e4ef',
-                            accent: '#ceefc7'
+                            primary: '#E7EFC7',   // Grass
+                            secondary: '#DCEAF0', // Sky
+                            accent: '#EDE0C8'      // Dirt
                         },
                     text:
                         {
@@ -30,20 +30,20 @@ export const themes: Record<string, Theme> = {
                 {
                     bg:
                         {
-                            primary: '#E7EFC7',
-                            secondary: '#E7EFC7',
-                            accent: '#E7EFC7'
+                            primary: '#2B3324',   // Night grass
+                            secondary: '#26313A', // Night sky
+                            accent: '#3A2E22'      // Dark soil
                         },
                     text:
                         {
-                            primary: '#3B3B1A',
-                            secondary: '#8A784E',
-                            accent: '#3B3B1A'
+                            primary: '#EDE6D6',
+                            secondary: '#B5AE8E',
+                            accent: '#EDE6D6'
                         },
-                    border: '#AEC8A4',        // Soft sage green for borders
-                    success: '#4CAF50',
-                    warning: '#FF9800',
-                    error: '#F44336'
+                    border: '#4B5240',        // Muted olive borders
+                    success: '#7BC47F',
+                    warning: '#E0A85C',
+                    error: '#E17B72'
                 }
 
         }
