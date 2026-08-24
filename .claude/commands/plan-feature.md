@@ -7,5 +7,5 @@ Steps:
 2. Ask clarifying questions as needed — scope, affected services, edge cases, non-goals.
 3. Read the relevant parts of the codebase to ground the discussion in how things actually work today.
 4. Propose an approach: summary, affected files/services, tradeoffs, open questions, rough sequencing.
-5. Once the user is aligned on the approach, draft a Jira ticket (title + description + acceptance criteria) for them to review and create manually.
+5. Once the user is aligned on the approach, draft a Jira ticket (title + description + acceptance criteria) for them to review. If all looks great, ask if you should file it on their behalf. 
 6. Do NOT create a branch or write code in this command. When the user is ready to build, tell them to run `/start-feature <ticket-id-or-na> <short-desc>`.

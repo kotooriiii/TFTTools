@@ -1,13 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getToolsForNav } from '../config/RouteConfig';
+import { getToolsForNav, RouteConfig } from '../config/RouteConfig';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const allTools = getToolsForNav();
   const toolsOnly = allTools.filter(tool => tool.id !== 'home');
 
-  const handleToolSelect = (tool: any) => {
+  const handleToolSelect = (tool: Omit<RouteConfig, 'component'>) => {
     navigate(tool.path);
   };
 
