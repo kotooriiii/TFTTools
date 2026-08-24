@@ -99,6 +99,19 @@
     .hide-scrollbar::-webkit-scrollbar {
         display: none;
     }
+
+    /* Theme-aware range slider track (thumb/fill color is set per-input via the accent-* utility) */
+    input[type="range"]::-webkit-slider-runnable-track {
+        background: var(--color-bg-secondary);
+        border-radius: 999px;
+        height: 6px;
+    }
+
+    input[type="range"]::-moz-range-track {
+        background: var(--color-bg-secondary);
+        border-radius: 999px;
+        height: 6px;
+    }
 }
 
 

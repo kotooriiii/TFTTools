@@ -264,7 +264,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                         ...prev,
                                         tacticianLevel: parseInt(e.target.value)
                                     }))}
-                                    className="flex-1"
+                                    className="flex-1 accent-border"
                                 />
                                 <span className="text-2xl font-bold text-primary w-12 text-center">
                                     {basicInputs.tacticianLevel}
@@ -345,7 +345,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                     ...prev,
                                                     crownsPans: parseInt(e.target.value)
                                                 }))}
-                                                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                                className="w-full px-3 py-2 border border-border rounded-md bg-primary text-primary focus:outline-none focus:ring-2 focus:ring-border focus:border-transparent"
                                             />
                                         </div>
 
@@ -363,7 +363,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                     ...prev,
                                                     luck: parseFloat(e.target.value)
                                                 }))}
-                                                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                                className="w-full px-3 py-2 border border-border rounded-md bg-primary text-primary focus:outline-none focus:ring-2 focus:ring-border focus:border-transparent"
                                             />
                                         </div>
 
@@ -380,7 +380,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                     ...prev,
                                                     targetGold: parseInt(e.target.value)
                                                 }))}
-                                                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                                className="w-full px-3 py-2 border border-border rounded-md bg-primary text-primary focus:outline-none focus:ring-2 focus:ring-border focus:border-transparent"
                                             />
                                         </div>
                                     </div>
