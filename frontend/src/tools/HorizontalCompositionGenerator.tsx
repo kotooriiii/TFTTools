@@ -264,7 +264,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                         ...prev,
                                         tacticianLevel: parseInt(e.target.value)
                                     }))}
-                                    className="flex-1 accent-border"
+                                    className="flex-1"
                                 />
                                 <span className="text-2xl font-bold text-primary w-12 text-center">
                                     {basicInputs.tacticianLevel}

@@ -100,7 +100,14 @@
         display: none;
     }
 
-    /* Theme-aware range slider track (thumb/fill color is set per-input via the accent-* utility) */
+    /* Theme-aware range slider: fully custom track + thumb so sizing/centering/hover stay consistent */
+    input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        background: transparent;
+        cursor: pointer;
+    }
+
     input[type="range"]::-webkit-slider-runnable-track {
         background: var(--color-bg-secondary);
         border-radius: 999px;
@@ -111,6 +118,36 @@
         background: var(--color-bg-secondary);
         border-radius: 999px;
         height: 6px;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        margin-top: -5px;
+        border-radius: 50%;
+        background: var(--color-border);
+        transition: transform 0.15s ease;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        border: none;
+        border-radius: 50%;
+        background: var(--color-border);
+        transition: transform 0.15s ease;
+    }
+
+    input[type="range"]:hover::-webkit-slider-thumb,
+    input[type="range"]:focus::-webkit-slider-thumb {
+        transform: scale(1.15);
+    }
+
+    input[type="range"]:hover::-moz-range-thumb,
+    input[type="range"]:focus::-moz-range-thumb {
+        transform: scale(1.15);
     }
 }
 
