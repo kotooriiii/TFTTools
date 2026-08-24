@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import {Route, Routes, useLocation, useNavigate} from 'react-router-dom';
-import {Sidebar} from './Sidebar';
+import {HeaderNav} from './HeaderNav';
 import {ProfileMenu} from './ProfileMenu';
 import {ROUTE_CONFIG} from '../config/RouteConfig';
 
@@ -23,27 +23,37 @@ export const MultiToolApp: React.FC = () =>
 
     return (
         <div className="h-screen bg-stone-50 flex flex-col">
-            <header className="h-14 flex-shrink-0 border-b border-border bg-primary flex items-center justify-end px-4">
+            <header className="h-14 flex-shrink-0 border-b border-border bg-primary flex items-center justify-between gap-4 px-4">
+                <div className="flex items-center gap-6 min-w-0">
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                        <div className="w-7 h-7 bg-accent rounded flex items-center justify-center text-xs text-primary font-semibold">
+                            T
+                        </div>
+                        <span className="hidden sm:inline text-base font-semibold text-primary whitespace-nowrap">
+                            TFT Tools
+                        </span>
+                    </div>
+
+                    <HeaderNav
+                        currentPath={location.pathname}
+                        onNavigate={handleNavigate}
+                    />
+                </div>
+
                 <ProfileMenu/>
             </header>
 
-            <div className="flex-1 flex overflow-hidden">
-                <Sidebar
-                    currentPath={location.pathname}
-                    onNavigate={handleNavigate}
-                />
-                <main ref={mainRef} className="bg-primary flex-1 overflow-auto">
-                    <Routes>
-                        {ROUTE_CONFIG.map(({path, component: Component}) => (
-                            <Route
-                                key={path}
-                                path={path}
-                                element={<Component/>}
-                            />
-                        ))}
-                    </Routes>
-                </main>
-            </div>
+            <main ref={mainRef} className="bg-primary flex-1 overflow-auto">
+                <Routes>
+                    {ROUTE_CONFIG.map(({path, component: Component}) => (
+                        <Route
+                            key={path}
+                            path={path}
+                            element={<Component/>}
+                        />
+                    ))}
+                </Routes>
+            </main>
         </div>
     );
 };
