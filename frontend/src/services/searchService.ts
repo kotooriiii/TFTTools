@@ -5,6 +5,7 @@ export interface UnitDTO {
     displayName: string;
     traits?: TraitDTO[];
     cost?: number;
+    iconUrl?: string;
 }
 
 export interface TraitDTO {
@@ -84,6 +85,7 @@ const searchConfigs = {
             // Remove responseKey since the endpoint returns the array directly
             transform: (item: ApiChampionResponse): SearchItem => ({
                 displayName: item.displayName,
+                iconUrl: item.iconUrl,
             })
         }]
     } satisfies MultiSearchConfig<ApiChampionResponse, SearchItem>,
@@ -118,6 +120,7 @@ const searchConfigs = {
                 responseKey: 'championList', // Keep this one since /units/search returns a SearchResultDTO
                 transform: (item: ApiChampionResponse): SearchItem => ({
                     displayName: item.displayName,
+                    iconUrl: item.iconUrl,
                 })
             },
             {

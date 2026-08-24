@@ -20,6 +20,7 @@ public class DataRefreshService {
     private final TraitRepository traitRepository;
     private final UnitRepository unitRepository;
     private final EmblemRepository emblemRepository;
+    private final ChampionIconCacheService championIconCacheService;
 
     @Autowired
     public DataRefreshService(CommunityDragonDataService dataService,
@@ -27,7 +28,8 @@ public class DataRefreshService {
                               UnitRepository unitRepository,
                               EmblemRepository emblemRepository,
                               TeamPlannerService teamPlannerService,
-                              TFTSetContextService setContextService)
+                              TFTSetContextService setContextService,
+                              ChampionIconCacheService championIconCacheService)
     {
         this.dataService = dataService;
         this.traitRepository = traitRepository;
@@ -35,6 +37,7 @@ public class DataRefreshService {
         this.emblemRepository = emblemRepository;
         this.teamPlannerService = teamPlannerService;
         this.setContextService = setContextService;
+        this.championIconCacheService = championIconCacheService;
     }
     
     public void refreshAllData() {
@@ -57,7 +60,11 @@ public class DataRefreshService {
             // Units next (depends on traits)
             unitRepository.reloadUnits();
             logger.debug("Reloaded units");
-            
+
+            // Warm the champion icon cache (async, does not block this refresh)
+            championIconCacheService.ensureAllCached(unitRepository.getAllUnits());
+
+
             // Emblems last (depends on traits)
             emblemRepository.reloadEmblems();
             logger.debug("Reloaded emblems");

@@ -30,4 +30,7 @@ public class CommunityDragonChampions {
     @JsonProperty(value = "traits")
     private List<String> traits;
 
+    @JsonProperty(value = "tileIcon")
+    private String tileIcon;
+
 }

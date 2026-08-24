@@ -17,9 +17,6 @@ import java.time.Duration;
 @Service
 public class CommunityDragonWebClient {
 
-
-    //todo future https://raw.communitydragon.org/latest/game/data/characters/ to get img of chars
-
     private final WebClient webClient;
     
     public CommunityDragonWebClient() {
@@ -48,6 +45,18 @@ public class CommunityDragonWebClient {
                 .uri("/latest/plugins/rcp-be-lol-game-data/global/default/v1/tftchampions-teamplanner.json")
                 .retrieve()
                 .bodyToMono(TeamPlannerData.class)
+                .timeout(Duration.ofSeconds(30));
+    }
+
+    /**
+     * @param lowercaseAssetPath a Community Dragon game asset path, lowercased with the extension already
+     *                           swapped to .png (e.g. "assets/characters/tft17_rhaast/hud/tft17_kayn_slay_square.png")
+     */
+    public Mono<byte[]> fetchChampionIcon(String lowercaseAssetPath) {
+        return webClient.get()
+                .uri("/latest/game/" + lowercaseAssetPath)
+                .retrieve()
+                .bodyToMono(byte[].class)
                 .timeout(Duration.ofSeconds(30));
     }
 

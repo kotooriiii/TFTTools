@@ -40,3 +40,12 @@ tft:
         hours: 1  # Cache for 1 hour
     fallback:
       enabled: true  # Use local resource as fallback if URL fails
+
+aws:
+  s3:
+    bucket-name: ${AWS_S3_BUCKET_NAME:}
+    region: ${AWS_REGION:us-east-1}
+    access-key-id: ${AWS_ACCESS_KEY_ID:}
+    secret-access-key: ${AWS_SECRET_ACCESS_KEY:}
+  cdn:
+    base-url: ${CDN_BASE_URL:}

@@ -7,4 +7,5 @@ export interface ChampionData {
     displayName: string;
     cost: number;
     traits: TraitData[];
+    iconUrl?: string;
 }

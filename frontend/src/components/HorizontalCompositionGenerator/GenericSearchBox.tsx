@@ -1,6 +1,7 @@
 // components/search/GenericSearchBox.tsx
 import {motion} from 'framer-motion';
 import {JumpingDots} from "../JumpingDots.tsx";
+import {ChampionPortrait} from "../ChampionPortrait.tsx";
 
 interface SearchConfig<T>
 {
@@ -11,6 +12,7 @@ interface SearchConfig<T>
     badgeText: string;
     displayName: (item: T) => string;
     itemKey: (item: T) => string;
+    iconUrl?: (item: T) => string | undefined;
 }
 
 interface GenericSearchBoxProps<T>
@@ -127,7 +129,11 @@ export const GenericSearchBox = <T, >({
                                     className="cursor-pointer hover:bg-accent/50 transition-colors border-b border-border last:border-b-0"
                                 >
                                     <td className="px-4 py-3 flex items-center gap-3">
-                                        <span className="text-lg">{config.icon}</span>
+                                        {config.iconUrl?.(item) ? (
+                                            <ChampionPortrait displayName={config.displayName(item)} iconUrl={config.iconUrl(item)} size={24}/>
+                                        ) : (
+                                            <span className="text-lg">{config.icon}</span>
+                                        )}
                                         <span className="font-medium text-foreground">
                                                 {config.displayName(item)}
                                             </span>
@@ -186,7 +192,11 @@ export const GenericSearchBox = <T, >({
                                 animate={{opacity: 1, scale: 1}}
                                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium ${config.badgeColor}`}
                             >
-                                <span>{config.icon}</span>
+                                {config.iconUrl?.(item) ? (
+                                    <ChampionPortrait displayName={config.displayName(item)} iconUrl={config.iconUrl(item)} size={18}/>
+                                ) : (
+                                    <span>{config.icon}</span>
+                                )}
                                 <span>{config.displayName(item)}</span>
                                 {showCount && onUpdateCount && getItemCount && (
                                     // Always use number input with up/down buttons

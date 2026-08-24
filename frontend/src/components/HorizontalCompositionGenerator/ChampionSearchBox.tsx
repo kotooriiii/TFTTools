@@ -39,7 +39,8 @@ export const ChampionSearchBox = forwardRef<ChampionSearchBoxHandle>(
             badgeColor: "bg-amber-100 text-amber-800",
             badgeText: "Champion",
             displayName: (item: ChampionItem) => item.displayName,
-            itemKey: (item: ChampionItem) => item.displayName
+            itemKey: (item: ChampionItem) => item.displayName,
+            iconUrl: (item: ChampionItem) => item.iconUrl
         };
 
         return (

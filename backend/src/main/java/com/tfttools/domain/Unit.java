@@ -18,14 +18,16 @@ public class Unit implements Nameable
     private final Role role;
     private final ChampionStats championStats;
     private final List<Trait> traits;
+    private final String tileIconPath;
 
-    public Unit(String apiName, String name, int cost, Role role, ChampionStats championStats, List<Trait> traits) {
+    public Unit(String apiName, String name, int cost, Role role, ChampionStats championStats, List<Trait> traits, String tileIconPath) {
         this.apiName = apiName;
         this.name = name;
         this.cost = cost;
         this.role = role;
         this.championStats = championStats;
         this.traits = List.copyOf(traits);
+        this.tileIconPath = tileIconPath;
     }
 
     @Override

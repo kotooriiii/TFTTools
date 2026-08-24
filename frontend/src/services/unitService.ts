@@ -9,6 +9,7 @@ interface ApiUnitDetailedResponse {
     displayName: string;
     traits?: ApiTraitResponse[];
     cost: number;
+    iconUrl?: string;
 }
 
 export const unitService = {
@@ -25,6 +26,7 @@ export const unitService = {
             return data.map(unit => ({
                 displayName: unit.displayName,
                 cost: unit.cost,
+                iconUrl: unit.iconUrl,
                 traits: (unit.traits ?? []).map(trait => ({
                     displayName: trait.displayName,
                     activationThresholds: trait.activationThresholds ?? []

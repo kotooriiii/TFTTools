@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChampionData } from '../../types/compBuilderTypes';
-import { getHexCenter, getHexPoints, getCostColor, getInitials, hexId, HEX_SIZE } from './hexUtils';
+import { getHexCenter, getHexPoints, getCostColor, hexId, HEX_SIZE } from './hexUtils';
+import { ChampionPortrait } from '../ChampionPortrait';
 
 interface HexTileProps {
     row: number;
@@ -69,24 +70,13 @@ export const HexTile: React.FC<HexTileProps> = ({
                             userSelect: 'none'
                         }}
                     >
-                        <div
-                            style={{
-                                width: HEX_SIZE * 0.85,
-                                height: HEX_SIZE * 0.85,
-                                borderRadius: '50%',
-                                backgroundColor: '#3B3B1A',
-                                color: 'white',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                fontSize: HEX_SIZE * 0.3,
-                                fontWeight: 700,
-                                border: `2px solid ${getCostColor(champion.cost)}`,
-                                boxShadow: '0 2px 4px rgba(0,0,0,0.25)'
-                            }}
-                        >
-                            {getInitials(champion.displayName)}
-                        </div>
+                        <ChampionPortrait
+                            displayName={champion.displayName}
+                            iconUrl={champion.iconUrl}
+                            size={HEX_SIZE * 0.85}
+                            borderColor={getCostColor(champion.cost)}
+                            style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.25)' }}
+                        />
                         <div
                             style={{
                                 fontSize: HEX_SIZE * 0.19,

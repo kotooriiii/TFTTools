@@ -17,7 +17,7 @@ class CompositionPositioningServiceTest {
     private final CompositionPositioningService service = new CompositionPositioningService();
 
     private static Unit unit(String name, int cost, Role role) {
-        return new Unit(name, name, cost, role, null, List.of());
+        return new Unit(name, name, cost, role, null, List.of(), null);
     }
 
     private static List<String> toKeys(List<UnitPlacement> placements) {
