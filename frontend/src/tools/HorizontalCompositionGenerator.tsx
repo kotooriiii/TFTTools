@@ -1,23 +1,23 @@
 import React, {useRef, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {AnimatePresence, motion} from 'framer-motion';
-import {EmblemItem} from '../types/searchTypes';
+import {EmblemItem, SelectedItem} from '../types/searchTypes';
 import {CompositionDTO, generateHorizontalComposition, HorizontalDTO, UnitPlacementDTO} from '../services/searchService';
 
 import {EmblemSearchBox, EmblemSearchBoxHandle} from "../components/HorizontalCompositionGenerator/EmblemSearchBox.tsx";
 import {TraitSearchBox, TraitSearchBoxHandle} from '../components/HorizontalCompositionGenerator/TraitSearchBox.tsx';
 import {
-    ChampionSearchBox,
-    ChampionSearchBoxHandle
-} from "../components/HorizontalCompositionGenerator/ChampionSearchBox.tsx";
+    UnitSearchBox,
+    UnitSearchBoxHandle
+} from "../components/HorizontalCompositionGenerator/UnitSearchBox.tsx";
 import {HexBoard} from '../components/CompBuilder/HexBoard';
 import {hexId} from '../components/CompBuilder/hexUtils';
-import {ChampionData} from '../types/compBuilderTypes';
+import {UnitData} from '../types/compBuilderTypes';
 
 interface BasicInputs
 {
     tacticianLevel: number;
-    requiredChampions: SelectedItem[];
+    requiredUnits: SelectedItem[];
     requiredTraits: { trait: string; count: number }[];
 }
 
@@ -70,9 +70,9 @@ const getTraitBreakdown = (composition: CompositionDTO) =>
         .sort((a, b) => Number(b.active) - Number(a.active) || b.count - a.count);
 };
 
-const placementsToBoard = (placements: UnitPlacementDTO[]): Record<string, ChampionData> =>
+const placementsToBoard = (placements: UnitPlacementDTO[]): Record<string, UnitData> =>
 {
-    const board: Record<string, ChampionData> = {};
+    const board: Record<string, UnitData> = {};
     placements.forEach(placement =>
     {
         board[hexId(placement.row, placement.col)] = {
@@ -91,7 +91,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
 
     const [basicInputs, setBasicInputs] = useState<BasicInputs>({
         tacticianLevel: 1,
-        requiredChampions: [],
+        requiredUnits: [],
         requiredTraits: []
     });
 
@@ -121,8 +121,8 @@ const HorizontalCompositionGenerator: React.FC = () =>
     // Search states for traits
     const traitSearchRef = useRef<TraitSearchBoxHandle>(null);
 
-    // Search states for champions
-    const championSearchRef = useRef<ChampionSearchBoxHandle>(null);
+    // Search states for units
+    const unitSearchRef = useRef<UnitSearchBoxHandle>(null);
 
 
 
@@ -135,7 +135,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
 
         try {
             // Collect data from refs
-            const selectedChampions = championSearchRef.current?.getSelectedChampions() || [];
+            const selectedUnits = unitSearchRef.current?.getSelectedUnits() || [];
             const selectedTraits = traitSearchRef.current?.getSelectedTraits() || [];
             const selectedEmblems = emblemSearchRef.current?.getSelectedEmblems() || [];
 
@@ -146,11 +146,11 @@ const HorizontalCompositionGenerator: React.FC = () =>
                     acc[trait.displayName] = trait.count;
                     return acc;
                 }, {} as Record<string, number>),
-                requiredChampions: selectedChampions.map(champion => ({
-                    displayName: champion.displayName
+                requiredUnits: selectedUnits.map(unit => ({
+                    displayName: unit.displayName
                 })),
                 excludedTraits: [], // Not implemented in UI yet
-                excludedChampions: [], // Not implemented in UI yet
+                excludedUnits: [], // Not implemented in UI yet
                 costOfBoard: advancedInputs.targetGold,
                 tacticianLevel: basicInputs.tacticianLevel,
                 crowns: advancedInputs.crownsPans,
@@ -185,7 +185,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
         {
             setBasicInputs({
                 tacticianLevel: 1,
-                requiredChampions: [],
+                requiredUnits: [],
                 requiredTraits: []
             });
             setAdvancedInputs({
@@ -273,8 +273,8 @@ const HorizontalCompositionGenerator: React.FC = () =>
                             </div>
                         </div>
 
-                        {/* Champion Search Box */}
-                        <ChampionSearchBox ref={championSearchRef}/>
+                        {/* Unit Search Box */}
+                        <UnitSearchBox ref={unitSearchRef}/>
 
                         {/* Emblem Search Box*/}
                         <TraitSearchBox ref={traitSearchRef}/>

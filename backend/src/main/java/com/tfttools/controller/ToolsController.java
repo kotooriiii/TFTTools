@@ -22,7 +22,7 @@ public class ToolsController
 
     /**
      * Finds comps with the most possible active traits given the # of units per comp, # of comps to generate, required traits + thresholds,
-     * and required champions
+     * and required units
      *
      * @param horizontalDTO
      */

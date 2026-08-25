@@ -16,7 +16,7 @@ export const UnitPopupSearchPanel = forwardRef<HTMLDivElement, UnitSearchPanelPr
     const renderSearchItem = (item: SearchItem) => (
         <div className="p-3 flex items-center gap-3">
             <span className="text-base">
-                {item.type === 'champion' ? '🗡️' : '⭐'}
+                {item.type === 'unit' ? '🗡️' : '⭐'}
             </span>
             <div>
                 <div className="font-bold text-primary text-sm">
@@ -31,10 +31,10 @@ export const UnitPopupSearchPanel = forwardRef<HTMLDivElement, UnitSearchPanelPr
 
     const renderSelectedItem = (item: SelectedItem, onRemove: () => void) => (
         <div className={`flex items-center gap-1.5 text-primary px-2.5 py-1.5 rounded-2xl text-xs font-bold ${
-            item.type === 'champion' ? 'bg-secondary' : 'bg-accent'
+            item.type === 'unit' ? 'bg-secondary' : 'bg-accent'
         }`}>
-            <span>{item.type === 'champion' ? '🗡️' : '⭐'}</span>
-            <span>{item.name}</span>
+            <span>{item.type === 'unit' ? '🗡️' : '⭐'}</span>
+            <span>{item.displayName}</span>
             <button
                 onClick={onRemove}
                 className="bg-transparent border-none text-primary cursor-pointer text-sm p-0 ml-1 hover:opacity-70 transition-opacity"
@@ -50,9 +50,9 @@ export const UnitPopupSearchPanel = forwardRef<HTMLDivElement, UnitSearchPanelPr
             ref={ref}
             renderSearchItem={renderSearchItem}
             renderSelectedItem={renderSelectedItem}
-            getItemKey={(item) => item.name}
-            placeholder="Search champions or traits..."
-            helpText="Search for champions or traits to filter units"
+            getItemKey={(item) => item.displayName}
+            placeholder="Search units or traits..."
+            helpText="Search for units or traits"
         />
     );
 });

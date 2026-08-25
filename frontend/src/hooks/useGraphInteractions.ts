@@ -4,7 +4,7 @@ import { Vertex } from '../types/graphTypes';
 const MIN_ZOOM = 0.6;
 const MAX_ZOOM = 2;
 
-export const useGraphInteractions = (svgRef: RefObject<SVGSVGElement>) => {
+export const useGraphInteractions = (svgRef: RefObject<SVGSVGElement | null>) => {
     const [isPanning, setIsPanning] = useState(false);
     const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
     const [lastPanPosition, setLastPanPosition] = useState<{ x: number; y: number } | null>({x:0,y:0});
@@ -56,7 +56,7 @@ export const useGraphInteractions = (svgRef: RefObject<SVGSVGElement>) => {
     };
 
     const handleMouseMove = (e: React.MouseEvent) => {
-        if (!isPanning || !svgRef.current) return;
+        if (!isPanning || !svgRef.current || !lastPanPosition) return;
 
         const mouseX = e.clientX ;
         const mouseY = e.clientY ;
@@ -159,7 +159,7 @@ export const useGraphInteractions = (svgRef: RefObject<SVGSVGElement>) => {
     // FIXED: Zoom button handlers now maintain proper coordinate centering
     const handleZoomIn = () => {
         const newZoom = Math.min(MAX_ZOOM, zoom * 1.2);
-        if (newZoom === zoom) return;
+        if (newZoom === zoom || !svgRef.current) return;
 
         // Center zoom on the middle of the viewport
         const rect = svgRef.current.getBoundingClientRect();
@@ -181,6 +181,7 @@ export const useGraphInteractions = (svgRef: RefObject<SVGSVGElement>) => {
 
 
     const handleZoomOut = () => {
+        if (!svgRef.current) return;
         const newZoom = Math.max(MIN_ZOOM, zoom / 1.2);
 
         // Center zoom on the middle of the viewport

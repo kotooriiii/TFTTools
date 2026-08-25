@@ -1,4 +1,4 @@
-import { EmblemItem, TraitItem, SearchItem, ApiEmblemResponse, ApiTraitResponse, ApiChampionResponse} from '../types/searchTypes';
+import { EmblemItem, TraitItem, SearchItem, ApiEmblemResponse, ApiTraitResponse, ApiUnitResponse} from '../types/searchTypes';
 
 // Types for horizontal composition API
 export interface UnitDTO {
@@ -26,9 +26,9 @@ export interface UnitPlacementDTO {
 export interface HorizontalDTO {
     compSize: number;
     requiredTraits: Record<string, number>;
-    requiredChampions: UnitDTO[];
+    requiredUnits: UnitDTO[];
     excludedTraits: TraitDTO[];
-    excludedChampions: UnitDTO[];
+    excludedUnits: UnitDTO[];
     costOfBoard: number;
     tacticianLevel: number;
     crowns: number;
@@ -79,16 +79,16 @@ const createSearchMethod = <TResponse, TResult>(config: MultiSearchConfig<TRespo
 
 // All configurations
 const searchConfigs = {
-    champions: {
-        endpoint: '/units/search/champions',
+    units: {
+        endpoint: '/units/search/units',
         responseMappers: [{
             // Remove responseKey since the endpoint returns the array directly
-            transform: (item: ApiChampionResponse): SearchItem => ({
+            transform: (item: ApiUnitResponse): SearchItem => ({
                 displayName: item.displayName,
                 iconUrl: item.iconUrl,
             })
         }]
-    } satisfies MultiSearchConfig<ApiChampionResponse, SearchItem>,
+    } satisfies MultiSearchConfig<ApiUnitResponse, SearchItem>,
     
     emblems: {
         endpoint: '/units/search/emblems',
@@ -113,24 +113,26 @@ const searchConfigs = {
         }]
     } satisfies MultiSearchConfig<ApiTraitResponse, TraitItem>,
     
-    units: {
+    any: {
         endpoint: '/units/search',
         responseMappers: [
             {
-                responseKey: 'championList', // Keep this one since /units/search returns a SearchResultDTO
-                transform: (item: ApiChampionResponse): SearchItem => ({
+                responseKey: 'units', // Keep this one since /units/search returns a SearchResultDTO
+                transform: (item: ApiUnitResponse): SearchItem => ({
                     displayName: item.displayName,
                     iconUrl: item.iconUrl,
+                    type: 'unit',
                 })
             },
             {
-                responseKey: 'traitList', // Keep this one since /units/search returns a SearchResultDTO
+                responseKey: 'traits', // Keep this one since /units/search returns a SearchResultDTO
                 transform: (item: ApiTraitResponse): SearchItem => ({
                     displayName: item.displayName,
+                    type: 'trait',
                 })
             }
         ]
-    } satisfies MultiSearchConfig<ApiChampionResponse | ApiTraitResponse, SearchItem>
+    } satisfies MultiSearchConfig<ApiUnitResponse | ApiTraitResponse, SearchItem>
 } as const
 
 // Horizontal composition generation API call
@@ -157,8 +159,8 @@ export const generateHorizontalComposition = async (horizontalData: HorizontalDT
 
 // All methods created the same way - completely consistent!
 export const searchService = {
-    searchChampions: createSearchMethod(searchConfigs.champions),
+    searchUnits: createSearchMethod(searchConfigs.units),
     searchEmblems: createSearchMethod(searchConfigs.emblems),
     searchTraits: createSearchMethod(searchConfigs.traits),
-    searchUnits: createSearchMethod(searchConfigs.units)
+    searchAny: createSearchMethod(searchConfigs.any)
 };

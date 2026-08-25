@@ -37,9 +37,9 @@ public class UnitController {
     /**
      * Champion-specific search endpoint
      */
-    @GetMapping("/search/champions")
-    public List<UnitDTO> searchChampions(@RequestParam String query) {
-        return searchService.searchChampions(query);
+    @GetMapping("/search/units")
+    public List<UnitDTO> searchUnits(@RequestParam String query) {
+        return searchService.searchUnits(query);
     }
 
     /**

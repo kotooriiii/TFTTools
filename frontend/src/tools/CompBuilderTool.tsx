@@ -1,22 +1,22 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { ChampionData } from '../types/compBuilderTypes';
+import { UnitData } from '../types/compBuilderTypes';
 import { unitService } from '../services/unitService';
-import { ChampionRoster } from '../components/CompBuilder/ChampionRoster';
+import { UnitRoster } from '../components/CompBuilder/UnitRoster.tsx';
 import { HexBoard } from '../components/CompBuilder/HexBoard';
 import { TraitSynergyPanel } from '../components/CompBuilder/TraitSynergyPanel';
 
 interface CompBuilderNavState {
-    seedBoard?: Record<string, ChampionData>;
+    seedBoard?: Record<string, UnitData>;
 }
 
 const CompBuilderTool: React.FC = () => {
     const location = useLocation();
 
-    const [champions, setChampions] = useState<ChampionData[]>([]);
+    const [units, setUnits] = useState<UnitData[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
-    const [board, setBoard] = useState<Record<string, ChampionData>>({});
+    const [board, setBoard] = useState<Record<string, UnitData>>({});
 
     useEffect(() => {
         const seedBoard = (location.state as CompBuilderNavState | null)?.seedBoard;
@@ -28,7 +28,7 @@ const CompBuilderTool: React.FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.key]);
 
-    const [draggedChampion, setDraggedChampion] = useState<ChampionData | null>(null);
+    const [draggedUnit, setDraggedUnit] = useState<UnitData | null>(null);
     const [draggedFromHexId, setDraggedFromHexId] = useState<string | null>(null);
     const [dragOverHexId, setDragOverHexId] = useState<string | null>(null);
 
@@ -36,9 +36,9 @@ const CompBuilderTool: React.FC = () => {
         let cancelled = false;
 
         (async () => {
-            const data = await unitService.getAllChampions();
+            const data = await unitService.getAllUnits();
             if (!cancelled) {
-                setChampions(data);
+                setUnits(data);
                 setIsLoading(false);
             }
         })();
@@ -49,29 +49,29 @@ const CompBuilderTool: React.FC = () => {
     }, []);
 
     const placedNames = useMemo(
-        () => new Set(Object.values(board).map(champion => champion.displayName)),
+        () => new Set(Object.values(board).map(unit => unit.displayName)),
         [board]
     );
 
-    const filteredChampions = useMemo(() => {
+    const filteredUnits = useMemo(() => {
         const query = searchQuery.trim().toLowerCase();
-        if (!query) return champions;
+        if (!query) return units;
 
-        return champions.filter(champion =>
-            champion.displayName.toLowerCase().includes(query) ||
-            champion.traits.some(trait => trait.displayName.toLowerCase().includes(query))
+        return units.filter(unit =>
+            unit.displayName.toLowerCase().includes(query) ||
+            unit.traits.some(trait => trait.displayName.toLowerCase().includes(query))
         );
-    }, [champions, searchQuery]);
+    }, [units, searchQuery]);
 
-    const handleRosterDragStart = (e: React.DragEvent, champion: ChampionData) => {
-        e.dataTransfer.setData('text/plain', champion.displayName);
-        setDraggedChampion(champion);
+    const handleRosterDragStart = (e: React.DragEvent, unit: UnitData) => {
+        e.dataTransfer.setData('text/plain', unit.displayName);
+        setDraggedUnit(unit);
         setDraggedFromHexId(null);
     };
 
-    const handleHexDragStart = (e: React.DragEvent, id: string, champion: ChampionData) => {
-        e.dataTransfer.setData('text/plain', champion.displayName);
-        setDraggedChampion(champion);
+    const handleHexDragStart = (e: React.DragEvent, id: string, unit: UnitData) => {
+        e.dataTransfer.setData('text/plain', unit.displayName);
+        setDraggedUnit(unit);
         setDraggedFromHexId(id);
     };
 
@@ -88,7 +88,7 @@ const CompBuilderTool: React.FC = () => {
     const handleHexDrop = (e: React.DragEvent, targetHexId: string) => {
         e.preventDefault();
 
-        if (!draggedChampion) return;
+        if (!draggedUnit) return;
 
         setBoard(prev => {
             const next = { ...prev };
@@ -97,7 +97,7 @@ const CompBuilderTool: React.FC = () => {
                 if (draggedFromHexId === targetHexId) return prev;
 
                 const targetOccupant = next[targetHexId];
-                next[targetHexId] = draggedChampion;
+                next[targetHexId] = draggedUnit;
 
                 if (targetOccupant) {
                     next[draggedFromHexId] = targetOccupant;
@@ -108,20 +108,20 @@ const CompBuilderTool: React.FC = () => {
                 return next;
             }
 
-            // Dropped from the roster: a champion can only occupy one hex at a time
+            // Dropped from the roster: a unit can only occupy one hex at a time
             const existingHexId = Object.keys(prev).find(
-                key => prev[key].displayName === draggedChampion.displayName
+                key => prev[key].displayName === draggedUnit.displayName
             );
 
             if (existingHexId && existingHexId !== targetHexId) {
                 delete next[existingHexId];
             }
 
-            next[targetHexId] = draggedChampion;
+            next[targetHexId] = draggedUnit;
             return next;
         });
 
-        setDraggedChampion(null);
+        setDraggedUnit(null);
         setDraggedFromHexId(null);
         setDragOverHexId(null);
     };
@@ -139,8 +139,8 @@ const CompBuilderTool: React.FC = () => {
 
     return (
         <div className="h-full w-full flex">
-            <ChampionRoster
-                champions={filteredChampions}
+            <UnitRoster
+                units={filteredUnits}
                 isLoading={isLoading}
                 searchQuery={searchQuery}
                 onSearchChange={setSearchQuery}
@@ -153,7 +153,7 @@ const CompBuilderTool: React.FC = () => {
                     <div>
                         <h2 className="text-lg font-bold text-primary">Comp Builder</h2>
                         <p className="text-xs text-secondary">
-                            Drag champions onto the board · drag placed champions to rearrange · click to remove
+                            Drag units onto the board · drag placed units to rearrange · click to remove
                         </p>
                     </div>
                     <button
@@ -175,7 +175,7 @@ const CompBuilderTool: React.FC = () => {
                 />
             </div>
 
-            <TraitSynergyPanel boardChampions={Object.values(board)} />
+            <TraitSynergyPanel boardUnits={Object.values(board)} />
         </div>
     );
 };

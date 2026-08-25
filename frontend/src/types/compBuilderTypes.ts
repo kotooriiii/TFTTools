@@ -3,7 +3,8 @@ export interface TraitData {
     activationThresholds: number[];
 }
 
-export interface ChampionData {
+export interface UnitData
+{
     displayName: string;
     cost: number;
     traits: TraitData[];

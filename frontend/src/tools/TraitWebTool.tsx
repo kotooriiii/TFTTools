@@ -1,6 +1,6 @@
 import React, {useRef, useState} from 'react';
 import {useGraphInteractions} from '../hooks/useGraphInteractions';
-import {useUnitSearch} from '../hooks/search/ItemSearchHook.ts';
+import {useSearch} from '../hooks/search/ItemSearchHook.ts';
 import {useUnitFiltering} from '../hooks/useUnitFiltering';
 import {useDragAndDrop} from '../hooks/useDragAndDrop.ts';
 import {GraphSVG} from '../components/GraphSVG';
@@ -10,7 +10,7 @@ import {Edge, Vertex} from "../types/graphTypes.ts";
 import {Unit} from "../types/unitTypes.ts";
 import {UnitPopupSearchPanel} from "../components/search/UnitPopupSearchPanel.tsx";
 
-const GraphCanvasTool: React.FC = () =>
+const TraitWebTool: React.FC = () =>
 {
     const svgRef = useRef<SVGSVGElement>(null);
     const searchPanelRef = useRef<HTMLDivElement>(null);
@@ -23,7 +23,7 @@ const GraphCanvasTool: React.FC = () =>
 
 
     const graphInteractions = useGraphInteractions(svgRef);
-    const search = useUnitSearch(searchPanelRef);
+    const search = useSearch(searchPanelRef);
     const unitFiltering = useUnitFiltering(search.selectedItems);
     const dragAndDrop = useDragAndDrop(svgRef, graphInteractions.panOffset, graphInteractions.zoom);
 
@@ -32,7 +32,10 @@ const GraphCanvasTool: React.FC = () =>
     // Helper function to find shared traits between two units
     const findSharedTraits = (unit1: Unit, unit2: Unit): string[] => {
         if (!unit1?.traits || !unit2?.traits) return [];
-        return unit1.traits.filter((trait: string) => unit2.traits.includes(trait));
+        const otherTraitNames = new Set(unit2.traits.map(trait => trait.displayName));
+        return unit1.traits
+            .filter(trait => otherTraitNames.has(trait.displayName))
+            .map(trait => trait.displayName);
     };
 
     // Helper function to create edges between vertices with shared traits
@@ -72,7 +75,7 @@ const GraphCanvasTool: React.FC = () =>
         e.preventDefault();
 
         // Check if unit already exists on canvas
-        const existingVertex = vertices.find(vertex => 
+        const existingVertex = vertices.find(vertex =>
             vertex.unitData?.displayName === dragAndDrop.draggedUnit?.displayName
         );
 
@@ -166,4 +169,4 @@ const GraphCanvasTool: React.FC = () =>
     );
 };
 
-export default GraphCanvasTool;
+export default TraitWebTool;

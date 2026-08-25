@@ -12,14 +12,14 @@ export const useUnitFiltering = (selectedItems: SelectedItem[]) => {
             setIsLoading(true);
 
             try {
-                const selectedChampions = selectedItems
-                    .filter(item => item.type === 'champion')
-                    .map(selectedChampion => selectedChampion.name);
+                const selectedUnits = selectedItems
+                    .filter(item => item.type === 'unit')
+                    .map(selectedUnit => selectedUnit.displayName);
 
                 const selectedTraits = selectedItems
                     .filter(item => item.type === 'trait')
-                    .map(selectedTrait => selectedTrait.name);
-                const units = await filterService.filterUnits(selectedChampions, selectedTraits);
+                    .map(selectedTrait => selectedTrait.displayName);
+                const units = await filterService.filterUnits(selectedUnits, selectedTraits);
                 setFilteredUnits(units);
             } catch (error) {
                 console.error('Error filtering units:', error);

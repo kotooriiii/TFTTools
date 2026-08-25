@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Unit } from '../types/unitTypes';
 import { SelectedItem } from '../types/searchTypes';
+import { UnitPortrait } from './UnitPortrait.tsx';
 
 interface UnitGridViewProps {
     units: Unit[];
@@ -23,7 +24,7 @@ export const UnitGridView: React.FC<UnitGridViewProps> = ({
         }}>
             {units.map((unit, index) => (
                 <motion.div
-                    key={`${unit.champion}-${index}`}
+                    key={`${unit.displayName}-${index}`}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: index * 0.02 }}
@@ -53,25 +54,16 @@ export const UnitGridView: React.FC<UnitGridViewProps> = ({
                     }}
                     whileTap={{ scale: 0.95 }}
                 >
-                    {/* Champion Icon */}
-                    <div style={{
-                        width: '36px',
-                        height: '36px',
-                        backgroundColor: '#6F5E53',
-                        borderRadius: '6px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white',
-                        fontSize: '18px',
-                        fontWeight: 'bold',
-                        marginBottom: '4px',
-                        flexShrink: 0
-                    }}>
-                        ⚔️
+                    {/* Unit Icon */}
+                    <div style={{ marginBottom: '4px', flexShrink: 0 }}>
+                        <UnitPortrait
+                            displayName={unit.displayName}
+                            iconUrl={unit.iconUrl}
+                            size={36}
+                        />
                     </div>
 
-                    {/* Champion Name */}
+                    {/* Unit Name */}
                     <div
                         style={{
                             fontSize: '10px',
@@ -85,9 +77,9 @@ export const UnitGridView: React.FC<UnitGridViewProps> = ({
                             whiteSpace: 'nowrap',
                             width: '100%',
                         }}
-                        title={unit.champion}
+                        title={unit.displayName}
                     >
-                        {unit.champion}
+                        {unit.displayName}
                     </div>
 
                     {/* Trait indicators */}
@@ -102,8 +94,8 @@ export const UnitGridView: React.FC<UnitGridViewProps> = ({
                     }}>
                         {unit.traits.slice(0, 4).map(trait => (
                             <div
-                                key={trait}
-                                title={trait}
+                                key={trait.displayName}
+                                title={trait.displayName}
                                 style={{
                                     width: '12px',
                                     height: '12px',
@@ -120,7 +112,7 @@ export const UnitGridView: React.FC<UnitGridViewProps> = ({
                                     borderRadius: '50%',
                                     backgroundColor: selectedItems.some(item =>
                                         item.type === 'trait' &&
-                                        item.name === trait
+                                        item.displayName === trait.displayName
                                     ) ? '#8B7355' : '#E5E5E5',
                                 }} />
                             </div>

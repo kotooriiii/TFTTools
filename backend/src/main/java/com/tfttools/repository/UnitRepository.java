@@ -149,10 +149,10 @@ public class UnitRepository
     }
 
     /**
-     * Gets all champions starting with a given prefix
+     * Gets all units starting with a given prefix
      *
      * @param prefix The prefix to be searched for
-     * @return List of champions
+     * @return List of units
      */
     public List<Unit> getAllChampionsStartingWith(String prefix)
     {

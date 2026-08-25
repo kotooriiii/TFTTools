@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Unit } from '../types/unitTypes';
 import { SelectedItem } from '../types/searchTypes';
+import { UnitPortrait } from './UnitPortrait.tsx';
 
 interface UnitDetailedViewProps {
     units: Unit[];
@@ -18,7 +19,7 @@ export const UnitDetailedView: React.FC<UnitDetailedViewProps> = ({
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {units.map((unit, index) => (
                 <motion.div
-                    key={`${unit.champion}-${index}-detailed`}
+                    key={`${unit.displayName}-${index}-detailed`}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.03 }}
@@ -43,22 +44,13 @@ export const UnitDetailedView: React.FC<UnitDetailedViewProps> = ({
                     }}
                     whileTap={{ scale: 0.98 }}
                 >
-                    {/* Champion Icon */}
-                    <div style={{
-                        width: '48px',
-                        height: '48px',
-                        backgroundColor: '#6F5E53',
-                        borderRadius: '8px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white',
-                        fontSize: '20px',
-                        fontWeight: 'bold',
-                        flexShrink: 0,
-                        position: 'relative'
-                    }}>
-                        ⚔️
+                    {/* Unit Icon */}
+                    <div style={{ position: 'relative', flexShrink: 0 }}>
+                        <UnitPortrait
+                            displayName={unit.displayName}
+                            iconUrl={unit.iconUrl}
+                            size={48}
+                        />
                         <div style={{
                             position: 'absolute',
                             top: '2px',
@@ -78,7 +70,7 @@ export const UnitDetailedView: React.FC<UnitDetailedViewProps> = ({
                             color: '#6F5E53',
                             marginBottom: '6px'
                         }}>
-                            {unit.champion}
+                            {unit.displayName}
                         </div>
 
                         <div style={{
@@ -89,26 +81,26 @@ export const UnitDetailedView: React.FC<UnitDetailedViewProps> = ({
                         }}>
                             {unit.traits.map(trait => (
                                 <span
-                                    key={trait}
+                                    key={trait.displayName}
                                     style={{
                                         fontSize: '10px',
                                         backgroundColor: selectedItems.some(item =>
                                             item.type === 'trait' &&
-                                            item.name === trait
+                                            item.displayName === trait.displayName
                                         ) ? '#8B7355' : '#E5E5E5',
                                         color: selectedItems.some(item =>
                                             item.type === 'trait' &&
-                                            item.name === trait
+                                            item.displayName === trait.displayName
                                         ) ? 'white' : '#666',
                                         padding: '2px 6px',
                                         borderRadius: '8px',
                                         fontWeight: selectedItems.some(item =>
                                             item.type === 'trait' &&
-                                            item.name === trait
+                                            item.displayName === trait.displayName
                                         ) ? 'bold' : 'normal'
                                     }}
                                 >
-                                    {trait}
+                                    {trait.displayName}
                                 </span>
                             ))}
                         </div>

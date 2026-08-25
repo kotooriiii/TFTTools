@@ -1,7 +1,7 @@
 // components/search/GenericSearchBox.tsx
 import {motion} from 'framer-motion';
 import {JumpingDots} from "../JumpingDots.tsx";
-import {ChampionPortrait} from "../ChampionPortrait.tsx";
+import {UnitPortrait} from "../UnitPortrait.tsx";
 
 interface SearchConfig<T>
 {
@@ -130,7 +130,7 @@ export const GenericSearchBox = <T, >({
                                 >
                                     <td className="px-4 py-3 flex items-center gap-3">
                                         {config.iconUrl?.(item) ? (
-                                            <ChampionPortrait displayName={config.displayName(item)} iconUrl={config.iconUrl(item)} size={24}/>
+                                            <UnitPortrait displayName={config.displayName(item)} iconUrl={config.iconUrl(item)} size={24}/>
                                         ) : (
                                             <span className="text-lg">{config.icon}</span>
                                         )}
@@ -193,7 +193,7 @@ export const GenericSearchBox = <T, >({
                                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium ${config.badgeColor}`}
                             >
                                 {config.iconUrl?.(item) ? (
-                                    <ChampionPortrait displayName={config.displayName(item)} iconUrl={config.iconUrl(item)} size={18}/>
+                                    <UnitPortrait displayName={config.displayName(item)} iconUrl={config.iconUrl(item)} size={18}/>
                                 ) : (
                                     <span>{config.icon}</span>
                                 )}

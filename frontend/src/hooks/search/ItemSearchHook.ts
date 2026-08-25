@@ -3,9 +3,9 @@ import { SearchItem } from '../../types/searchTypes';
 import { searchService } from '../../services/searchService';
 import { useGenericSearch} from "./GenericSearchHook.ts";
 
-export const useUnitSearch = (searchPanelRef: RefObject<HTMLDivElement>) => {
+export const useSearch = (searchPanelRef: RefObject<HTMLDivElement | null>) => {
     const genericSearch = useGenericSearch<SearchItem>({
-        searchFunction: searchService.searchUnits,
+        searchFunction: searchService.searchAny,
         searchPanelRef
     });
 

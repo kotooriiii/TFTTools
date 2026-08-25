@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
-import { ChampionData } from '../../types/compBuilderTypes';
+import { UnitData } from '../../types/compBuilderTypes';
 
 interface TraitSynergyPanelProps {
-    boardChampions: ChampionData[];
+    boardUnits: UnitData[];
 }
 
 interface TraitSummary {
@@ -12,12 +12,12 @@ interface TraitSummary {
     nextThreshold: number | null;
 }
 
-export const TraitSynergyPanel: React.FC<TraitSynergyPanelProps> = ({ boardChampions }) => {
+export const TraitSynergyPanel: React.FC<TraitSynergyPanelProps> = ({ boardUnits }) => {
     const traitSummaries = useMemo<TraitSummary[]>(() => {
         const counts = new Map<string, { count: number; thresholds: number[] }>();
 
-        boardChampions.forEach(champion => {
-            champion.traits.forEach(trait => {
+        boardUnits.forEach(unit => {
+            unit.traits.forEach(trait => {
                 const existing = counts.get(trait.displayName);
                 if (existing) {
                     existing.count += 1;
@@ -38,7 +38,7 @@ export const TraitSynergyPanel: React.FC<TraitSynergyPanelProps> = ({ boardChamp
                 if (!!a.activeThreshold !== !!b.activeThreshold) return a.activeThreshold ? -1 : 1;
                 return b.count - a.count;
             });
-    }, [boardChampions]);
+    }, [boardUnits]);
 
     return (
         <div className="w-64 shrink-0 h-full border-l border-border bg-primary p-3 overflow-y-auto custom-scrollbar">
@@ -46,7 +46,7 @@ export const TraitSynergyPanel: React.FC<TraitSynergyPanelProps> = ({ boardChamp
 
             {traitSummaries.length === 0 && (
                 <div className="text-secondary text-xs italic">
-                    Drag champions to the board to see synergies
+                    Drag units to the board to see synergies
                 </div>
             )}
 

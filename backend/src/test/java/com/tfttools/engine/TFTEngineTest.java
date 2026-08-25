@@ -23,24 +23,24 @@ public class TFTEngineTest {
 //        this.unitRegistry = new UnitRegistry();
 //    }
 //
-//    public void createDTO(int compSize, Map<String, Integer> requiredTraits, List<UnitDTO> requiredChampions, List<TraitDTO> excludedTraits, List<UnitDTO> excludedChampions, int costOfBoard, int tactitionLevel, int crowns, List<TraitDTO> emblems, float luck) {
-//        horizontalDTO = new HorizontalDTO(compSize, requiredTraits, requiredChampions, excludedTraits, excludedChampions, costOfBoard, tactitionLevel, crowns, emblems, luck);
+//    public void createDTO(int compSize, Map<String, Integer> requiredTraits, List<UnitDTO> requiredUnits, List<TraitDTO> excludedTraits, List<UnitDTO> excludedUnits, int costOfBoard, int tactitionLevel, int crowns, List<TraitDTO> emblems, float luck) {
+//        horizontalDTO = new HorizontalDTO(compSize, requiredTraits, requiredUnits, excludedTraits, excludedUnits, costOfBoard, tactitionLevel, crowns, emblems, luck);
 //    }
 //
 //    @Test
 //    public void testBasic() {
 //        int compSize = 3;
 //        Map<String, Integer> requiredTraits = new HashMap<>();
-//        List<UnitDTO> requiredChampions = new ArrayList<>(List.of());//.stream().map(champion -> championMapper.apply(champion)).collect(Collectors.toList());
+//        List<UnitDTO> requiredUnits = new ArrayList<>(List.of());//.stream().map(champion -> championMapper.apply(champion)).collect(Collectors.toList());
 //        List<TraitDTO> excludedTraits = new ArrayList<>(List.of());//.stream().map(traitMapper).toList();
-//        List<UnitDTO> excludedChampions = new ArrayList<>(List.of());//.stream().map(traitMapper).toList();
+//        List<UnitDTO> excludedUnits = new ArrayList<>(List.of());//.stream().map(traitMapper).toList();
 //        int costOfBoard = 999;
 //        int tactitionLevel = 8;
 //        int crowns = 0;
 //        List<TraitDTO> emblems = new ArrayList<>(List.of());//.stream().map(traitMapper).toList();
 //        float luck = 0.5f;
 //
-//        createDTO(compSize, requiredTraits, requiredChampions, excludedTraits, excludedChampions, costOfBoard, tactitionLevel, crowns, emblems, luck);
+//        createDTO(compSize, requiredTraits, requiredUnits, excludedTraits, excludedUnits, costOfBoard, tactitionLevel, crowns, emblems, luck);
 //
 //        List<Set<Unit>> comps = new ArrayList<>();
 //        List<Unit> unitPool = unitRegistry.getAllUnits();
@@ -62,16 +62,16 @@ public class TFTEngineTest {
 //    public void testRequiredUnits() {
 //        int compSize = 3;
 //        Map<String, Integer> requiredTraits = new HashMap<>();
-//        List<UnitDTO> requiredChampions = new ArrayList<>(List.of(unitRegistry.getUnitByName("Kennen"))).stream().map(unitMapper).collect(Collectors.toList());
+//        List<UnitDTO> requiredUnits = new ArrayList<>(List.of(unitRegistry.getUnitByName("Kennen"))).stream().map(unitMapper).collect(Collectors.toList());
 //        List<TraitDTO> excludedTraits = new ArrayList<>(List.of());//.stream().map(traitMapper).toList();
-//        List<UnitDTO> excludedChampions = new ArrayList<>(List.of());//.stream().map(traitMapper).toList();
+//        List<UnitDTO> excludedUnits = new ArrayList<>(List.of());//.stream().map(traitMapper).toList();
 //        int costOfBoard = 999;
 //        int tactitionLevel = 8;
 //        int crowns = 0;
 //        List<TraitDTO> emblems = new ArrayList<>(List.of());//.stream().map(traitMapper).toList();
 //        float luck = 0.5f;
 //
-//        createDTO(compSize, requiredTraits, requiredChampions, excludedTraits, excludedChampions, costOfBoard, tactitionLevel, crowns, emblems, luck);
+//        createDTO(compSize, requiredTraits, requiredUnits, excludedTraits, excludedUnits, costOfBoard, tactitionLevel, crowns, emblems, luck);
 //
 //
 //        List<Set<Unit>> comps = new ArrayList<>();
@@ -93,16 +93,16 @@ public class TFTEngineTest {
 //    public void testEmblem() {
 //        int compSize = 3;
 //        Map<String, Integer> requiredTraits = new HashMap<>();
-//        List<UnitDTO> requiredChampions = new ArrayList<>(List.of());
+//        List<UnitDTO> requiredUnits = new ArrayList<>(List.of());
 //        List<TraitDTO> excludedTraits = new ArrayList<>(List.of());//.stream().map(traitMapper).toList();
-//        List<UnitDTO> excludedChampions = new ArrayList<>(List.of());//.stream().map(traitMapper).toList();
+//        List<UnitDTO> excludedUnits = new ArrayList<>(List.of());//.stream().map(traitMapper).toList();
 //        int costOfBoard = 999;
 //        int tactitionLevel = 8;
 //        int crowns = 0;
 //        List<TraitDTO> emblems = new ArrayList<>(Stream.of(unitRegistry.getTraitByName("Soul Fighter")).map(traitMapper).toList());//.stream().map(traitMapper).toList();
 //        float luck = 0.5f;
 //
-//        createDTO(compSize, requiredTraits, requiredChampions, excludedTraits, excludedChampions, costOfBoard, tactitionLevel, crowns, emblems, luck);
+//        createDTO(compSize, requiredTraits, requiredUnits, excludedTraits, excludedUnits, costOfBoard, tactitionLevel, crowns, emblems, luck);
 //
 //
 //        List<Set<Unit>> comps = new ArrayList<>();
@@ -124,16 +124,16 @@ public class TFTEngineTest {
 //    public void testLuck() {
 //        int compSize = 3;
 //        Map<String, Integer> requiredTraits = new HashMap<>();
-//        List<UnitDTO> requiredChampions = new ArrayList<>(List.of());
+//        List<UnitDTO> requiredUnits = new ArrayList<>(List.of());
 //        List<TraitDTO> excludedTraits = new ArrayList<>(List.of());//.stream().map(traitMapper).toList();
-//        List<UnitDTO> excludedChampions = new ArrayList<>(List.of());//.stream().map(traitMapper).toList();
+//        List<UnitDTO> excludedUnits = new ArrayList<>(List.of());//.stream().map(traitMapper).toList();
 //        int costOfBoard = 999;
 //        int tactitionLevel = 8;
 //        int crowns = 0;
 //        List<TraitDTO> emblems = new ArrayList<>(Stream.of(unitRegistry.getTraitByName("Soul Fighter")).map(traitMapper).toList());//.stream().map(traitMapper).toList();
 //        float luck = 0.25f;
 //
-//        createDTO(compSize, requiredTraits, requiredChampions, excludedTraits, excludedChampions, costOfBoard, tactitionLevel, crowns, emblems, luck);
+//        createDTO(compSize, requiredTraits, requiredUnits, excludedTraits, excludedUnits, costOfBoard, tactitionLevel, crowns, emblems, luck);
 //
 //
 //        List<Set<Unit>> comps = new ArrayList<>();
@@ -153,7 +153,7 @@ public class TFTEngineTest {
 //
 //        luck = 0.75f;
 //
-//        createDTO(compSize, requiredTraits, requiredChampions, excludedTraits, excludedChampions, costOfBoard, tactitionLevel, crowns, emblems, luck);
+//        createDTO(compSize, requiredTraits, requiredUnits, excludedTraits, excludedUnits, costOfBoard, tactitionLevel, crowns, emblems, luck);
 //
 //
 //        comps = new ArrayList<>();

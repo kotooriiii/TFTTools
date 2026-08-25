@@ -10,17 +10,17 @@ import java.util.List;
  */
 @Getter
 public class SearchResultDTO {
-    private final List<UnitDTO> championDTO;
-    private final List<TraitDTO> traitList;
+    private final List<UnitDTO> units;
+    private final List<TraitDTO> traits;
 
     public SearchResultDTO() {
-        this.championDTO = Collections.emptyList();
-        this.traitList = Collections.emptyList();
+        this.units = Collections.emptyList();
+        this.traits = Collections.emptyList();
     }
 
-    public SearchResultDTO(List<UnitDTO> championList, List<TraitDTO> traitList) {
-        this.championDTO = championList;
-        this.traitList = traitList;
+    public SearchResultDTO(List<UnitDTO> units, List<TraitDTO> traits) {
+        this.units = units;
+        this.traits = traits;
     }
 
 }

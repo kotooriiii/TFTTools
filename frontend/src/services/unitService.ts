@@ -1,4 +1,4 @@
-import { ChampionData } from '../types/compBuilderTypes';
+import { UnitData } from '../types/compBuilderTypes';
 
 interface ApiTraitResponse {
     displayName: string;
@@ -13,12 +13,12 @@ interface ApiUnitDetailedResponse {
 }
 
 export const unitService = {
-    async getAllChampions(): Promise<ChampionData[]> {
+    async getAllUnits(): Promise<UnitData[]> {
         try {
             const response = await fetch('http://localhost:8080/units?simple=false');
 
             if (!response.ok) {
-                throw new Error(`Failed to load champions: ${response.status}`);
+                throw new Error(`Failed to load units: ${response.status}`);
             }
 
             const data: ApiUnitDetailedResponse[] = await response.json();
@@ -33,7 +33,7 @@ export const unitService = {
                 }))
             }));
         } catch (error) {
-            console.error('Error loading champions:', error);
+            console.error('Error loading units:', error);
             return [];
         }
     }
