@@ -78,7 +78,7 @@ export const GenericSearchBox = <T, >({
 
     return (
         <div className="mb-6">
-            <label className="block text-sm font-medium text-foreground mb-2">
+            <label className="block text-sm font-medium text-primary mb-2">
                 {config.label}
             </label>
             <input
@@ -97,7 +97,7 @@ export const GenericSearchBox = <T, >({
                     className="mt-4 bg-card border border-border rounded-lg overflow-hidden"
                 >
                     <div className="px-4 py-2 bg-accent border-b border-border">
-                        <span className="text-sm font-medium text-foreground">{config.label}</span>
+                        <span className="text-sm font-medium text-primary">{config.label}</span>
                     </div>
                     <div className="min-h-[120px] flex items-center justify-center p-4">
                         <JumpingDots/>
@@ -114,7 +114,7 @@ export const GenericSearchBox = <T, >({
                     className="mt-4 bg-card border border-border rounded-lg overflow-hidden"
                 >
                     <div className="px-4 py-2 bg-accent border-b border-border">
-                        <span className="text-sm font-medium text-foreground">{config.label}</span>
+                        <span className="text-sm font-medium text-primary">{config.label}</span>
                     </div>
                     <div className="max-h-48 overflow-y-auto custom-scrollbar">
                         <table className="w-full">
@@ -134,7 +134,7 @@ export const GenericSearchBox = <T, >({
                                         ) : (
                                             <span className="text-lg">{config.icon}</span>
                                         )}
-                                        <span className="font-medium text-foreground">
+                                        <span className="font-medium text-primary">
                                                 {config.displayName(item)}
                                             </span>
                                     </td>
@@ -159,13 +159,13 @@ export const GenericSearchBox = <T, >({
                     className="mt-4 bg-card border border-border rounded-lg overflow-hidden"
                 >
                     <div className="px-4 py-2 bg-accent border-b border-border">
-                        <span className="text-sm font-medium text-foreground">{config.label}</span>
+                        <span className="text-sm font-medium text-primary">{config.label}</span>
                     </div>
                     <div className="max-h-48 overflow-y-auto custom-scrollbar">
                         <table className="w-full">
                             <tbody>
                             <tr>
-                                <td className="px-4 py-8 text-center text-muted-foreground" colSpan={2}>
+                                <td className="px-4 py-8 text-center text-secondary" colSpan={2}>
                                     No results found for "{searchQuery}"
                                 </td>
                             </tr>

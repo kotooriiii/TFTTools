@@ -82,7 +82,7 @@ export const HexTile: React.FC<HexTileProps> = ({
                                 fontSize: HEX_SIZE * 0.19,
                                 lineHeight: 1.1,
                                 fontWeight: 600,
-                                color: '#2C1D17',
+                                color: 'var(--color-text-primary)',
                                 textAlign: 'center',
                                 maxWidth: '100%',
                                 overflow: 'hidden',

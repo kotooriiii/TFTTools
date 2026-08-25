@@ -90,7 +90,7 @@ export const LoginPage: React.FC = () => {
                     <button
                         type="button"
                         onClick={() => googleLogin()}
-                        className="flex items-center justify-center gap-2 border border-border rounded-lg py-2.5 font-medium cursor-pointer hover:bg-accent/10 transition-colors"
+                        className="flex items-center justify-center gap-2 border border-border rounded-lg py-2.5 font-medium cursor-pointer hover:bg-accent/10 transition-colors text-primary"
                     >
                         <GoogleIcon />
                         Continue with Google
