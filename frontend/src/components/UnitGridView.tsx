@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Unit } from '../types/unitTypes';
 import { SelectedItem } from '../types/searchTypes';
 import { UnitPortrait } from './UnitPortrait.tsx';
+import { getCostColor } from '../utils/unitDisplay';
 
 interface UnitGridViewProps {
     units: Unit[];
@@ -33,8 +34,8 @@ export const UnitGridView: React.FC<UnitGridViewProps> = ({
                     style={{
                         width: '80px',
                         height: '90px',
-                        backgroundColor: 'white',
-                        border: '2px solid #C3A995',
+                        backgroundColor: 'var(--color-bg-primary)',
+                        border: `2px solid ${getCostColor(unit.cost)}`,
                         borderRadius: '8px',
                         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                         cursor: 'grab',
@@ -49,8 +50,7 @@ export const UnitGridView: React.FC<UnitGridViewProps> = ({
                     }}
                     whileHover={{
                         scale: 1.05,
-                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
-                        borderColor: '#8B7355'
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
                     }}
                     whileTap={{ scale: 0.95 }}
                 >
@@ -69,7 +69,7 @@ export const UnitGridView: React.FC<UnitGridViewProps> = ({
                             fontSize: '10px',
                             fontWeight: 'bold',
                             paddingBottom: '4px',
-                            color: '#6F5E53',
+                            color: 'var(--color-text-primary)',
                             textAlign: 'center',
                             lineHeight: '1.3',
                             overflow: 'hidden',
@@ -113,7 +113,7 @@ export const UnitGridView: React.FC<UnitGridViewProps> = ({
                                     backgroundColor: selectedItems.some(item =>
                                         item.type === 'trait' &&
                                         item.displayName === trait.displayName
-                                    ) ? '#8B7355' : '#E5E5E5',
+                                    ) ? 'var(--color-bg-accent)' : 'var(--color-bg-secondary)',
                                 }} />
                             </div>
                         ))}
@@ -125,7 +125,7 @@ export const UnitGridView: React.FC<UnitGridViewProps> = ({
                         top: '2px',
                         right: '2px',
                         fontSize: '8px',
-                        color: '#999',
+                        color: 'var(--color-text-secondary)',
                         opacity: 0.7
                     }}>
                         ⋮⋮

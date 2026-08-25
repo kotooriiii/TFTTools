@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Vertex } from '../types/graphTypes';
 import { CIRCLE_RADIUS } from '../types/graphTypes';
+import { getCostColor } from '../utils/unitDisplay';
 
 interface GraphVertexProps {
     vertex: Vertex;
@@ -37,8 +38,14 @@ export const GraphVertex: React.FC<GraphVertexProps> = ({
     };
 
     const getColor = () => {
-        return '#8B7355';
+        return 'var(--color-bg-accent)';
     };
+
+    const getBorderColor = () => {
+        if (vertex.id === highlightedUnitId) return 'var(--color-warning)';
+        return getCostColor(vertex.unitData?.cost);
+    };
+
     const getTooltipPosition = () => {
         if (!mousePosition) return { x: vertex.x, y: vertex.y - 45 };
 
@@ -60,9 +67,9 @@ export const GraphVertex: React.FC<GraphVertexProps> = ({
         <g>
             <motion.circle
                 r={getRadius()}
-                fill={showImage ? '#ffffff' : getColor()}
-                stroke={vertex.id === highlightedUnitId ? 'yellow' : '#594b42'}
-                strokeWidth={vertex.id === highlightedUnitId ? 2 : 1.5}
+                fill={showImage ? 'var(--color-bg-primary)' : getColor()}
+                stroke={getBorderColor()}
+                strokeWidth={vertex.id === highlightedUnitId ? 3 : 2.5}
                 style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
                 onPointerEnter={onPointerEnter}
                 onPointerLeave={onPointerLeave}
@@ -74,7 +81,7 @@ export const GraphVertex: React.FC<GraphVertexProps> = ({
                     cx: vertex.x,
                     cy: vertex.y,
                     r: getRadius(),
-                    fill: showImage ? '#ffffff' : getColor(),
+                    fill: showImage ? 'var(--color-bg-primary)' : getColor(),
                     scale: vertex.id === highlightedUnitId
                         ? [1, 1.1, 1] // pulse animation
                         : 1
@@ -127,9 +134,10 @@ export const GraphVertex: React.FC<GraphVertexProps> = ({
                 >
                     <motion.rect
                         width={120}
-                        height={30}
-                        fill="rgba(255, 255, 255, 0.75)"
-                        stroke="rgba(89, 75, 66, 0.2)"
+                        height={25}
+                        fill="var(--color-bg-primary)"
+                        fillOpacity={0.9}
+                        stroke="var(--color-border)"
                         strokeWidth={1}
                         rx={12}
 
@@ -152,7 +160,7 @@ export const GraphVertex: React.FC<GraphVertexProps> = ({
                     <motion.text
                         textAnchor="middle"
                         dominantBaseline="middle"
-                        fill="#6F5E53"
+                        fill="var(--color-text-primary)"
                         fontSize="12"
                         fontWeight="500"
                         initial={false}

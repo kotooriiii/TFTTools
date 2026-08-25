@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Unit } from '../types/unitTypes';
 import { SelectedItem } from '../types/searchTypes';
 import { UnitPortrait } from './UnitPortrait.tsx';
+import { getCostColor } from '../utils/unitDisplay';
 
 interface UnitDetailedViewProps {
     units: Unit[];
@@ -27,8 +28,8 @@ export const UnitDetailedView: React.FC<UnitDetailedViewProps> = ({
                     onDragStart={(e) => onUnitDragStart(e, unit)}
                     style={{
                         padding: '12px',
-                        backgroundColor: 'white',
-                        border: '2px solid #C3A995',
+                        backgroundColor: 'var(--color-bg-primary)',
+                        border: `2px solid ${getCostColor(unit.cost)}`,
                         borderRadius: '8px',
                         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                         cursor: 'grab',
@@ -39,8 +40,7 @@ export const UnitDetailedView: React.FC<UnitDetailedViewProps> = ({
                     }}
                     whileHover={{
                         x: 4,
-                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
-                        borderColor: '#8B7355'
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
                     }}
                     whileTap={{ scale: 0.98 }}
                 >
@@ -67,7 +67,7 @@ export const UnitDetailedView: React.FC<UnitDetailedViewProps> = ({
                         <div style={{
                             fontSize: '14px',
                             fontWeight: 'bold',
-                            color: '#6F5E53',
+                            color: 'var(--color-text-primary)',
                             marginBottom: '6px'
                         }}>
                             {unit.displayName}
@@ -87,11 +87,11 @@ export const UnitDetailedView: React.FC<UnitDetailedViewProps> = ({
                                         backgroundColor: selectedItems.some(item =>
                                             item.type === 'trait' &&
                                             item.displayName === trait.displayName
-                                        ) ? '#8B7355' : '#E5E5E5',
+                                        ) ? 'var(--color-bg-accent)' : 'var(--color-bg-secondary)',
                                         color: selectedItems.some(item =>
                                             item.type === 'trait' &&
                                             item.displayName === trait.displayName
-                                        ) ? 'white' : '#666',
+                                        ) ? 'var(--color-text-accent)' : 'var(--color-text-secondary)',
                                         padding: '2px 6px',
                                         borderRadius: '8px',
                                         fontWeight: selectedItems.some(item =>
@@ -107,7 +107,7 @@ export const UnitDetailedView: React.FC<UnitDetailedViewProps> = ({
 
                         <div style={{
                             fontSize: '9px',
-                            color: '#888',
+                            color: 'var(--color-text-secondary)',
                             fontStyle: 'italic'
                         }}>
                             {unit.traits.length} trait{unit.traits.length !== 1 ? 's' : ''}
@@ -116,7 +116,7 @@ export const UnitDetailedView: React.FC<UnitDetailedViewProps> = ({
 
                     <div style={{
                         fontSize: '12px',
-                        color: '#999',
+                        color: 'var(--color-text-secondary)',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
