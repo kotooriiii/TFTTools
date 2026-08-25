@@ -1,5 +1,6 @@
 import {RefObject, useState} from 'react';
 import {Unit} from '../types/unitTypes';
+import {getCostColor} from '../utils/unitDisplay';
 
 export const useDragAndDrop = (
     _svgRef: RefObject<SVGSVGElement | null>,
@@ -21,14 +22,14 @@ export const useDragAndDrop = (
         top: -1000px;
         width: 60px;
         height: 60px;
-        background: #8B7355;
+        background: ${getCostColor(unit.cost)};
         color: white;
         font-size: 24px;
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        border: 2px solid #594b42;
+        border: 2px solid var(--color-border);
     `;
 
         document.body.appendChild(dragImage);

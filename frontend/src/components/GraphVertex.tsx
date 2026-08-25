@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Vertex } from '../types/graphTypes';
 import { CIRCLE_RADIUS } from '../types/graphTypes';
+import { getCostColor } from '../utils/unitDisplay';
 
 interface GraphVertexProps {
     vertex: Vertex;
@@ -39,6 +40,12 @@ export const GraphVertex: React.FC<GraphVertexProps> = ({
     const getColor = () => {
         return 'var(--color-bg-accent)';
     };
+
+    const getBorderColor = () => {
+        if (vertex.id === highlightedUnitId) return 'var(--color-warning)';
+        return getCostColor(vertex.unitData?.cost);
+    };
+
     const getTooltipPosition = () => {
         if (!mousePosition) return { x: vertex.x, y: vertex.y - 45 };
 
@@ -61,8 +68,8 @@ export const GraphVertex: React.FC<GraphVertexProps> = ({
             <motion.circle
                 r={getRadius()}
                 fill={showImage ? 'var(--color-bg-primary)' : getColor()}
-                stroke={vertex.id === highlightedUnitId ? 'var(--color-warning)' : 'var(--color-border)'}
-                strokeWidth={vertex.id === highlightedUnitId ? 2 : 1.5}
+                stroke={getBorderColor()}
+                strokeWidth={vertex.id === highlightedUnitId ? 3 : 2.5}
                 style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
                 onPointerEnter={onPointerEnter}
                 onPointerLeave={onPointerLeave}

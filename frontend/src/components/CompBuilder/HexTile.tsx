@@ -1,6 +1,7 @@
 import React from 'react';
 import { UnitData } from '../../types/compBuilderTypes';
-import { getHexCenter, getHexPoints, getCostColor, hexId, HEX_SIZE } from './hexUtils';
+import { getHexCenter, getHexPoints, hexId, HEX_SIZE } from './hexUtils';
+import { getCostColor } from '../../utils/unitDisplay';
 import { UnitPortrait } from '../UnitPortrait.tsx';
 
 interface HexTileProps {

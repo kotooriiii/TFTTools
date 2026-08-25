@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Unit } from '../types/unitTypes';
 import { SelectedItem } from '../types/searchTypes';
 import { UnitPortrait } from './UnitPortrait.tsx';
+import { getCostColor } from '../utils/unitDisplay';
 
 interface UnitDetailedViewProps {
     units: Unit[];
@@ -28,7 +29,7 @@ export const UnitDetailedView: React.FC<UnitDetailedViewProps> = ({
                     style={{
                         padding: '12px',
                         backgroundColor: 'var(--color-bg-primary)',
-                        border: '2px solid var(--color-border)',
+                        border: `2px solid ${getCostColor(unit.cost)}`,
                         borderRadius: '8px',
                         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                         cursor: 'grab',
@@ -39,8 +40,7 @@ export const UnitDetailedView: React.FC<UnitDetailedViewProps> = ({
                     }}
                     whileHover={{
                         x: 4,
-                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
-                        borderColor: 'var(--color-text-secondary)'
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
                     }}
                     whileTap={{ scale: 0.98 }}
                 >

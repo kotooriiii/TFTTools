@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { UnitData } from '../../types/compBuilderTypes';
-import { getCostColor } from './hexUtils';
+import { getCostColor } from '../../utils/unitDisplay';
 import { UnitPortrait } from '../UnitPortrait.tsx';
 
 interface UnitRosterProps {

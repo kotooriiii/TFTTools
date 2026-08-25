@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getInitials } from './CompBuilder/hexUtils';
+import { getInitials } from '../utils/unitDisplay';
 
 interface UnitPortraitProps {
     displayName: string;
