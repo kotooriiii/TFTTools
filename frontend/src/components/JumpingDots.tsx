@@ -42,7 +42,7 @@ export const JumpingDots: React.FC = () => {
                 width: 8px;
                 height: 8px;
                 border-radius: 50%;
-                background-color: #594b42;
+                background-color: var(--color-text-primary);
                 will-change: transform;
             }
             `}

@@ -29,8 +29,8 @@ export const UnitsPanel: React.FC<UnitsPanelProps> = ({
             left: '20px',
             width: '320px',
             maxHeight: '400px',
-            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-            border: '2px solid #594b42',
+            backgroundColor: 'var(--color-bg-primary)',
+            border: '2px solid var(--color-border)',
             borderRadius: '12px',
             padding: '16px',
             boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
@@ -42,7 +42,7 @@ export const UnitsPanel: React.FC<UnitsPanelProps> = ({
                 margin: '0 0 8px 0',
                 fontSize: '16px',
                 fontWeight: 'bold',
-                color: '#594b42'
+                color: 'var(--color-text-primary)'
             }}>
                 Filtered Units ({filteredUnits.length})
             </h3>
@@ -51,7 +51,7 @@ export const UnitsPanel: React.FC<UnitsPanelProps> = ({
             <div style={{
                 display: 'flex',
                 gap: '4px',
-                backgroundColor: '#F5F5F5',
+                backgroundColor: 'var(--color-bg-secondary)',
                 borderRadius: '6px',
                 padding: '2px',
                 marginBottom: '16px'
@@ -64,8 +64,8 @@ export const UnitsPanel: React.FC<UnitsPanelProps> = ({
                         border: 'none',
                         borderRadius: '4px',
                         cursor: 'pointer',
-                        backgroundColor: unitsViewMode === 'grid' ? '#6F5E53' : 'transparent',
-                        color: unitsViewMode === 'grid' ? 'white' : '#666',
+                        backgroundColor: unitsViewMode === 'grid' ? 'var(--color-bg-accent)' : 'transparent',
+                        color: unitsViewMode === 'grid' ? 'var(--color-text-accent)' : 'var(--color-text-secondary)',
                         transition: 'all 0.2s ease'
                     }}
                     title="Grid View"
@@ -80,8 +80,8 @@ export const UnitsPanel: React.FC<UnitsPanelProps> = ({
                         border: 'none',
                         borderRadius: '4px',
                         cursor: 'pointer',
-                        backgroundColor: unitsViewMode === 'detailed' ? '#6F5E53' : 'transparent',
-                        color: unitsViewMode === 'detailed' ? 'white' : '#666',
+                        backgroundColor: unitsViewMode === 'detailed' ? 'var(--color-bg-accent)' : 'transparent',
+                        color: unitsViewMode === 'detailed' ? 'var(--color-text-accent)' : 'var(--color-text-secondary)',
                         transition: 'all 0.2s ease'
                     }}
                     title="Detailed View"
@@ -93,7 +93,7 @@ export const UnitsPanel: React.FC<UnitsPanelProps> = ({
             <p style={{
                 margin: '0 0 16px 0',
                 fontSize: '11px',
-                color: '#666',
+                color: 'var(--color-text-secondary)',
                 fontStyle: 'italic'
             }}>
                 Drag units to the graph canvas

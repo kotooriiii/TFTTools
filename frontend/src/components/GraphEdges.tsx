@@ -114,7 +114,7 @@ export const GraphEdges: React.FC<GraphEdgesProps> = ({
                     <g key={edge.id}>
                         <motion.path
                             d={pathData}
-                            stroke="#594b42"
+                            stroke="var(--color-border)"
                             strokeWidth={2}
                             fill="none"
                             initial={false}
@@ -126,8 +126,8 @@ export const GraphEdges: React.FC<GraphEdgesProps> = ({
                                 <motion.rect
                                     width={labelWidth}
                                     height={labelHeight}
-                                    fill="rgba(255, 255, 255, 0.95)"
-                                    stroke="#594b42"
+                                    fill="var(--color-bg-primary)"
+                                    stroke="var(--color-border)"
                                     strokeWidth={1}
                                     rx={3}
                                     initial={false}
@@ -140,7 +140,7 @@ export const GraphEdges: React.FC<GraphEdgesProps> = ({
                                 <motion.text
                                     textAnchor="middle"
                                     dominantBaseline="central"
-                                    fill="#594b42"
+                                    fill="var(--color-text-primary)"
                                     fontSize="11"
                                     fontWeight="600"
                                     style={{ 
