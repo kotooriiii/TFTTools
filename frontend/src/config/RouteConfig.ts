@@ -1,6 +1,6 @@
 import React from 'react';
 import {HomePage} from '../pages/HomePage';
-import GraphCanvasTool from '../tools/GraphCanvasTool';
+import TraitWebTool from '../tools/TraitWebTool';
 import HorizontalCompositionGenerator from "../tools/HorizontalCompositionGenerator.tsx";
 import CompBuilderTool from "../tools/CompBuilderTool.tsx";
 import {LoginPage} from '../pages/LoginPage';
@@ -30,12 +30,12 @@ export const ROUTE_CONFIG: RouteConfig[] = [
         component: HomePage
     },
     {
-        id: 'graph-canvas',
-        path: '/tools/graph-canvas',
-        name: 'Graph Canvas',
+        id: 'trait-web',
+        path: '/tools/trait-web',
+        name: 'Trait Web',
         icon: '🔗',
-        description: 'Interactive graph visualization and editing',
-        component: GraphCanvasTool
+        description: 'Drag units onto a canvas and see them connect by shared traits',
+        component: TraitWebTool
     },
     {
         id: 'horizontal-comp-generator',
@@ -50,7 +50,7 @@ export const ROUTE_CONFIG: RouteConfig[] = [
         path: '/tools/comp-builder',
         name: 'Comp Builder',
         icon: '⬡',
-        description: 'Search champions and traits and drag them onto a hex board to build compositions',
+        description: 'Search units and traits and drag them onto a hex board to build compositions',
         component: CompBuilderTool
     },
     {

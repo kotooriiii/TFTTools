@@ -39,7 +39,7 @@ public class SearchService
     }
 
 
-    public List<UnitDTO> searchChampions(String query)
+    public List<UnitDTO> searchUnits(String query)
     {
         return unitRepository.getAllChampionsStartingWith(query)
                 .stream()

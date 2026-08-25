@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { getInitials } from './CompBuilder/hexUtils';
 
-interface ChampionPortraitProps {
+interface UnitPortraitProps {
     displayName: string;
     iconUrl?: string;
     size: number;
@@ -10,7 +10,7 @@ interface ChampionPortraitProps {
     className?: string;
 }
 
-export const ChampionPortrait: React.FC<ChampionPortraitProps> = ({
+export const UnitPortrait: React.FC<UnitPortraitProps> = ({
                                                                         displayName,
                                                                         iconUrl,
                                                                         size,

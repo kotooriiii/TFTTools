@@ -1,16 +1,16 @@
 import React from 'react';
-import { ChampionData } from '../../types/compBuilderTypes';
+import { UnitData } from '../../types/compBuilderTypes';
 import { BOARD_HEIGHT, BOARD_WIDTH, generateHexCoords, hexId } from './hexUtils';
 import { HexTile } from './HexTile';
 
 interface HexBoardProps {
-    board: Record<string, ChampionData>;
+    board: Record<string, UnitData>;
     dragOverHexId?: string | null;
     readOnly?: boolean;
     onDrop?: (e: React.DragEvent, id: string) => void;
     onDragOver?: (e: React.DragEvent, id: string) => void;
     onDragLeave?: () => void;
-    onHexDragStart?: (e: React.DragEvent, id: string, champion: ChampionData) => void;
+    onHexDragStart?: (e: React.DragEvent, id: string, unit: UnitData) => void;
     onRemove?: (id: string) => void;
 }
 
@@ -39,7 +39,7 @@ export const HexBoard: React.FC<HexBoardProps> = ({
                         key={id}
                         row={row}
                         col={col}
-                        champion={board[id] ?? null}
+                        unit={board[id] ?? null}
                         isDragOver={dragOverHexId === id}
                         readOnly={readOnly}
                         onDrop={onDrop}

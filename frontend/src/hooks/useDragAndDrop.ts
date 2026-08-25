@@ -2,7 +2,7 @@ import {RefObject, useState} from 'react';
 import {Unit} from '../types/unitTypes';
 
 export const useDragAndDrop = (
-    _svgRef: RefObject<SVGSVGElement>,
+    _svgRef: RefObject<SVGSVGElement | null>,
     _panOffset: { x: number; y: number },
     _zoom: number
 ) =>

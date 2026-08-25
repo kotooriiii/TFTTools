@@ -1,11 +1,11 @@
 import { Unit } from '../types/unitTypes';
 
 export const filterService = {
-    async filterUnits(champions: string[], traits: string[]): Promise<Unit[]> {
+    async filterUnits(units: string[], traits: string[]): Promise<Unit[]> {
         const params = new URLSearchParams();
 
-        if (champions.length > 0) {
-            params.append('champions', champions.join(','));
+        if (units.length > 0) {
+            params.append('units', units.join(','));
         }
 
         if (traits.length > 0) {

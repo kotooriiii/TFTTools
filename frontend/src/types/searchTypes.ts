@@ -1,9 +1,12 @@
 export interface SearchItem {
     displayName: string;
     iconUrl?: string;
+    type?: 'unit' | 'trait';
 }
 
-export type ChampionItem = SearchItem;
+export type SelectedItem = SearchItem;
+
+export type UnitItem = SearchItem;
 
 export interface TraitItem extends SearchItem {
     count: number;
@@ -24,7 +27,8 @@ export interface ApiTraitResponse {
     activationThresholds?: number[];
 }
 
-export interface ApiChampionResponse {
+export interface ApiUnitResponse
+{
     displayName: string;
     iconUrl?: string;
 }

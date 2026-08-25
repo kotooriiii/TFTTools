@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, RefObject } from 'react';
 
 export interface SearchHookConfig<T> {
     searchFunction: (query: string) => Promise<T[]>;
-    searchPanelRef: RefObject<HTMLDivElement>;
+    searchPanelRef: RefObject<HTMLDivElement | null>;
 }
 
 export const useGenericSearch = <T>({ searchFunction, searchPanelRef }: SearchHookConfig<T>) => {

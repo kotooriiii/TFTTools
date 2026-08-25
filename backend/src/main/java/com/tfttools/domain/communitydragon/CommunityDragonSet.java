@@ -9,7 +9,7 @@ import java.util.List;
 @Setter
 @Getter
 public class CommunityDragonSet {
-    @JsonProperty(value = "champions")
+    @JsonProperty(value = "units")
     private List<CommunityDragonChampions> champions;
 
     @JsonProperty(value = "traits")

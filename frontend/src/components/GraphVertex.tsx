@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Vertex } from '../types/graphTypes';
 import { CIRCLE_RADIUS } from '../types/graphTypes';
@@ -28,6 +28,8 @@ export const GraphVertex: React.FC<GraphVertexProps> = ({
                                                             mousePosition,
                                                             highlightedUnitId,
                                                         }) => {
+    const [imageFailed, setImageFailed] = useState(false);
+
     const getRadius = () => {
         if (isDragging) return CIRCLE_RADIUS * 0.9;
         if (isHovering) return CIRCLE_RADIUS * 1.1;
@@ -50,12 +52,15 @@ export const GraphVertex: React.FC<GraphVertexProps> = ({
     };
 
     const tooltipPos = getTooltipPosition();
+    const radius = getRadius();
+    const iconUrl = vertex.unitData?.iconUrl;
+    const showImage = Boolean(iconUrl) && !imageFailed;
 
     return (
         <g>
             <motion.circle
                 r={getRadius()}
-                fill={getColor()}
+                fill={showImage ? '#ffffff' : getColor()}
                 stroke={vertex.id === highlightedUnitId ? 'yellow' : '#594b42'}
                 strokeWidth={vertex.id === highlightedUnitId ? 2 : 1.5}
                 style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
@@ -69,7 +74,7 @@ export const GraphVertex: React.FC<GraphVertexProps> = ({
                     cx: vertex.x,
                     cy: vertex.y,
                     r: getRadius(),
-                    fill: getColor(),
+                    fill: showImage ? '#ffffff' : getColor(),
                     scale: vertex.id === highlightedUnitId
                         ? [1, 1.1, 1] // pulse animation
                         : 1
@@ -91,6 +96,26 @@ export const GraphVertex: React.FC<GraphVertexProps> = ({
                 }}
 
             />
+
+            {/* Unit picture rendered on top of the circle, clipped to a circle */}
+            {showImage && (
+                <>
+                    <clipPath id={`vertex-clip-${vertex.id}`}>
+                        <circle cx={vertex.x} cy={vertex.y} r={radius * 0.9} />
+                    </clipPath>
+                    <image
+                        href={iconUrl}
+                        x={vertex.x - radius}
+                        y={vertex.y - radius}
+                        width={radius * 2}
+                        height={radius * 2}
+                        preserveAspectRatio="xMidYMid slice"
+                        clipPath={`url(#vertex-clip-${vertex.id})`}
+                        style={{ cursor: isDragging ? 'grabbing' : 'grab', pointerEvents: 'none' }}
+                        onError={() => setImageFailed(true)}
+                    />
+                </>
+            )}
 
 
             {/* Unit tooltip on hover */}
@@ -149,7 +174,7 @@ export const GraphVertex: React.FC<GraphVertexProps> = ({
                         }}
 
                     >
-                        {vertex.unitData.champion}
+                        {vertex.unitData.displayName}
                     </motion.text>
                 </motion.g>
             )}

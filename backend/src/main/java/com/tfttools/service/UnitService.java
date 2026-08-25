@@ -1,6 +1,7 @@
 package com.tfttools.service;
 
-import com.tfttools.domain.Trait;
+import com.tfttools.adapter.UnitFilterAdapter;
+import com.tfttools.adapter.UnitFilterCriteria;
 import com.tfttools.domain.Unit;
 import com.tfttools.dto.FilterDTO;
 import com.tfttools.dto.SearchResultDTO;
@@ -28,16 +29,18 @@ public class UnitService
 {
     private final UnitRepository unitRepository;
     private final TraitRepository traitRepository;
+    private final UnitFilterAdapter unitFilterAdapter;
 
     private final UnitMapperSimple unitMapperSimple;
     private final UnitMapperDetailed unitMapperDetailed;
     private final TraitMapper traitMapper;
 
-    public UnitService(UnitRepository unitRepository, TraitRepository traitRepository,
+    public UnitService(UnitRepository unitRepository, TraitRepository traitRepository, UnitFilterAdapter unitFilterAdapter,
                        UnitMapperSimple unitMapperSimple, UnitMapperDetailed unitMapperDetailed, TraitMapper traitMapper)
     {
         this.unitRepository = unitRepository;
         this.traitRepository = traitRepository;
+        this.unitFilterAdapter = unitFilterAdapter;
         this.unitMapperSimple = unitMapperSimple;
         this.unitMapperDetailed = unitMapperDetailed;
         this.traitMapper = traitMapper;
@@ -90,28 +93,17 @@ public class UnitService
      */
     public List<UnitDTO> filter(FilterDTO filterDTO)
     {
-        Set<Unit> filteredUnits = new HashSet<>(unitRepository.getAllUnits());
-
-        if (!filterDTO.getUnits().isEmpty())
+        if (filterDTO == null || (filterDTO.getUnits().isEmpty() && filterDTO.getTraits().isEmpty()))
         {
-            // From unitDTOList map displayName -> actual unit
-            List<Unit> unitList = filterDTO.getUnits().stream().map(unitDTO -> unitRepository.getUnitByName(unitDTO.getDisplayName())).toList();
-
-            // For each unit in unitList map unit -> SingletonSet(Unit)
-            List<Set<Unit>> unitsFromChampions = unitList.stream().map(Collections::singleton).toList();
-
-            // For each unit take intersection of filteredUnits and UnitSingleton
-            unitsFromChampions.forEach(filteredUnits::retainAll);
-
+            return Collections.emptyList();
         }
 
-        if (!filterDTO.getTraits().isEmpty())
-        {
-            // From traitList map displayName -> Trait
-            List<Trait> traitList = filterDTO.getTraits().stream().map(traitDTO -> traitRepository.getTraitByName(traitDTO.getDisplayName())).toList();
-            // For each trait, take intersection of filteredUnits and Set(all units in trait)
-            traitList.forEach(trait -> filteredUnits.retainAll(new HashSet<>(unitRepository.getUnitsByTrait(trait))));
-        }
+        // Adapter handles validation and conversion
+        UnitFilterCriteria criteria = unitFilterAdapter.adaptToFilterCriteria(filterDTO);
+
+        // Union of explicitly selected units and units belonging to any selected trait
+        Set<Unit> filteredUnits = new HashSet<>(criteria.units());
+        criteria.traits().forEach(trait -> filteredUnits.addAll(unitRepository.getUnitsByTrait(trait)));
 
         return filteredUnits.stream().map(unitMapperSimple).collect(Collectors.toList());
     }

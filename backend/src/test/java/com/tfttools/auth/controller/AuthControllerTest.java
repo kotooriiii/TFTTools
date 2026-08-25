@@ -11,8 +11,6 @@ import com.tfttools.auth.exception.InvalidCredentialsException;
 import com.tfttools.auth.exception.UnsupportedOAuthProviderException;
 import com.tfttools.auth.security.JwtTokenProvider;
 import com.tfttools.auth.service.AuthService;
-import com.tfttools.repository.TraitRepository;
-import com.tfttools.repository.UnitRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -49,14 +47,6 @@ class AuthControllerTest
     // and needs this to construct, even though addFilters = false means it never actually runs here.
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
-
-    // WebConfig implements WebMvcConfigurer, so @WebMvcTest's slice also pulls it in regardless of
-    // controller, and it depends on these unrelated in-memory repositories to construct.
-    @MockBean
-    private UnitRepository unitRepository;
-
-    @MockBean
-    private TraitRepository traitRepository;
 
     @Test
     void signup_validRequest_returns201WithUser() throws Exception

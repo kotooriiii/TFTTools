@@ -9,6 +9,6 @@ import java.util.List;
 @Data
 @RequiredArgsConstructor
 public class FilterDTO {
-    private List<UnitDTO> units = new ArrayList<>();
-    private List<TraitDTO> traits = new ArrayList<>();
+    private List<String> units = new ArrayList<>();
+    private List<String> traits = new ArrayList<>();
 }

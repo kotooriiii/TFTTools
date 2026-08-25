@@ -39,7 +39,7 @@ public class EngineConfigurationAdapter
     {
         ValidationContext validation = new ValidationContext();
 
-        Set<Unit> requiredUnits = adaptUnits(horizontalDTO.requiredChampions(),
+        Set<Unit> requiredUnits = adaptUnits(horizontalDTO.requiredUnits(),
                 "required unit", validation);
 
         Map<Trait, Integer> requiredTraits = adaptRequiredTraits(horizontalDTO.requiredTraits(),
@@ -47,7 +47,7 @@ public class EngineConfigurationAdapter
 
         Set<Emblem> emblems = adaptEmblems(horizontalDTO.emblems(), validation);
 
-        Set<Unit> excludedUnits = adaptUnits(horizontalDTO.excludedChampions(),
+        Set<Unit> excludedUnits = adaptUnits(horizontalDTO.excludedUnits(),
                 "excluded unit", validation);
 
         Set<Trait> excludedTraits = adaptTraits(horizontalDTO.excludedTraits(),

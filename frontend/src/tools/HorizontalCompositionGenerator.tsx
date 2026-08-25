@@ -1,23 +1,23 @@
 import React, {useRef, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {AnimatePresence, motion} from 'framer-motion';
-import {EmblemItem} from '../types/searchTypes';
+import {EmblemItem, SelectedItem} from '../types/searchTypes';
 import {CompositionDTO, generateHorizontalComposition, HorizontalDTO, UnitPlacementDTO} from '../services/searchService';
 
 import {EmblemSearchBox, EmblemSearchBoxHandle} from "../components/HorizontalCompositionGenerator/EmblemSearchBox.tsx";
 import {TraitSearchBox, TraitSearchBoxHandle} from '../components/HorizontalCompositionGenerator/TraitSearchBox.tsx';
 import {
-    ChampionSearchBox,
-    ChampionSearchBoxHandle
-} from "../components/HorizontalCompositionGenerator/ChampionSearchBox.tsx";
+    UnitSearchBox,
+    UnitSearchBoxHandle
+} from "../components/HorizontalCompositionGenerator/UnitSearchBox.tsx";
 import {HexBoard} from '../components/CompBuilder/HexBoard';
 import {hexId} from '../components/CompBuilder/hexUtils';
-import {ChampionData} from '../types/compBuilderTypes';
+import {UnitData} from '../types/compBuilderTypes';
 
 interface BasicInputs
 {
     tacticianLevel: number;
-    requiredChampions: SelectedItem[];
+    requiredUnits: SelectedItem[];
     requiredTraits: { trait: string; count: number }[];
 }
 
@@ -70,9 +70,9 @@ const getTraitBreakdown = (composition: CompositionDTO) =>
         .sort((a, b) => Number(b.active) - Number(a.active) || b.count - a.count);
 };
 
-const placementsToBoard = (placements: UnitPlacementDTO[]): Record<string, ChampionData> =>
+const placementsToBoard = (placements: UnitPlacementDTO[]): Record<string, UnitData> =>
 {
-    const board: Record<string, ChampionData> = {};
+    const board: Record<string, UnitData> = {};
     placements.forEach(placement =>
     {
         board[hexId(placement.row, placement.col)] = {
@@ -91,7 +91,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
 
     const [basicInputs, setBasicInputs] = useState<BasicInputs>({
         tacticianLevel: 1,
-        requiredChampions: [],
+        requiredUnits: [],
         requiredTraits: []
     });
 
@@ -121,8 +121,8 @@ const HorizontalCompositionGenerator: React.FC = () =>
     // Search states for traits
     const traitSearchRef = useRef<TraitSearchBoxHandle>(null);
 
-    // Search states for champions
-    const championSearchRef = useRef<ChampionSearchBoxHandle>(null);
+    // Search states for units
+    const unitSearchRef = useRef<UnitSearchBoxHandle>(null);
 
 
 
@@ -135,7 +135,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
 
         try {
             // Collect data from refs
-            const selectedChampions = championSearchRef.current?.getSelectedChampions() || [];
+            const selectedUnits = unitSearchRef.current?.getSelectedUnits() || [];
             const selectedTraits = traitSearchRef.current?.getSelectedTraits() || [];
             const selectedEmblems = emblemSearchRef.current?.getSelectedEmblems() || [];
 
@@ -146,11 +146,11 @@ const HorizontalCompositionGenerator: React.FC = () =>
                     acc[trait.displayName] = trait.count;
                     return acc;
                 }, {} as Record<string, number>),
-                requiredChampions: selectedChampions.map(champion => ({
-                    displayName: champion.displayName
+                requiredUnits: selectedUnits.map(unit => ({
+                    displayName: unit.displayName
                 })),
                 excludedTraits: [], // Not implemented in UI yet
-                excludedChampions: [], // Not implemented in UI yet
+                excludedUnits: [], // Not implemented in UI yet
                 costOfBoard: advancedInputs.targetGold,
                 tacticianLevel: basicInputs.tacticianLevel,
                 crowns: advancedInputs.crownsPans,
@@ -185,7 +185,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
         {
             setBasicInputs({
                 tacticianLevel: 1,
-                requiredChampions: [],
+                requiredUnits: [],
                 requiredTraits: []
             });
             setAdvancedInputs({
@@ -216,10 +216,10 @@ const HorizontalCompositionGenerator: React.FC = () =>
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 0.5}}
                 >
-                    <h1 className="text-4xl font-bold text-foreground mb-2">
+                    <h1 className="text-4xl font-bold text-primary mb-2">
                         TFT Composition Generator
                     </h1>
-                    <p className="text-lg text-muted-foreground">
+                    <p className="text-lg text-secondary">
                         Build optimal Teamfight Tactics compositions with strategic precision
                     </p>
                 </motion.div>
@@ -248,11 +248,11 @@ const HorizontalCompositionGenerator: React.FC = () =>
                         } : {}}
                         transition={{duration: 0.4}}
                     >
-                        <h2 className="text-lg font-semibold text-foreground mb-4">Basic Parameters</h2>
+                        <h2 className="text-lg font-semibold text-primary mb-4">Basic Parameters</h2>
 
                         {/* Tactician Level */}
                         <div className="mb-6">
-                            <label className="block text-sm font-medium text-foreground mb-2">
+                            <label className="block text-sm font-medium text-primary mb-2">
                                 Tactician Level (1-10)
                             </label>
                             <div className="flex items-center gap-4">
@@ -273,8 +273,8 @@ const HorizontalCompositionGenerator: React.FC = () =>
                             </div>
                         </div>
 
-                        {/* Champion Search Box */}
-                        <ChampionSearchBox ref={championSearchRef}/>
+                        {/* Unit Search Box */}
+                        <UnitSearchBox ref={unitSearchRef}/>
 
                         {/* Emblem Search Box*/}
                         <TraitSearchBox ref={traitSearchRef}/>
@@ -301,7 +301,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                         } : {}}
                         transition={{duration: 0.4, delay: 0.3}}
                     >
-                        <span className="text-lg font-medium text-foreground">Advanced Parameters</span>
+                        <span className="text-lg font-medium text-primary">Advanced Parameters</span>
                         <motion.span
                             animate={{rotate: showAdvanced ? 180 : 0}}
                             transition={{duration: 0.3, ease: "easeInOut"}}
@@ -334,7 +334,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                 >
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                                         <div>
-                                            <label className="block text-sm font-medium text-foreground mb-2">
+                                            <label className="block text-sm font-medium text-primary mb-2">
                                                 Tactician Crowns/Pans
                                             </label>
                                             <input
@@ -351,7 +351,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-foreground mb-2">
+                                            <label className="block text-sm font-medium text-primary mb-2">
                                                 Luck Factor (0.0 - 1.0)
                                             </label>
                                             <input
@@ -369,7 +369,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-foreground mb-2">
+                                            <label className="block text-sm font-medium text-primary mb-2">
                                                 Target Gold Threshold
                                             </label>
                                             <input
@@ -405,7 +405,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                         <motion.button
                             onClick={handleCalculate}
                             disabled={isCalculating || basicInputs.tacticianLevel < 1}
-                            className="flex-1 px-6 py-3 bg-secondary text-primary-foreground rounded-lg font-medium hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                            className="flex-1 px-6 py-3 bg-secondary text-primary rounded-lg font-medium hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                             whileHover={{scale: 1.02}}
                             whileTap={{scale: 0.98}}
                         >
@@ -428,7 +428,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                         <motion.button
                             onClick={resetForm}
                             disabled={isResetting}
-                            className="px-6 py-3 bg-secondary text-secondary-foreground rounded-lg font-medium hover:bg-secondary/90 disabled:opacity-70 transition-colors duration-200"
+                            className="px-6 py-3 bg-secondary text-primary rounded-lg font-medium hover:bg-secondary/90 disabled:opacity-70 transition-colors duration-200"
                             whileHover={{scale: isResetting ? 1 : 1.02}}
                             whileTap={{scale: isResetting ? 1 : 0.98}}
                             animate={isResetting ? {
@@ -482,14 +482,14 @@ const HorizontalCompositionGenerator: React.FC = () =>
                             className="bg-card border border-border rounded-lg p-6 shadow-sm"
                         >
                             <div className="flex items-center justify-center mb-4">
-                                <h3 className="text-2xl font-semibold text-foreground flex items-center">
+                                <h3 className="text-2xl font-semibold text-primary flex items-center">
                                     <span className="text-green-600 mr-2">⚔️</span>
                                     TFT Composition Results
                                 </h3>
                             </div>
 
                             {result.compositions.length === 0 ? (
-                                <div className="p-4 bg-accent/50 rounded-lg text-foreground">
+                                <div className="p-4 bg-accent/50 rounded-lg text-primary">
                                     No valid compositions found with the given parameters.
                                 </div>
                             ) : (
@@ -504,7 +504,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                 animate={{opacity: 1, y: 0}}
                                                 transition={{delay: 0.1 * index}}
                                             >
-                                                <h4 className="text-lg font-semibold text-foreground text-center mb-3">
+                                                <h4 className="text-lg font-semibold text-primary text-center mb-3">
                                                     Composition {index + 1}
                                                 </h4>
 
@@ -543,7 +543,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                     {composition.teamCode && (
                                                         <button
                                                             onClick={() => navigator.clipboard.writeText(composition.teamCode)}
-                                                            className="px-3 py-2 bg-secondary text-secondary-foreground rounded-md text-sm font-medium hover:bg-secondary/90 transition-colors duration-200"
+                                                            className="px-3 py-2 bg-secondary text-primary rounded-md text-sm font-medium hover:bg-secondary/90 transition-colors duration-200"
                                                         >
                                                             Copy Team Code
                                                         </button>
@@ -552,7 +552,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                         onClick={() => navigate('/tools/comp-builder', {
                                                             state: {seedBoard: placementsToBoard(composition.placements)}
                                                         })}
-                                                        className="px-3 py-2 bg-accent text-foreground rounded-md text-sm font-medium hover:bg-accent/80 transition-colors duration-200"
+                                                        className="px-3 py-2 bg-accent text-primary rounded-md text-sm font-medium hover:bg-accent/80 transition-colors duration-200"
                                                     >
                                                         Edit in Comp Builder
                                                     </button>

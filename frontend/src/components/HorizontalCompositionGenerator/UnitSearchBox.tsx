@@ -1,15 +1,15 @@
 import { useImperativeHandle, forwardRef } from 'react';
 import { GenericSearchBox } from './GenericSearchBox';
-import {ChampionItem} from '../../types/searchTypes';
+import {UnitItem} from '../../types/searchTypes';
 import { searchService } from '../../services/searchService';
 import {useItemSearch} from "../../hooks/Horizontal/useItemSearchHook.ts";
 
-export interface ChampionSearchBoxHandle {
-    getSelectedChampions: () => ChampionItem[];
+export interface UnitSearchBoxHandle {
+    getSelectedUnits: () => UnitItem[];
     clearSelection: () => void;
 }
 
-export const ChampionSearchBox = forwardRef<ChampionSearchBoxHandle>(
+export const UnitSearchBox = forwardRef<UnitSearchBoxHandle>(
     (_, ref) => {
         const {
             searchQuery,
@@ -22,25 +22,25 @@ export const ChampionSearchBox = forwardRef<ChampionSearchBoxHandle>(
             handleUpdateCount,
             getSelectedItems,
             clearSelection,
-        } = useItemSearch<ChampionItem>({
-            searchFunction: searchService.searchChampions,
+        } = useItemSearch<UnitItem>({
+            searchFunction: searchService.searchUnits,
             getItemKey: (item) => item.displayName,
         });
 
-        useImperativeHandle(ref, () => ({
-            getSelectedChampions: getSelectedItems,
+        useImperativeHandle(ref, (): UnitSearchBoxHandle => ({
+            getSelectedUnits: getSelectedItems,
             clearSelection,
         }));
 
-        const championConfig = {
-            placeholder: "Search for champions...",
-            label: "Available Champions",
+        const unitConfig = {
+            placeholder: "Search for units...",
+            label: "Available Units",
             icon: "⚔️",
             badgeColor: "bg-amber-100 text-amber-800",
-            badgeText: "Champion",
-            displayName: (item: ChampionItem) => item.displayName,
-            itemKey: (item: ChampionItem) => item.displayName,
-            iconUrl: (item: ChampionItem) => item.iconUrl
+            badgeText: "Unit",
+            displayName: (item: UnitItem) => item.displayName,
+            itemKey: (item: UnitItem) => item.displayName,
+            iconUrl: (item: UnitItem) => item.iconUrl
         };
 
         return (
@@ -52,11 +52,11 @@ export const ChampionSearchBox = forwardRef<ChampionSearchBoxHandle>(
                 onAddItem={handleAddItem}
                 onRemoveItem={handleRemoveItem}
                 onUpdateCount={handleUpdateCount}
-                config={championConfig}
+                config={unitConfig}
                 isLoading={isLoading}
             />
         );
     }
 );
 
-ChampionSearchBox.displayName = 'ChampionSearchBox';
+UnitSearchBox.displayName = 'UnitSearchBox';

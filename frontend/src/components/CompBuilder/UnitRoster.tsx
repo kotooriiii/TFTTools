@@ -1,20 +1,20 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { ChampionData } from '../../types/compBuilderTypes';
+import { UnitData } from '../../types/compBuilderTypes';
 import { getCostColor } from './hexUtils';
-import { ChampionPortrait } from '../ChampionPortrait';
+import { UnitPortrait } from '../UnitPortrait.tsx';
 
-interface ChampionRosterProps {
-    champions: ChampionData[];
+interface UnitRosterProps {
+    units: UnitData[];
     isLoading: boolean;
     searchQuery: string;
     onSearchChange: (query: string) => void;
-    onDragStart: (e: React.DragEvent, champion: ChampionData) => void;
+    onDragStart: (e: React.DragEvent, unit: UnitData) => void;
     placedNames: Set<string>;
 }
 
-export const ChampionRoster: React.FC<ChampionRosterProps> = ({
-                                                                    champions,
+export const UnitRoster: React.FC<UnitRosterProps> = ({
+                                                                    units,
                                                                     isLoading,
                                                                     searchQuery,
                                                                     onSearchChange,
@@ -22,17 +22,17 @@ export const ChampionRoster: React.FC<ChampionRosterProps> = ({
                                                                     placedNames
                                                                 }) => {
     const groupedByCost = useMemo(() => {
-        const map = new Map<number, ChampionData[]>();
+        const map = new Map<number, UnitData[]>();
 
-        [...champions]
+        [...units]
             .sort((a, b) => a.displayName.localeCompare(b.displayName))
-            .forEach(champion => {
-                if (!map.has(champion.cost)) map.set(champion.cost, []);
-                map.get(champion.cost)!.push(champion);
+            .forEach(unit => {
+                if (!map.has(unit.cost)) map.set(unit.cost, []);
+                map.get(unit.cost)!.push(unit);
             });
 
         return [...map.entries()].sort(([costA], [costB]) => costA - costB);
-    }, [champions]);
+    }, [units]);
 
     return (
         <div className="w-72 shrink-0 h-full flex flex-col border-r border-border bg-primary">
@@ -41,18 +41,18 @@ export const ChampionRoster: React.FC<ChampionRosterProps> = ({
                     type="text"
                     value={searchQuery}
                     onChange={(e) => onSearchChange(e.target.value)}
-                    placeholder="Search champions or traits..."
+                    placeholder="Search units or traits..."
                     className="w-full px-3 py-2 rounded-lg border border-border bg-primary text-sm text-primary outline-none focus:ring-1 focus:ring-border"
                 />
             </div>
 
             <div className="flex-1 overflow-y-auto p-3 custom-scrollbar">
                 {isLoading && (
-                    <div className="text-secondary text-sm text-center py-8">Loading champions…</div>
+                    <div className="text-secondary text-sm text-center py-8">Loading units…</div>
                 )}
 
                 {!isLoading && groupedByCost.length === 0 && (
-                    <div className="text-secondary text-sm text-center py-8">No champions found</div>
+                    <div className="text-secondary text-sm text-center py-8">No units found</div>
                 )}
 
                 {!isLoading && groupedByCost.map(([cost, group]) => (
@@ -65,29 +65,29 @@ export const ChampionRoster: React.FC<ChampionRosterProps> = ({
                             <span className="text-secondary">{cost} Cost</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2">
-                            {group.map(champion => {
-                                const isPlaced = placedNames.has(champion.displayName);
+                            {group.map(unit => {
+                                const isPlaced = placedNames.has(unit.displayName);
                                 return (
                                     <motion.div
-                                        key={champion.displayName}
+                                        key={unit.displayName}
                                         draggable
-                                        onDragStart={(e) => onDragStart(e, champion)}
+                                        onDragStart={(e) => onDragStart(e, unit)}
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
-                                        title={champion.traits.map(t => t.displayName).join(', ')}
+                                        title={unit.traits.map(t => t.displayName).join(', ')}
                                         className="rounded-lg p-1.5 flex flex-col items-center gap-1 cursor-grab select-none bg-white"
                                         style={{
-                                            border: `2px solid ${getCostColor(champion.cost)}`,
+                                            border: `2px solid ${getCostColor(unit.cost)}`,
                                             opacity: isPlaced ? 0.45 : 1
                                         }}
                                     >
-                                        <ChampionPortrait
-                                            displayName={champion.displayName}
-                                            iconUrl={champion.iconUrl}
+                                        <UnitPortrait
+                                            displayName={unit.displayName}
+                                            iconUrl={unit.iconUrl}
                                             size={36}
                                         />
                                         <div className="text-[10px] text-center leading-tight text-primary truncate w-full">
-                                            {champion.displayName}
+                                            {unit.displayName}
                                         </div>
                                     </motion.div>
                                 );
