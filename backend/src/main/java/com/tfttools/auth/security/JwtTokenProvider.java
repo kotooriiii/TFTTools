@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class JwtTokenProvider
@@ -23,7 +24,7 @@ public class JwtTokenProvider
         this.expirationMs = expirationMs;
     }
 
-    public String generateToken(Long userId)
+    public String generateToken(UUID userId)
     {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expirationMs);
@@ -38,7 +39,7 @@ public class JwtTokenProvider
     /**
      * @return the user id encoded in the token's subject, or null if the token is missing/invalid/expired
      */
-    public Long validateAndGetUserId(String token)
+    public UUID validateAndGetUserId(String token)
     {
         try
         {
@@ -48,7 +49,7 @@ public class JwtTokenProvider
                     .parseSignedClaims(token)
                     .getPayload()
                     .getSubject();
-            return Long.valueOf(subject);
+            return UUID.fromString(subject);
         }
         catch (JwtException | IllegalArgumentException e)
         {

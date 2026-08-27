@@ -45,7 +45,7 @@ npm run preview
 ### Backend: data flow
 
 1. **`CommunityDragonWebClient`** fetches raw JSON from Community Dragon (`tft.communitydragon.url` in `application.yml`); `CommunityDragonDataService` caches it (`tft.communitydragon.cache.duration.hours`) and falls back to the bundled resource `backend/src/main/resources/com/tfttools/domain/repository/communitydragon/en_us.json` if the live fetch fails.
-   - This is separate from `com.tfttools.auth`, which holds real Postgres-backed persistence (`User` JPA entity, `UserRepository extends JpaRepository`) for accounts — don't confuse `auth.repository.UserRepository` (Spring Data, DB-backed) with `TraitRepository`/`UnitRepository`/`EmblemRepository` above (in-memory, Community-Dragon-backed).
+   - This is separate from `com.tfttools.auth`, which holds real Postgres-backed persistence (`User` domain object, `UserRepository` — hand-written SQL over Spring's `JdbcClient`, schema managed by Flyway migrations in `backend/src/main/resources/db/migration`) for accounts — don't confuse `auth.repository.UserRepository` (JdbcClient-based, DB-backed) with `TraitRepository`/`UnitRepository`/`EmblemRepository` above (in-memory, Community-Dragon-backed).
 2. **`TFTSetContextService`** determines the current active TFT set number from that data.
 3. Repositories (`TraitRepository` → `UnitRepository` → `EmblemRepository`, in that dependency order) build in-memory domain objects (`Trait`, `Unit`, `Emblem`) from the raw Community Dragon data at `@PostConstruct`.
 4. **`DataRefreshService.refreshAllData()`** invalidates the cache and reloads everything in the same dependency order (traits → units → emblems → team planner codes) when a manual refresh is triggered.

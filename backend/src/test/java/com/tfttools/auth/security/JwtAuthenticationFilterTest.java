@@ -10,6 +10,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,7 +42,8 @@ class JwtAuthenticationFilterTest
     @Test
     void validBearerToken_authenticatesWithEncodedUserId() throws Exception
     {
-        when(jwtTokenProvider.validateAndGetUserId("valid-token")).thenReturn(42L);
+        UUID userId = UUID.randomUUID();
+        when(jwtTokenProvider.validateAndGetUserId("valid-token")).thenReturn(userId);
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization", "Bearer valid-token");
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -48,7 +51,7 @@ class JwtAuthenticationFilterTest
         filter.doFilter(request, response, filterChain);
 
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNotNull();
-        assertThat(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).isEqualTo(42L);
+        assertThat(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).isEqualTo(userId);
         verify(filterChain).doFilter(request, response);
     }
 

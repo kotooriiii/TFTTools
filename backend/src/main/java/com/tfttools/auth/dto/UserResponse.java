@@ -3,9 +3,10 @@ package com.tfttools.auth.dto;
 import com.tfttools.auth.domain.User;
 
 import java.time.Instant;
+import java.util.UUID;
 
 public record UserResponse(
-        Long id,
+        UUID id,
         String username,
         String email,
         Instant createdAt
