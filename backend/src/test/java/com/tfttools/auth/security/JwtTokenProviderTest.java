@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,7 +21,7 @@ class JwtTokenProviderTest
     @Test
     void generateAndValidate_roundTripsToSameUserId()
     {
-        Long userId = 42L;
+        UUID userId = UUID.randomUUID();
 
         String token = jwtTokenProvider.generateToken(userId);
 
@@ -38,7 +39,7 @@ class JwtTokenProviderTest
     {
         SecretKey otherKey = Keys.hmacShaKeyFor("a-completely-different-secret-key-32bytes!".getBytes(StandardCharsets.UTF_8));
         String tokenSignedElsewhere = Jwts.builder()
-                .subject("42")
+                .subject(UUID.randomUUID().toString())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
                 .signWith(otherKey)
@@ -53,7 +54,7 @@ class JwtTokenProviderTest
         SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
         Date past = new Date(System.currentTimeMillis() - 10_000L);
         String expiredToken = Jwts.builder()
-                .subject("42")
+                .subject(UUID.randomUUID().toString())
                 .issuedAt(new Date(past.getTime() - 1_000L))
                 .expiration(past)
                 .signWith(key)

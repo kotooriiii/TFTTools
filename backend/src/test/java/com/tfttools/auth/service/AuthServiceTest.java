@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -66,7 +67,7 @@ class AuthServiceTest
         when(userRepository.save(any(User.class))).thenAnswer(invocation ->
         {
             User u = invocation.getArgument(0);
-            u.setId(1L);
+            u.setId(UUID.randomUUID());
             return u;
         });
 
@@ -141,16 +142,17 @@ class AuthServiceTest
     void loginWithOAuth_createsNewUser_whenNoExistingAccount()
     {
         OAuthUserInfo info = new OAuthUserInfo("google-sub-1", "newgoogle@example.com", true, "New Googler");
+        UUID newUserId = UUID.randomUUID();
         when(oauthProvider.exchangeCodeForUserInfo("auth-code")).thenReturn(info);
         when(userRepository.findByOauthProviderAndOauthSubjectId("google", "google-sub-1")).thenReturn(Optional.empty());
         when(userRepository.findByEmail("newgoogle@example.com")).thenReturn(Optional.empty());
         when(userRepository.save(any(User.class))).thenAnswer(invocation ->
         {
             User u = invocation.getArgument(0);
-            u.setId(2L);
+            u.setId(newUserId);
             return u;
         });
-        when(jwtTokenProvider.generateToken(2L)).thenReturn("signed-jwt");
+        when(jwtTokenProvider.generateToken(newUserId)).thenReturn("signed-jwt");
 
         AuthResponse response = authService.loginWithOAuth("google", "auth-code");
 
@@ -233,16 +235,17 @@ class AuthServiceTest
     @Test
     void getCurrentUser_throwsWhenUserNoLongerExists()
     {
-        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+        UUID unknownId = UUID.randomUUID();
+        when(userRepository.findById(unknownId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> authService.getCurrentUser(99L))
+        assertThatThrownBy(() -> authService.getCurrentUser(unknownId))
                 .isInstanceOf(InvalidCredentialsException.class);
     }
 
     private static User existingUser()
     {
         User user = new User();
-        user.setId(7L);
+        user.setId(UUID.randomUUID());
         user.setUsername("existing");
         user.setEmail("existing@example.com");
         user.setPasswordHash("hashed-password");
@@ -253,7 +256,7 @@ class AuthServiceTest
     private static User existingOAuthUser()
     {
         User user = new User();
-        user.setId(8L);
+        user.setId(UUID.randomUUID());
         user.setUsername("googleuser");
         user.setEmail("googleuser@example.com");
         user.setOauthProvider("google");

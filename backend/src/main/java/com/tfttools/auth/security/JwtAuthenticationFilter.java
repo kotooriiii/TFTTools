@@ -12,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Reads a Bearer token, and if valid, authenticates the request with the
@@ -40,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
         if (header != null && header.startsWith(BEARER_PREFIX))
         {
             String token = header.substring(BEARER_PREFIX.length());
-            Long userId = jwtTokenProvider.validateAndGetUserId(token);
+            UUID userId = jwtTokenProvider.validateAndGetUserId(token);
             if (userId != null)
             {
                 UsernamePasswordAuthenticationToken authentication =

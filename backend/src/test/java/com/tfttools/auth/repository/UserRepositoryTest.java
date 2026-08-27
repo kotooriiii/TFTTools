@@ -5,8 +5,8 @@ import com.tfttools.support.AbstractPostgresIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.time.Instant;
@@ -14,13 +14,11 @@ import java.time.Instant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DataJpaTest
+@JdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import(UserRepository.class)
 class UserRepositoryTest extends AbstractPostgresIntegrationTest
 {
-    @Autowired
-    private TestEntityManager entityManager;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -57,13 +55,9 @@ class UserRepositoryTest extends AbstractPostgresIntegrationTest
         secondUser.setUsername("second");
         secondUser.setEmail("duplicate@example.com");
         secondUser.setPasswordHash("hash");
-        secondUser.setCreatedAt(Instant.now());
 
-        assertThatThrownBy(() ->
-        {
-            userRepository.save(secondUser);
-            entityManager.flush();
-        }).isInstanceOf(DataIntegrityViolationException.class);
+        assertThatThrownBy(() -> userRepository.save(secondUser))
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     private User persistUser(String email)
@@ -73,6 +67,6 @@ class UserRepositoryTest extends AbstractPostgresIntegrationTest
         user.setEmail(email);
         user.setPasswordHash("hash");
         user.setCreatedAt(Instant.now());
-        return entityManager.persistFlushFind(user);
+        return userRepository.save(user);
     }
 }

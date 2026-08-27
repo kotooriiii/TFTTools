@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -52,7 +53,7 @@ class AuthControllerTest
     void signup_validRequest_returns201WithUser() throws Exception
     {
         SignupRequest request = new SignupRequest("newuser", "new@example.com", "password123");
-        UserResponse expected = new UserResponse(1L, "newuser", "new@example.com", Instant.now());
+        UserResponse expected = new UserResponse(UUID.randomUUID(), "newuser", "new@example.com", Instant.now());
         when(authService.register(any())).thenReturn(expected);
 
         mockMvc.perform(post("/auth/signup")
@@ -94,7 +95,7 @@ class AuthControllerTest
     void login_validCredentials_returns200WithToken() throws Exception
     {
         LoginRequest request = new LoginRequest("existing@example.com", "correct-password");
-        UserResponse user = new UserResponse(1L, "existing", "existing@example.com", Instant.now());
+        UserResponse user = new UserResponse(UUID.randomUUID(), "existing", "existing@example.com", Instant.now());
         when(authService.login(any())).thenReturn(new AuthResponse("signed-jwt", user));
 
         mockMvc.perform(post("/auth/login")
@@ -121,7 +122,7 @@ class AuthControllerTest
     void oauthLogin_validCode_returns200WithToken() throws Exception
     {
         OAuthLoginRequest request = new OAuthLoginRequest("auth-code");
-        UserResponse user = new UserResponse(3L, "googleuser", "googleuser@example.com", Instant.now());
+        UserResponse user = new UserResponse(UUID.randomUUID(), "googleuser", "googleuser@example.com", Instant.now());
         when(authService.loginWithOAuth("google", "auth-code")).thenReturn(new AuthResponse("signed-jwt", user));
 
         mockMvc.perform(post("/auth/oauth/google")
@@ -148,13 +149,14 @@ class AuthControllerTest
     @Test
     void me_withAuthenticatedPrincipal_returns200WithUser() throws Exception
     {
-        UserResponse expected = new UserResponse(42L, "existing", "existing@example.com", Instant.now());
-        when(authService.getCurrentUser(42L)).thenReturn(expected);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(42L, null, List.of());
+        UUID userId = UUID.randomUUID();
+        UserResponse expected = new UserResponse(userId, "existing", "existing@example.com", Instant.now());
+        when(authService.getCurrentUser(userId)).thenReturn(expected);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userId, null, List.of());
 
         mockMvc.perform(get("/auth/me").principal(authentication))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(42))
+                .andExpect(jsonPath("$.id").value(userId.toString()))
                 .andExpect(jsonPath("$.username").value("existing"));
     }
 }
