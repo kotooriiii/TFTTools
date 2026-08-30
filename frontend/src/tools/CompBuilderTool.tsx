@@ -49,7 +49,7 @@ const CompBuilderTool: React.FC = () => {
     }, []);
 
     const placedNames = useMemo(
-        () => new Set(Object.values(board).map(unit => unit.displayName)),
+        () => new Set(Object.values(board).map(unit => unit.apiName)),
         [board]
     );
 
@@ -110,7 +110,7 @@ const CompBuilderTool: React.FC = () => {
 
             // Dropped from the roster: a unit can only occupy one hex at a time
             const existingHexId = Object.keys(prev).find(
-                key => prev[key].displayName === draggedUnit.displayName
+                key => prev[key].apiName === draggedUnit.apiName
             );
 
             if (existingHexId && existingHexId !== targetHexId) {

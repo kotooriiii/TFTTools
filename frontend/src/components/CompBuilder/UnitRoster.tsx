@@ -66,7 +66,7 @@ export const UnitRoster: React.FC<UnitRosterProps> = ({
                         </div>
                         <div className="grid grid-cols-3 gap-2">
                             {group.map(unit => {
-                                const isPlaced = placedNames.has(unit.displayName);
+                                const isPlaced = placedNames.has(unit.apiName);
                                 return (
                                     <motion.div
                                         key={unit.displayName}
