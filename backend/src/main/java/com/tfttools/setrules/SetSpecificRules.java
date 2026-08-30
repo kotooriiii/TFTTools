@@ -1,5 +1,7 @@
 package com.tfttools.setrules;
 
+import com.tfttools.domain.Trait;
+
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,7 +34,7 @@ public interface SetSpecificRules
      * trait name string Community Dragon reports on the champion). Units/traits not present
      * here default to counting as 1.
      */
-    default Map<String, Map<String, Integer>> getTraitCountOverrides()
+    default Map<String, Map<Trait, Integer>> getTraitCountOverrides()
     {
         return Map.of();
     }

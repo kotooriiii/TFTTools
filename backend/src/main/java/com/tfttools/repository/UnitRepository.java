@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Repository for managing TFT Units loaded from Community Dragon data
@@ -113,11 +112,9 @@ public class UnitRepository
                     continue;
                 }
 
-                Map<String, Integer> traitCountOverridesByName = setRules.getTraitCountOverrides().getOrDefault(apiName, Map.of());
-                Map<Trait, Integer> traitCountOverrides = traitCountOverridesByName.entrySet().stream()
-                        .collect(Collectors.toMap(entry -> traitRepository.getTraitByName(entry.getKey()), Map.Entry::getValue));
+                Map<Trait, Integer> traitCountOverridesByName = setRules.getTraitCountOverrides().getOrDefault(apiName, Map.of());
 
-                this.units.put(name, new Unit(apiName, name, cost, role, championStats, traits, champions.getTileIcon(), traitCountOverrides));
+                this.units.put(name, new Unit(apiName, name, cost, role, championStats, traits, champions.getTileIcon(), traitCountOverridesByName));
             }
 
             linkVariantUnits(setRules);
@@ -186,7 +183,7 @@ public class UnitRepository
     /**
      * Gets all units grouped by trait
      *
-     * @return Map of all units grouped by trait
+     * @return List of all units grouped by trait
      */
     public List<Unit> getUnitsByTrait(Trait trait)
     {
