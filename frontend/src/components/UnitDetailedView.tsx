@@ -86,17 +86,17 @@ export const UnitDetailedView: React.FC<UnitDetailedViewProps> = ({
                                         fontSize: '10px',
                                         backgroundColor: selectedItems.some(item =>
                                             item.type === 'trait' &&
-                                            item.displayName === trait.displayName
+                                            item.apiName === trait.apiName
                                         ) ? 'var(--color-bg-accent)' : 'var(--color-bg-secondary)',
                                         color: selectedItems.some(item =>
                                             item.type === 'trait' &&
-                                            item.displayName === trait.displayName
+                                            item.apiName === trait.apiName
                                         ) ? 'var(--color-text-accent)' : 'var(--color-text-secondary)',
                                         padding: '2px 6px',
                                         borderRadius: '8px',
                                         fontWeight: selectedItems.some(item =>
                                             item.type === 'trait' &&
-                                            item.displayName === trait.displayName
+                                            item.apiName === trait.apiName
                                         ) ? 'bold' : 'normal'
                                     }}
                                 >
