@@ -6,6 +6,8 @@ spring:
     username: ${POSTGRES_USER:tfttools}
     password: ${POSTGRES_PASSWORD:tfttools_dev_password}
     driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
 
 jwt:
   secret: ${JWT_SECRET:tfttools-local-dev-secret-please-change-me-32bytes-min}
