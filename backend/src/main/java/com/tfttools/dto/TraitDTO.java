@@ -7,10 +7,12 @@ public class TraitDTO {
 
     private final String displayName;
     private final int[] activationThresholds;
+    private final int count;
 
-    public TraitDTO(String displayName, int[] activationThresholds) {
+    public TraitDTO(String displayName, int[] activationThresholds, int count) {
         this.displayName = displayName;
         this.activationThresholds = activationThresholds;
+        this.count = count;
     }
 
     public String getDisplayName() {
@@ -20,6 +22,14 @@ public class TraitDTO {
     public int[] getActivationThresholds()
     {
         return activationThresholds;
+    }
+
+    /**
+     * How many copies of this trait the owning unit counts as (normally 1).
+     */
+    public int getCount()
+    {
+        return count;
     }
 
     @Override

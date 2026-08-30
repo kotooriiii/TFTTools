@@ -35,14 +35,14 @@ public class TraitsAddedWeightScorer implements EngineWeightScorer
         // Calculate weight for unit's natural traits
         for (Trait trait : unit.getTraits()) {
             if (!trait.isCountable()) continue;
-            weight += calculateTraitWeight(trait);
+            weight += calculateTraitWeight(trait, unit.getTraitCount(trait));
         }
 
         // If emblem scorer is available, check for potential emblem traits
         if (emblemScorer.isPresent()) {
             Optional<Trait> potentialEmblemTrait = getBestEmblemTrait(unit, emblemScorer.get());
             if (potentialEmblemTrait.isPresent() && potentialEmblemTrait.get().isCountable()) {
-                weight += calculateTraitWeight(potentialEmblemTrait.get());
+                weight += calculateTraitWeight(potentialEmblemTrait.get(), 1);
             }
         }
 
@@ -55,7 +55,7 @@ public class TraitsAddedWeightScorer implements EngineWeightScorer
                 .map(Emblem::getTrait);
     }
 
-    private int calculateTraitWeight(Trait trait) {
+    private int calculateTraitWeight(Trait trait, int unitTraitWeight) {
         Integer currentTraitCount = engineState.getCurrentComp().getTraits().getOrDefault(trait, 0);
         int nextThreshold = CompositionUtils.INSTANCE.getNextThreshold(trait, currentTraitCount);
 
@@ -68,7 +68,7 @@ public class TraitsAddedWeightScorer implements EngineWeightScorer
         int currWeight = 0;
 
         //if the next unit to be added increases actives a threshold, then weight should be very desirable.
-        if (CompositionUtils.INSTANCE.willActivateNextThreshold(trait, currentTraitCount)) {
+        if (CompositionUtils.INSTANCE.willActivateNextThreshold(trait, currentTraitCount, unitTraitWeight)) {
             if (!CompositionUtils.INSTANCE.hasReachedFirstThreshold(trait, currentTraitCount)) {
                 currWeight += 3;
             } else {

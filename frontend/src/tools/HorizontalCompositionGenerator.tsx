@@ -78,7 +78,11 @@ const placementsToBoard = (placements: UnitPlacementDTO[]): Record<string, UnitD
         board[hexId(placement.row, placement.col)] = {
             displayName: placement.unit.displayName,
             cost: placement.unit.cost ?? 0,
-            traits: placement.unit.traits ?? [],
+            traits: (placement.unit.traits ?? []).map(trait => ({
+                displayName: trait.displayName,
+                activationThresholds: trait.activationThresholds,
+                count: trait.count ?? 1
+            })),
             iconUrl: placement.unit.iconUrl
         };
     });

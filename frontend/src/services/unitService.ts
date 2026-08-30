@@ -3,6 +3,7 @@ import { UnitData } from '../types/compBuilderTypes';
 interface ApiTraitResponse {
     displayName: string;
     activationThresholds?: number[];
+    count?: number;
 }
 
 interface ApiUnitDetailedResponse {
@@ -29,7 +30,8 @@ export const unitService = {
                 iconUrl: unit.iconUrl,
                 traits: (unit.traits ?? []).map(trait => ({
                     displayName: trait.displayName,
-                    activationThresholds: trait.activationThresholds ?? []
+                    activationThresholds: trait.activationThresholds ?? [],
+                    count: trait.count ?? 1
                 }))
             }));
         } catch (error) {

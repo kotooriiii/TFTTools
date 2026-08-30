@@ -11,6 +11,7 @@ export interface UnitDTO {
 export interface TraitDTO {
     displayName: string;
     activationThresholds: number[];
+    count?: number;
 }
 
 export interface EmblemDTO {
