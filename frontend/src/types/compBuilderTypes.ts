@@ -1,6 +1,7 @@
 export interface TraitData {
     displayName: string;
     activationThresholds: number[];
+    count: number;
 }
 
 export interface UnitData

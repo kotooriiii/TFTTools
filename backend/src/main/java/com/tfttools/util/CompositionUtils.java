@@ -63,7 +63,7 @@ public enum CompositionUtils
             // We don't really care about thresholds that are already met
             if (hasReachedFirstThreshold(unitTrait, currentCompTraitCount))
                 continue;
-            if (!willActivateNextThreshold(unitTrait, currentCompTraitCount))
+            if (!willActivateNextThreshold(unitTrait, currentCompTraitCount, unit.getTraitCount(unitTrait)))
                 continue;
             activatableTraits.add(unitTrait);
         }
@@ -76,9 +76,10 @@ public enum CompositionUtils
      *
      * @param trait             The trait to check
      * @param currentTraitCount Current count of this trait in the composition
+     * @param unitTraitWeight   How many copies of this trait the unit being added counts as (see {@link com.tfttools.domain.Unit#getTraitCount(Trait)})
      * @return true if adding one more unit with this trait will activate the next threshold
      */
-    public boolean willActivateNextThreshold(Trait trait, int currentTraitCount)
+    public boolean willActivateNextThreshold(Trait trait, int currentTraitCount, int unitTraitWeight)
     {
         int nextThreshold = getNextThreshold(trait, currentTraitCount);
 
@@ -90,8 +91,8 @@ public enum CompositionUtils
 
         int difference = nextThreshold - currentTraitCount;
 
-        // Check if adding 1 more will reach the next threshold, some units may count as 2 unit space // 2 trait space TODO
-        return difference == 1;
+        // Check if adding this unit closes the remaining gap to the next threshold
+        return difference <= unitTraitWeight;
 
     }
 

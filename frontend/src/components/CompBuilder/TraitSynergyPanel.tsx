@@ -20,9 +20,9 @@ export const TraitSynergyPanel: React.FC<TraitSynergyPanelProps> = ({ boardUnits
             unit.traits.forEach(trait => {
                 const existing = counts.get(trait.displayName);
                 if (existing) {
-                    existing.count += 1;
+                    existing.count += trait.count;
                 } else {
-                    counts.set(trait.displayName, { count: 1, thresholds: trait.activationThresholds });
+                    counts.set(trait.displayName, { count: trait.count, thresholds: trait.activationThresholds });
                 }
             });
         });

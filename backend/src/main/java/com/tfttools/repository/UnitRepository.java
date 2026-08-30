@@ -10,6 +10,8 @@ import com.tfttools.prefixtrie.PrefixTrie;
 import com.tfttools.service.ChampionIconCacheService;
 import com.tfttools.service.CommunityDragonDataService;
 import com.tfttools.service.TFTSetContextService;
+import com.tfttools.setrules.SetSpecificRules;
+import com.tfttools.setrules.SetSpecificRulesRegistry;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -40,9 +42,10 @@ public class UnitRepository
     private final CommunityDragonDataService dataService;
     private final TFTSetContextService setContextService;
     private final ChampionIconCacheService championIconCacheService;
+    private final SetSpecificRulesRegistry setSpecificRulesRegistry;
 
     @Autowired
-    public UnitRepository(TraitRepository traitRepository, CommunityDragonDataService dataService, TFTSetContextService setContextService, ChampionIconCacheService championIconCacheService)
+    public UnitRepository(TraitRepository traitRepository, CommunityDragonDataService dataService, TFTSetContextService setContextService, ChampionIconCacheService championIconCacheService, SetSpecificRulesRegistry setSpecificRulesRegistry)
     {
         this.units = new HashMap<>();
         this.unitPrefixTrie = new PrefixTrie<>();
@@ -51,6 +54,7 @@ public class UnitRepository
         this.dataService = dataService;
         this.setContextService = setContextService;
         this.championIconCacheService = championIconCacheService;
+        this.setSpecificRulesRegistry = setSpecificRulesRegistry;
     }
 
     @PostConstruct
@@ -90,6 +94,7 @@ public class UnitRepository
         {
             CommunityDragonObject communityDragonObject = dataService.getCommunityDragonData();
             List<CommunityDragonChampions> units = communityDragonObject.getSets().get(set).getChampions();
+            SetSpecificRules setRules = setSpecificRulesRegistry.getRulesFor(set);
 
             for (CommunityDragonChampions champions : units)
             {
@@ -107,10 +112,12 @@ public class UnitRepository
                     continue;
                 }
 
-                this.units.put(name, new Unit(apiName, name, cost, role, championStats, traits, champions.getTileIcon()));
+                Map<Trait, Integer> traitCountOverridesByName = setRules.getTraitCountOverrides().getOrDefault(apiName, Map.of());
+
+                this.units.put(name, new Unit(apiName, name, cost, role, championStats, traits, champions.getTileIcon(), traitCountOverridesByName));
             }
 
-            linkVariantUnits();
+            linkVariantUnits(setRules);
         } catch (Exception e)
         {
             throw new RuntimeException("Failed to load units", e);
@@ -123,19 +130,21 @@ public class UnitRepository
      * fall back to its base champion (e.g. team planner codes, which are only ever tracked
      * per base champion) can resolve that link via {@link #getBaseUnit(Unit)}.
      */
-    private void linkVariantUnits()
+    private void linkVariantUnits(SetSpecificRules setRules)
     {
         Map<String, Unit> variantMap = new HashMap<>();
 
         for (Unit unit : this.units.values())
         {
-            Matcher matcher = VARIANT_NAME_PATTERN.matcher(unit.getDisplayName());
-            if (!matcher.matches())
+            String baseName = setRules.resolveVariantBaseName(unit.getDisplayName())
+                    .orElseGet(() -> matchGenericVariantBaseName(unit.getDisplayName()));
+
+            if (baseName == null)
             {
                 continue;
             }
 
-            Unit baseUnit = this.units.get(matcher.group(1).trim());
+            Unit baseUnit = this.units.get(baseName.trim());
             if (baseUnit != null && baseUnit != unit)
             {
                 variantMap.put(unit.getApiName(), baseUnit);
@@ -143,6 +152,16 @@ public class UnitRepository
         }
 
         this.variantApiNameToBaseUnit = Collections.unmodifiableMap(variantMap);
+    }
+
+    /**
+     * Generic fallback for variant name resolution: matches the common "Base (Variant)" naming
+     * convention. Used when the current set has no {@link SetSpecificRules} override for it.
+     */
+    private String matchGenericVariantBaseName(String displayName)
+    {
+        Matcher matcher = VARIANT_NAME_PATTERN.matcher(displayName);
+        return matcher.matches() ? matcher.group(1) : null;
     }
 
     /**
@@ -164,7 +183,7 @@ public class UnitRepository
     /**
      * Gets all units grouped by trait
      *
-     * @return Map of all units grouped by trait
+     * @return List of all units grouped by trait
      */
     public List<Unit> getUnitsByTrait(Trait trait)
     {

@@ -24,7 +24,7 @@ public class Composition
 
         units.forEach(unit ->
                 unit.getTraits().forEach(trait ->
-                        traits.put(trait, traits.getOrDefault(trait, 0) + 1)));
+                        traits.put(trait, traits.getOrDefault(trait, 0) + unit.getTraitCount(trait))));
     }
 
     //Copy constructor
@@ -52,7 +52,7 @@ public class Composition
     {
         if(this.units.add(unit))
             unit.getTraits().forEach(trait ->
-                traits.put(trait, traits.getOrDefault(trait, 0) + 1));
+                traits.put(trait, traits.getOrDefault(trait, 0) + unit.getTraitCount(trait)));
     }
 
     public void addAll(Collection<Unit> units)
@@ -64,7 +64,10 @@ public class Composition
     {
         if(this.units.remove(unit))
             unit.getTraits().forEach(trait ->
-                traits.computeIfPresent(trait, (key, value) -> value - 1 == 0 ? null : value - 1));
+                traits.computeIfPresent(trait, (key, value) -> {
+                    int updated = value - unit.getTraitCount(trait);
+                    return updated <= 0 ? null : updated;
+                }));
     }
 
     public void remove (Trait trait)
