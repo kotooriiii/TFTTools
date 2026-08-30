@@ -34,6 +34,13 @@ public class UnitRepository
 
     private final Map<String, Unit> units;
 
+    /**
+     * Load-time-only index by display name, used solely to resolve {@code setRules.resolveVariantBaseName}'s
+     * display-name-based variant-to-base linkage in {@link #linkVariantUnits}. Request-time identity
+     * resolution goes through {@link #getUnitByApiName(String)}.
+     */
+    private final Map<String, Unit> unitsByDisplayName;
+
     private final PrefixTrie<Unit> unitPrefixTrie;
     private Map<Trait, List<Unit>> traitToUnits;
     private Map<String, Unit> variantApiNameToBaseUnit;
@@ -48,6 +55,7 @@ public class UnitRepository
     public UnitRepository(TraitRepository traitRepository, CommunityDragonDataService dataService, TFTSetContextService setContextService, ChampionIconCacheService championIconCacheService, SetSpecificRulesRegistry setSpecificRulesRegistry)
     {
         this.units = new HashMap<>();
+        this.unitsByDisplayName = new HashMap<>();
         this.unitPrefixTrie = new PrefixTrie<>();
 
         this.traitRepository = traitRepository;
@@ -104,7 +112,7 @@ public class UnitRepository
                 Role role = Role.getRoleFromDisplayName(champions.getRole());
                 ChampionStats championStats = champions.getStats();
                 List<Trait> traits = champions.getTraits().stream()
-                        .map(traitRepository::getTraitByName)
+                        .map(traitRepository::getTraitByDisplayName)
                         .toList();
 
                 if (traits.isEmpty())
@@ -114,7 +122,9 @@ public class UnitRepository
 
                 Map<Trait, Integer> traitCountOverridesByName = setRules.getTraitCountOverrides().getOrDefault(apiName, Map.of());
 
-                this.units.put(name, new Unit(apiName, name, cost, role, championStats, traits, champions.getTileIcon(), traitCountOverridesByName));
+                Unit unit = new Unit(apiName, name, cost, role, championStats, traits, champions.getTileIcon(), traitCountOverridesByName);
+                this.units.put(apiName, unit);
+                this.unitsByDisplayName.put(name, unit);
             }
 
             linkVariantUnits(setRules);
@@ -144,7 +154,7 @@ public class UnitRepository
                 continue;
             }
 
-            Unit baseUnit = this.units.get(baseName.trim());
+            Unit baseUnit = this.unitsByDisplayName.get(baseName.trim());
             if (baseUnit != null && baseUnit != unit)
             {
                 variantMap.put(unit.getApiName(), baseUnit);
@@ -204,9 +214,9 @@ public class UnitRepository
     }
 
 
-    public Unit getUnitByName(String unit)
+    public Unit getUnitByApiName(String apiName)
     {
-        return this.units.get(unit);
+        return this.units.get(apiName);
     }
 
     public Set<Unit> getAllUnits()

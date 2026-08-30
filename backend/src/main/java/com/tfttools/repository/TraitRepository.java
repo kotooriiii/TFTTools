@@ -23,6 +23,15 @@ public class TraitRepository {
     
     private final Map<String, Trait> traits;
 
+    /**
+     * Load-time-only index by display name. Community Dragon's raw feed cross-references traits
+     * by display name in a few places (a champion's trait list, an emblem's own display-name text),
+     * and {@code Set18Rules}'s hand-written override table does the same for readability. Nothing
+     * outside data loading should use {@link #getTraitByDisplayName(String)} - request-time identity
+     * resolution goes through {@link #getTraitByApiName(String)}.
+     */
+    private final Map<String, Trait> traitsByDisplayName;
+
     private final PrefixTrie<Trait> traitPrefixTrie;
 
     private final CommunityDragonDataService dataService;
@@ -31,6 +40,7 @@ public class TraitRepository {
     @Autowired
     public TraitRepository(CommunityDragonDataService dataService, TFTSetContextService setContextService) {
         this.traits = new HashMap<>();
+        this.traitsByDisplayName = new HashMap<>();
 
         this.traitPrefixTrie = new PrefixTrie<>();
 
@@ -77,7 +87,8 @@ public class TraitRepository {
 
 
 
-                this.traits.put(name, trait);
+                this.traits.put(apiName, trait);
+                this.traitsByDisplayName.put(name, trait);
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to load traits", e);
@@ -92,8 +103,16 @@ public class TraitRepository {
         return this.traits.values().stream().toList();
     }
 
-    public Trait getTraitByName(String traitName) {
-        return this.traits.get(traitName);
+    public Trait getTraitByApiName(String apiName) {
+        return this.traits.get(apiName);
+    }
+
+    /**
+     * Resolves a trait by display name. Load-time-only - see the {@code traitsByDisplayName}
+     * javadoc for why this exists and who's allowed to call it.
+     */
+    public Trait getTraitByDisplayName(String displayName) {
+        return this.traitsByDisplayName.get(displayName);
     }
 
     /**

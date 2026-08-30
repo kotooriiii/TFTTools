@@ -69,15 +69,15 @@ public class EmblemRepository
                 }
 
                 String traitName = communityDragonItems.getName().substring(0, communityDragonItems.getName().indexOf(" Emblem"));
-                Trait trait = traitRepository.getTraitByName(traitName);
+                Trait trait = traitRepository.getTraitByDisplayName(traitName);
 
                 if (trait == null)
                 {
                     throw new RuntimeException("Trait not found: " + traitName);
                 }
 
-                Emblem emblem = new Emblem(name, trait);
-                this.emblems.put(name, emblem);
+                Emblem emblem = new Emblem(apiName, name, trait);
+                this.emblems.put(apiName, emblem);
             }
         } catch (Exception e)
         {
@@ -94,9 +94,9 @@ public class EmblemRepository
         return this.emblems.values().stream().toList();
     }
 
-    public Emblem getEmblemByName(String emblemName)
+    public Emblem getEmblemByApiName(String apiName)
     {
-        return this.emblems.get(emblemName);
+        return this.emblems.get(apiName);
     }
 
     public List<Emblem> getAllEmblemsStartingWith(String prefix)

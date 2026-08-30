@@ -26,17 +26,17 @@ public class Set18Rules implements SetSpecificRules
     public Set18Rules(TraitRepository traitRepository)
     {
         Map<String, Map<Trait, Integer>> tempOverrides = new HashMap<>();
-        tempOverrides.put("DA_Lux18_Blackthorn", Map.of(traitRepository.getTraitByName("Blackthorn"), 2));
-        tempOverrides.put("DA_Lux18_Blossom", Map.of(traitRepository.getTraitByName("Blossom"), 2));
-        tempOverrides.put("DA_18_Lux_Coven", Map.of(traitRepository.getTraitByName("Coven"), 2));
-        tempOverrides.put("DA_18_Lux_Elderwood", Map.of(traitRepository.getTraitByName("Elderwood"), 2));
-        tempOverrides.put("DA_18_Lux_Fae", Map.of(traitRepository.getTraitByName("Fae"), 2));
-        tempOverrides.put("DA_18_Lux_Inferno", Map.of(traitRepository.getTraitByName("Inferno"), 2));
-        tempOverrides.put("DA_18_Lux_Moonbeam", Map.of(traitRepository.getTraitByName("Lunar"), 2));
-        tempOverrides.put("DA_18_Lux_Primal", Map.of(traitRepository.getTraitByName("Primal"), 2));
-        tempOverrides.put("DA_18_Lux_Sunbeam", Map.of(traitRepository.getTraitByName("Solar"), 2));
+        tempOverrides.put("DA_Lux18_Blackthorn", Map.of(traitRepository.getTraitByDisplayName("Blackthorn"), 2));
+        tempOverrides.put("DA_Lux18_Blossom", Map.of(traitRepository.getTraitByDisplayName("Blossom"), 2));
+        tempOverrides.put("DA_18_Lux_Coven", Map.of(traitRepository.getTraitByDisplayName("Coven"), 2));
+        tempOverrides.put("DA_18_Lux_Elderwood", Map.of(traitRepository.getTraitByDisplayName("Elderwood"), 2));
+        tempOverrides.put("DA_18_Lux_Fae", Map.of(traitRepository.getTraitByDisplayName("Fae"), 2));
+        tempOverrides.put("DA_18_Lux_Inferno", Map.of(traitRepository.getTraitByDisplayName("Inferno"), 2));
+        tempOverrides.put("DA_18_Lux_Moonbeam", Map.of(traitRepository.getTraitByDisplayName("Lunar"), 2));
+        tempOverrides.put("DA_18_Lux_Primal", Map.of(traitRepository.getTraitByDisplayName("Primal"), 2));
+        tempOverrides.put("DA_18_Lux_Sunbeam", Map.of(traitRepository.getTraitByDisplayName("Solar"), 2));
 
-        tempOverrides.put("DA_18_ElderDragon", Map.of(traitRepository.getTraitByName("Riftbeast"), 2));
+        tempOverrides.put("DA_18_ElderDragon", Map.of(traitRepository.getTraitByDisplayName("Riftbeast"), 2));
 
         overrides = Collections.unmodifiableMap(tempOverrides);
     }
