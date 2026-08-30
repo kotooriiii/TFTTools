@@ -36,15 +36,15 @@ public class UnitFilterAdapter
         return new UnitFilterCriteria(units, traits);
     }
 
-    private Set<Unit> adaptUnits(List<String> unitNames, ValidationContext validation)
+    private Set<Unit> adaptUnits(List<String> unitApiNames, ValidationContext validation)
     {
-        return unitNames.stream()
-                .map(name ->
+        return unitApiNames.stream()
+                .map(apiName ->
                 {
-                    Unit unit = unitRepository.getUnitByName(name);
+                    Unit unit = unitRepository.getUnitByApiName(apiName);
                     if (unit == null)
                     {
-                        validation.addError("Unknown unit: " + name);
+                        validation.addError("Unknown unit: " + apiName);
                     }
                     return unit;
                 })
@@ -52,15 +52,15 @@ public class UnitFilterAdapter
                 .collect(Collectors.toSet());
     }
 
-    private Set<Trait> adaptTraits(List<String> traitNames, ValidationContext validation)
+    private Set<Trait> adaptTraits(List<String> traitApiNames, ValidationContext validation)
     {
-        return traitNames.stream()
-                .map(name ->
+        return traitApiNames.stream()
+                .map(apiName ->
                 {
-                    Trait trait = traitRepository.getTraitByName(name);
+                    Trait trait = traitRepository.getTraitByApiName(apiName);
                     if (trait == null)
                     {
-                        validation.addError("Unknown trait: " + name);
+                        validation.addError("Unknown trait: " + apiName);
                     }
                     return trait;
                 })
