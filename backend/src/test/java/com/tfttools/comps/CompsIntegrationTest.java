@@ -78,20 +78,50 @@ class CompsIntegrationTest extends AbstractPostgresIntegrationTest
     }
 
     @Test
+    void save_samePlacementUnitSet_overwritesExistingComp()
+    {
+        String token = signUpAndLogIn("overwriteuser", "overwrite@example.com");
+        HttpHeaders headers = authorizedHeaders(token);
+
+        SaveCompRequest first = new SaveCompRequest(List.of(
+                new PlacementDTO("TFT18_Ahri", 1, 3), new PlacementDTO("TFT18_Jinx", 0, 0)));
+        ResponseEntity<CompResponse> firstResponse = restTemplate.exchange(
+                "/comps", HttpMethod.POST, new HttpEntity<>(first, headers), CompResponse.class);
+        assertThat(firstResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        UUID savedId = firstResponse.getBody().id();
+
+        // Same two units, different board positions and placement order
+        SaveCompRequest moved = new SaveCompRequest(List.of(
+                new PlacementDTO("TFT18_Jinx", 2, 5), new PlacementDTO("TFT18_Ahri", 3, 6)));
+        ResponseEntity<CompResponse> movedResponse = restTemplate.exchange(
+                "/comps", HttpMethod.POST, new HttpEntity<>(moved, headers), CompResponse.class);
+        assertThat(movedResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(movedResponse.getBody().id()).isEqualTo(savedId);
+        assertThat(movedResponse.getBody().placements()).extracting(PlacementDTO::row).containsExactlyInAnyOrder(2, 3);
+
+        ResponseEntity<CompResponse[]> listResponse = restTemplate.exchange(
+                "/comps", HttpMethod.GET, new HttpEntity<>(headers), CompResponse[].class);
+        assertThat(listResponse.getBody()).hasSize(1);
+        assertThat(listResponse.getBody()[0].id()).isEqualTo(savedId);
+    }
+
+    @Test
     void save_pastCap_returns409_andFirst25Unaffected()
     {
         String token = signUpAndLogIn("capuser", "cap@example.com");
         HttpHeaders headers = authorizedHeaders(token);
 
+        // Each save uses a distinct unit set so these are 25 genuinely different comps, not 25
+        // same-units-different-position overwrites of one comp (see save_samePlacementUnitSet_overwritesExistingComp).
         for (int i = 0; i < 25; i++)
         {
-            SaveCompRequest request = new SaveCompRequest(List.of(new PlacementDTO("TFT18_Ahri", 0, i % 7)));
+            SaveCompRequest request = new SaveCompRequest(List.of(new PlacementDTO("TFT18_Unit" + i, 0, i % 7)));
             ResponseEntity<CompResponse> response = restTemplate.exchange(
                     "/comps", HttpMethod.POST, new HttpEntity<>(request, headers), CompResponse.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         }
 
-        SaveCompRequest twentySixth = new SaveCompRequest(List.of(new PlacementDTO("TFT18_Ahri", 1, 0)));
+        SaveCompRequest twentySixth = new SaveCompRequest(List.of(new PlacementDTO("TFT18_Unit25", 1, 0)));
         ResponseEntity<Map> rejectedResponse = restTemplate.exchange(
                 "/comps", HttpMethod.POST, new HttpEntity<>(twentySixth, headers), Map.class);
         assertThat(rejectedResponse.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);

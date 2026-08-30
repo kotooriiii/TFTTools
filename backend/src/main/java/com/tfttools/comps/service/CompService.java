@@ -1,6 +1,7 @@
 package com.tfttools.comps.service;
 
 import com.tfttools.comps.domain.Comp;
+import com.tfttools.comps.domain.Placement;
 import com.tfttools.comps.dto.CompResponse;
 import com.tfttools.comps.dto.PlacementDTO;
 import com.tfttools.comps.dto.SaveCompRequest;
@@ -10,7 +11,10 @@ import com.tfttools.comps.repository.CompRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class CompService
@@ -29,6 +33,16 @@ public class CompService
 
     public CompResponse save(UUID userId, SaveCompRequest request)
     {
+        List<Placement> placements = request.placements().stream().map(PlacementDTO::toPlacement).toList();
+
+        Optional<Comp> existingWithSameUnits = findBySameUnitSet(userId, placements);
+        if (existingWithSameUnits.isPresent())
+        {
+            Comp existing = existingWithSameUnits.get();
+            existing.setPlacements(placements);
+            return CompResponse.from(compRepository.update(existing));
+        }
+
         if (compRepository.countByUserId(userId) >= MAX_COMPS_PER_USER)
         {
             throw new CompLimitExceededException(
@@ -37,9 +51,26 @@ public class CompService
 
         Comp comp = new Comp();
         comp.setUserId(userId);
-        comp.setPlacements(request.placements().stream().map(PlacementDTO::toPlacement).toList());
+        comp.setPlacements(placements);
 
         return CompResponse.from(compRepository.save(comp));
+    }
+
+    /**
+     * A save whose unit set (ignoring position) exactly matches an already-saved comp is treated
+     * as an update to that comp rather than a new one - only the board layout changed.
+     */
+    private Optional<Comp> findBySameUnitSet(UUID userId, List<Placement> placements)
+    {
+        Set<String> requestedUnits = unitApiNames(placements);
+        return compRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
+                .filter(existing -> unitApiNames(existing.getPlacements()).equals(requestedUnits))
+                .findFirst();
+    }
+
+    private Set<String> unitApiNames(List<Placement> placements)
+    {
+        return placements.stream().map(Placement::unitApiName).collect(Collectors.toSet());
     }
 
     public List<CompResponse> list(UUID userId)

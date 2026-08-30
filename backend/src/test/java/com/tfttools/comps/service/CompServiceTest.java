@@ -44,6 +44,7 @@ class CompServiceTest
     {
         UUID userId = UUID.randomUUID();
         SaveCompRequest request = new SaveCompRequest(List.of(new PlacementDTO("TFT18_Ahri", 1, 3)));
+        when(compRepository.findByUserIdOrderByCreatedAtDesc(userId)).thenReturn(List.of());
         when(compRepository.countByUserId(userId)).thenReturn(3);
         when(compRepository.save(any(Comp.class))).thenAnswer(invocation ->
         {
@@ -69,11 +70,65 @@ class CompServiceTest
     {
         UUID userId = UUID.randomUUID();
         SaveCompRequest request = new SaveCompRequest(List.of(new PlacementDTO("TFT18_Ahri", 1, 3)));
+        when(compRepository.findByUserIdOrderByCreatedAtDesc(userId)).thenReturn(List.of());
         when(compRepository.countByUserId(userId)).thenReturn(25);
 
         assertThatThrownBy(() -> compService.save(userId, request))
                 .isInstanceOf(CompLimitExceededException.class);
 
+        verify(compRepository, never()).save(any());
+    }
+
+    @Test
+    void save_overwritesExistingComp_whenSameUnitSetAtDifferentPositions()
+    {
+        UUID userId = UUID.randomUUID();
+        Comp existing = new Comp();
+        existing.setId(UUID.randomUUID());
+        existing.setUserId(userId);
+        existing.setPlacements(List.of(new Placement("TFT18_Ahri", 1, 3), new Placement("TFT18_Jinx", 0, 0)));
+        existing.setCreatedAt(Instant.now().minusSeconds(60));
+
+        // Same two units, different board positions
+        SaveCompRequest request = new SaveCompRequest(List.of(
+                new PlacementDTO("TFT18_Jinx", 2, 5),
+                new PlacementDTO("TFT18_Ahri", 3, 6)
+        ));
+        when(compRepository.findByUserIdOrderByCreatedAtDesc(userId)).thenReturn(List.of(existing));
+        when(compRepository.update(any(Comp.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        CompResponse response = compService.save(userId, request);
+
+        assertThat(response.id()).isEqualTo(existing.getId());
+
+        ArgumentCaptor<Comp> updatedComp = ArgumentCaptor.forClass(Comp.class);
+        verify(compRepository).update(updatedComp.capture());
+        assertThat(updatedComp.getValue().getId()).isEqualTo(existing.getId());
+        assertThat(updatedComp.getValue().getPlacements()).containsExactlyInAnyOrder(
+                new Placement("TFT18_Jinx", 2, 5), new Placement("TFT18_Ahri", 3, 6));
+
+        verify(compRepository, never()).save(any());
+        verify(compRepository, never()).countByUserId(any());
+    }
+
+    @Test
+    void save_overwritesExistingComp_evenAtCap()
+    {
+        UUID userId = UUID.randomUUID();
+        Comp existing = new Comp();
+        existing.setId(UUID.randomUUID());
+        existing.setUserId(userId);
+        existing.setPlacements(List.of(new Placement("TFT18_Ahri", 1, 3)));
+        existing.setCreatedAt(Instant.now().minusSeconds(60));
+
+        SaveCompRequest request = new SaveCompRequest(List.of(new PlacementDTO("TFT18_Ahri", 5, 5)));
+        when(compRepository.findByUserIdOrderByCreatedAtDesc(userId)).thenReturn(List.of(existing));
+        when(compRepository.update(any(Comp.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        CompResponse response = compService.save(userId, request);
+
+        assertThat(response.id()).isEqualTo(existing.getId());
+        verify(compRepository, never()).countByUserId(any());
         verify(compRepository, never()).save(any());
     }
 

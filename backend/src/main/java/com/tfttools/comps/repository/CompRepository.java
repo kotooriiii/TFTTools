@@ -55,6 +55,28 @@ public class CompRepository
                 .single();
     }
 
+    /**
+     * Overwrites an existing comp's placements in place (same id), refreshing {@code createdAt}
+     * so it floats to the top of the newest-first list - used when a save matches an existing
+     * comp's unit set (see {@code CompService.save}).
+     */
+    public Comp update(Comp comp)
+    {
+        comp.setCreatedAt(Instant.now());
+        return jdbcClient.sql("""
+                UPDATE comps
+                SET placements = :placements, created_at = :createdAt
+                WHERE id = :id AND user_id = :userId
+                RETURNING *
+                """)
+                .param("id", comp.getId())
+                .param("userId", comp.getUserId())
+                .param("placements", toJson(comp.getPlacements()), Types.OTHER)
+                .param("createdAt", Timestamp.from(comp.getCreatedAt()))
+                .query(this::mapRow)
+                .single();
+    }
+
     public int countByUserId(UUID userId)
     {
         return jdbcClient.sql("SELECT COUNT(*) FROM comps WHERE user_id = :userId")
