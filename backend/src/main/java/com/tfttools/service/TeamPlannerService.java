@@ -105,8 +105,16 @@ public class TeamPlannerService
 
     public String exportToTeamCode(Composition composition)
     {
-        List<Unit> units = composition.getUnits();
+        return exportToTeamCode(composition.getUnits());
+    }
 
+    /**
+     * Lighter-weight path for callers that only have an ordered list of units (not a full
+     * engine-generated {@link Composition}) - e.g. a saved My Comps entry or the current Team
+     * Builder board.
+     */
+    public String exportToTeamCode(List<Unit> units)
+    {
         StringBuilder sb = new StringBuilder("02");
 
         //Can only place 10 units into teamCode
