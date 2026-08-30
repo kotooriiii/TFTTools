@@ -16,6 +16,6 @@ public class EmblemMapper implements Function<Emblem, EmblemDTO> {
 
     @Override
     public EmblemDTO apply(Emblem emblem) {
-        return new EmblemDTO(emblem.getDisplayName());
+        return new EmblemDTO(emblem.getApiName(), emblem.getDisplayName());
     }
 }

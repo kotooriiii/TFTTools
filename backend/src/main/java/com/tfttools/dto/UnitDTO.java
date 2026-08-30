@@ -14,6 +14,7 @@ import java.util.Set;
  */
 @Getter
 public class UnitDTO {
+    private final String apiName;
     private final String displayName;
     private final Set<TraitDTO> traits;
     private final ChampionStats championStats;
@@ -21,7 +22,8 @@ public class UnitDTO {
     private final int cost;
     private final String iconUrl;
 
-    public UnitDTO(String displayName, Set<TraitDTO> traits, ChampionStats championStats, Role role, int cost, String iconUrl) {
+    public UnitDTO(String apiName, String displayName, Set<TraitDTO> traits, ChampionStats championStats, Role role, int cost, String iconUrl) {
+        this.apiName = apiName;
         this.displayName = displayName;
         this.traits = traits;
         this.championStats = championStats;
@@ -30,13 +32,17 @@ public class UnitDTO {
         this.iconUrl = iconUrl;
     }
 
-    public UnitDTO(String displayName, Set<TraitDTO> traits, int cost, String iconUrl) {
-        this(displayName, traits, null, null, cost, iconUrl);
+    public UnitDTO(String apiName, String displayName, Set<TraitDTO> traits, int cost, String iconUrl) {
+        this(apiName, displayName, traits, null, null, cost, iconUrl);
     }
 
+    /**
+     * Incoming-request constructor: the frontend identifies units by apiName only
+     * ({@code {"apiName": "..."}}); display name isn't needed on the way in.
+     */
     @JsonCreator
-    public UnitDTO(String displayName) {
-        this(displayName, null, null, null, 0, null);
+    public UnitDTO(String apiName) {
+        this(apiName, null, null, null, null, 0, null);
     }
 
 }
