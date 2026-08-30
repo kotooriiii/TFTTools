@@ -1,10 +1,7 @@
 import React, {useRef, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
 import {AnimatePresence, motion} from 'framer-motion';
 import {EmblemItem, SelectedItem} from '../types/searchTypes';
 import {CompositionDTO, generateHorizontalComposition, HorizontalDTO, UnitPlacementDTO} from '../services/searchService';
-import {compsService} from '../services/compsService';
-import {useAuth} from '../contexts/AuthContext';
 
 import {EmblemSearchBox, EmblemSearchBoxHandle} from "../components/HorizontalCompositionGenerator/EmblemSearchBox.tsx";
 import {TraitSearchBox, TraitSearchBoxHandle} from '../components/HorizontalCompositionGenerator/TraitSearchBox.tsx';
@@ -16,6 +13,7 @@ import {HexBoard} from '../components/CompBuilder/HexBoard';
 import {hexId} from '../components/CompBuilder/hexUtils';
 import {UnitData} from '../types/compBuilderTypes';
 import {computeTraitSummary} from '../utils/traitSummary';
+import {CompActionButtons} from '../components/CompActionButtons';
 
 interface BasicInputs
 {
@@ -36,8 +34,6 @@ interface TFTCompositionResult
 {
     compositions: CompositionDTO[];
 }
-
-type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
 const placementsToBoard = (placements: UnitPlacementDTO[]): Record<string, UnitData> =>
 {
@@ -62,29 +58,6 @@ const placementsToBoard = (placements: UnitPlacementDTO[]): Record<string, UnitD
 
 const HorizontalCompositionGenerator: React.FC = () =>
 {
-    const navigate = useNavigate();
-    const {user, token} = useAuth();
-
-    const [saveStatus, setSaveStatus] = useState<Record<number, SaveStatus>>({});
-
-    const handleSaveComp = async (index: number, placements: UnitPlacementDTO[]) =>
-    {
-        if (!token) return;
-
-        setSaveStatus(prev => ({...prev, [index]: 'saving'}));
-        try {
-            await compsService.saveComp(token, placements.map(placement => ({
-                unitApiName: placement.unit.apiName,
-                row: placement.row,
-                col: placement.col
-            })));
-            setSaveStatus(prev => ({...prev, [index]: 'saved'}));
-        } catch (err) {
-            console.error('Error saving comp:', err);
-            setSaveStatus(prev => ({...prev, [index]: 'error'}));
-        }
-    };
-
     const [basicInputs, setBasicInputs] = useState<BasicInputs>({
         tacticianLevel: 1,
         requiredUnits: [],
@@ -493,7 +466,6 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                     {result.compositions.map((composition, index) => {
                                         const board = placementsToBoard(composition.placements);
                                         const traitBreakdown = computeTraitSummary(Object.values(board));
-                                        const status = saveStatus[index] ?? 'idle';
                                         return (
                                             <motion.div
                                                 key={composition.teamCode || index}
@@ -536,38 +508,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                     )}
                                                 </div>
 
-                                                {/* Team Code + Comp Builder handoff + Save */}
-                                                <div className="flex items-center justify-center gap-2">
-                                                    {composition.teamCode && (
-                                                        <button
-                                                            onClick={() => navigator.clipboard.writeText(composition.teamCode)}
-                                                            className="px-3 py-2 bg-secondary text-primary rounded-md text-sm font-medium hover:bg-secondary/90 transition-colors duration-200"
-                                                        >
-                                                            Copy Team Code
-                                                        </button>
-                                                    )}
-                                                    <button
-                                                        onClick={() => navigate('/tools/comp-builder', {
-                                                            state: {seedBoard: board}
-                                                        })}
-                                                        className="px-3 py-2 bg-accent text-primary rounded-md text-sm font-medium hover:bg-accent/80 transition-colors duration-200"
-                                                    >
-                                                        Edit in Comp Builder
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleSaveComp(index, composition.placements)}
-                                                        disabled={!user || status === 'saving' || status === 'saved'}
-                                                        title={!user ? 'Log in to save comps' : undefined}
-                                                        className="px-3 py-2 bg-secondary text-primary rounded-md text-sm font-medium hover:bg-secondary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                                                    >
-                                                        {status === 'saving' ? 'Saving...' : status === 'saved' ? 'Saved' : status === 'error' ? 'Retry Save' : !user ? 'Log in to Save' : 'Save Comp'}
-                                                    </button>
-                                                </div>
-                                                {status === 'error' && (
-                                                    <div className="text-center text-xs text-red-600 mt-2">
-                                                        Failed to save comp. Please try again.
-                                                    </div>
-                                                )}
+                                                <CompActionButtons board={board} getTeamCode={async () => composition.teamCode} />
                                             </motion.div>
                                         );
                                     })}

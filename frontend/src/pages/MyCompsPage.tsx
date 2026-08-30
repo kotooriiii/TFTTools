@@ -9,6 +9,7 @@ import { UnitPortrait } from '../components/UnitPortrait.tsx';
 import { hexId } from '../components/CompBuilder/hexUtils';
 import { computeTraitSummary } from '../utils/traitSummary';
 import { getCostColor } from '../utils/unitDisplay';
+import { CompActionButtons } from '../components/CompActionButtons';
 
 /**
  * Resolves a saved comp's placements (identity + hex position only) into rehydrated
@@ -50,25 +51,12 @@ interface CompRowProps {
 
 const CompRow: React.FC<CompRowProps> = ({ comp, units, board, onDelete }) => {
     const [expanded, setExpanded] = useState(false);
-    const [copyStatus, setCopyStatus] = useState<'idle' | 'copying' | 'copied' | 'error'>('idle');
 
     const traitSummary = useMemo(() => computeTraitSummary(units), [units]);
     const activeTraitsText = traitSummary
         .filter(trait => trait.active)
         .map(trait => `${trait.count} ${trait.displayName}`)
         .join(', ');
-
-    const handleCopyTeamCode = async () => {
-        setCopyStatus('copying');
-        try {
-            const teamCode = await compsService.getTeamCode(comp.placements.map(p => p.unitApiName));
-            await navigator.clipboard.writeText(teamCode);
-            setCopyStatus('copied');
-        } catch (err) {
-            console.error('Error generating team code:', err);
-            setCopyStatus('error');
-        }
-    };
 
     return (
         <div className="border border-border rounded-lg bg-card overflow-hidden">
@@ -148,21 +136,11 @@ const CompRow: React.FC<CompRowProps> = ({ comp, units, board, onDelete }) => {
                         )}
                     </div>
 
-                    <div className="flex items-center justify-center gap-2">
-                        <button
-                            onClick={handleCopyTeamCode}
-                            disabled={copyStatus === 'copying'}
-                            className="px-3 py-2 bg-secondary text-primary rounded-md text-sm font-medium hover:bg-secondary/90 disabled:opacity-50 transition-colors duration-200"
-                        >
-                            {copyStatus === 'copying' ? 'Generating...' : copyStatus === 'copied' ? 'Copied!' : copyStatus === 'error' ? 'Failed - Retry' : 'Copy Team Code'}
-                        </button>
-                        <button
-                            onClick={() => onDelete(comp.id)}
-                            className="px-3 py-2 bg-red-100 text-red-700 rounded-md text-sm font-medium hover:bg-red-200 transition-colors duration-200"
-                        >
-                            Delete
-                        </button>
-                    </div>
+                    <CompActionButtons
+                        board={board}
+                        getTeamCode={() => compsService.getTeamCode(comp.placements.map(p => p.unitApiName))}
+                        onDelete={() => onDelete(comp.id)}
+                    />
                 </div>
             )}
         </div>
