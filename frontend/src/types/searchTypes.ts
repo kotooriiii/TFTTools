@@ -1,4 +1,5 @@
 export interface SearchItem {
+    apiName: string;
     displayName: string;
     iconUrl?: string;
     type?: 'unit' | 'trait';
@@ -19,16 +20,19 @@ export interface EmblemItem extends SearchItem {
 
 // API Response Types
 export interface ApiEmblemResponse {
+    apiName: string;
     displayName: string;
 }
 
 export interface ApiTraitResponse {
+    apiName: string;
     displayName: string;
     activationThresholds?: number[];
 }
 
 export interface ApiUnitResponse
 {
+    apiName: string;
     displayName: string;
     iconUrl?: string;
 }

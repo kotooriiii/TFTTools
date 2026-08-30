@@ -2,20 +2,23 @@ import { EmblemItem, TraitItem, SearchItem, ApiEmblemResponse, ApiTraitResponse,
 
 // Types for horizontal composition API
 export interface UnitDTO {
-    displayName: string;
+    apiName: string;
+    displayName?: string;
     traits?: TraitDTO[];
     cost?: number;
     iconUrl?: string;
 }
 
 export interface TraitDTO {
-    displayName: string;
+    apiName: string;
+    displayName?: string;
     activationThresholds: number[];
     count?: number;
 }
 
 export interface EmblemDTO {
-    displayName: string;
+    apiName: string;
+    displayName?: string;
 }
 
 export interface UnitPlacementDTO {
@@ -85,41 +88,45 @@ const searchConfigs = {
         responseMappers: [{
             // Remove responseKey since the endpoint returns the array directly
             transform: (item: ApiUnitResponse): SearchItem => ({
+                apiName: item.apiName,
                 displayName: item.displayName,
                 iconUrl: item.iconUrl,
             })
         }]
     } satisfies MultiSearchConfig<ApiUnitResponse, SearchItem>,
-    
+
     emblems: {
         endpoint: '/units/search/emblems',
         responseMappers: [{
             // Remove responseKey since the endpoint returns the array directly
             transform: (item: ApiEmblemResponse): EmblemItem => ({
+                apiName: item.apiName,
                 displayName: item.displayName,
                 count: 1
             })
         }]
     } satisfies MultiSearchConfig<ApiEmblemResponse, EmblemItem>,
-    
+
     traits: {
         endpoint: '/units/search/traits',
         responseMappers: [{
             // Remove responseKey since the endpoint returns the array directly
             transform: (item: ApiTraitResponse): TraitItem => ({
+                apiName: item.apiName,
                 displayName: item.displayName,
                 count: item.activationThresholds?.[0] || 1,
                 activationThresholds: item.activationThresholds || []
             })
         }]
     } satisfies MultiSearchConfig<ApiTraitResponse, TraitItem>,
-    
+
     any: {
         endpoint: '/units/search',
         responseMappers: [
             {
                 responseKey: 'units', // Keep this one since /units/search returns a SearchResultDTO
                 transform: (item: ApiUnitResponse): SearchItem => ({
+                    apiName: item.apiName,
                     displayName: item.displayName,
                     iconUrl: item.iconUrl,
                     type: 'unit',
@@ -128,6 +135,7 @@ const searchConfigs = {
             {
                 responseKey: 'traits', // Keep this one since /units/search returns a SearchResultDTO
                 transform: (item: ApiTraitResponse): SearchItem => ({
+                    apiName: item.apiName,
                     displayName: item.displayName,
                     type: 'trait',
                 })
