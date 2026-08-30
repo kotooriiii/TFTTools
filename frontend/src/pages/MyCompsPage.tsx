@@ -105,7 +105,34 @@ const CompRow: React.FC<CompRowProps> = ({ comp, units, board, onDelete }) => {
 
             {expanded && (
                 <div className="border-t border-border p-4 flex flex-col items-center gap-4">
-                    <HexBoard board={board} readOnly />
+                    <div className="flex justify-center gap-4">
+                        <HexBoard board={board} readOnly />
+
+                        {traitSummary.length > 0 && (
+                            <div className="w-56 shrink-0 border-l border-border bg-primary p-3 rounded-r-lg">
+                                <h5 className="text-sm font-bold text-primary mb-3">Active Traits</h5>
+                                <div className="flex flex-col gap-2">
+                                    {traitSummary.map((trait) => (
+                                        <div
+                                            key={trait.apiName}
+                                            className="rounded-lg px-3 py-2 flex items-center justify-between"
+                                            style={{
+                                                backgroundColor: trait.active ? 'rgba(76,175,80,0.15)' : 'rgba(0,0,0,0.04)',
+                                                border: `1px solid ${trait.active ? '#4CAF50' : 'transparent'}`
+                                            }}
+                                        >
+                                            <span className={`text-xs font-semibold ${trait.active ? 'text-primary' : 'text-secondary'}`}>
+                                                {trait.displayName}
+                                            </span>
+                                            <span className="text-xs font-mono text-secondary">
+                                                {trait.count}{trait.nextThreshold ? ` / ${trait.nextThreshold}` : ''}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
 
                     <div className="flex items-center gap-2">
                         <button
