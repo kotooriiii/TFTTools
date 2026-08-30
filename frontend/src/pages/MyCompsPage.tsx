@@ -107,17 +107,19 @@ const CompRow: React.FC<CompRowProps> = ({ comp, units, board, onDelete }) => {
                     }}
                     aria-label="Delete comp"
                     title="Delete comp"
-                    className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-secondary hover:bg-red-100 hover:text-red-700 transition-colors text-lg leading-none"
+                    className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-secondary hover:bg-red-100 hover:text-red-700 transition-colors"
                 >
-                    ×
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+                    </svg>
                 </button>
 
                 <span className="text-secondary shrink-0">{expanded ? '▲' : '▼'}</span>
             </div>
 
             {expanded && (
-                <div className="border-t border-border p-4 flex flex-col items-center gap-4">
-                    <div className="flex justify-center gap-4">
+                <div className="border-t border-border p-4">
+                    <div className="flex justify-center gap-4 mb-4">
                         <HexBoard board={board} readOnly />
 
                         {traitSummary.length > 0 && (
@@ -146,7 +148,7 @@ const CompRow: React.FC<CompRowProps> = ({ comp, units, board, onDelete }) => {
                         )}
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-center gap-2">
                         <button
                             onClick={handleCopyTeamCode}
                             disabled={copyStatus === 'copying'}
