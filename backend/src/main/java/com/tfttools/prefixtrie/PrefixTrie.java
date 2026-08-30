@@ -34,8 +34,7 @@ public class PrefixTrie<T extends Nameable> {
             if (curr.childExists(s.charAt(i))) {
                 curr = curr.getChild(s.charAt(i));
             } else {
-                curr.children.set(curr.getChildIndex(s.charAt(i)), new PrefixNode<>(s.charAt(i)));
-                curr.setHasChildren(true);
+                curr.addChild(s.charAt(i), new PrefixNode<>(s.charAt(i)));
                 curr = curr.getChild(s.charAt(i));
             }
         }
@@ -94,12 +93,11 @@ public class PrefixTrie<T extends Nameable> {
         }
 
         // base case we find a leaf node
-        if (!node.hasChildren) {
+        if (node.children.isEmpty()) {
             return;
         }
 
-        node.children.stream()
-                .filter(Objects::nonNull)
+        node.children.values()
                 .forEach(prefixNode -> _getAllDescendants(prefixNode, descendants));
 
     }

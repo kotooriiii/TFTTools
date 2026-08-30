@@ -1,8 +1,9 @@
 package com.tfttools.prefixtrie;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import lombok.Setter;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -13,12 +14,9 @@ import java.util.Objects;
 public class PrefixNode<T>
 {
     Character c;
+    @Setter
     T data;
-    List<PrefixNode<T>> children;
-    boolean hasChildren;
-    private static final int ASCII_RANGE_LOW = 65;
-    private static final int ASCII_RANGE_HIGH = 90;
-    private static final int LEN_ALPHABET = ASCII_RANGE_HIGH - ASCII_RANGE_LOW + 2; // HIGH + LOW + 1 = alphanet. + 1 more is '&'.
+    Map<Character, PrefixNode<T>> children;
 
     /**
      * Default constructor for an empty node
@@ -27,8 +25,7 @@ public class PrefixNode<T>
     {
         this.c = null;
         this.data = null;
-        this.children = new ArrayList<>(Collections.nCopies(LEN_ALPHABET, null));
-        this.hasChildren = false;
+        this.children = new HashMap<>();
     }
 
     /**
@@ -40,8 +37,7 @@ public class PrefixNode<T>
     {
         this.c = c;
         this.data = null;
-        this.children = new ArrayList<>(Collections.nCopies(LEN_ALPHABET, null));
-        this.hasChildren = false;
+        this.children = new HashMap<>();
     }
 
     /**
@@ -52,7 +48,7 @@ public class PrefixNode<T>
      */
     public boolean childExists(char c)
     {
-        return getChild(c) != null;
+        return this.children.containsKey(c);
     }
 
     /**
@@ -63,43 +59,23 @@ public class PrefixNode<T>
      */
     public PrefixNode<T> getChild(char c)
     {
-        return this.children.get(getChildIndex(c));
+        return this.children.get(c);
     }
 
     /**
-     * Gets the index of the underlying children list for a character c
+     * Adds a child node for a given character
      *
-     * @param c The character to be searched for
-     * @return Index of the character c
+     * @param c The character the child node represents
+     * @param child The child node
      */
-    public int getChildIndex(char c)
-    {
-        if (((int) c >= ASCII_RANGE_LOW) && ((int) c <= ASCII_RANGE_HIGH))
-        {
-            return (int) c - ASCII_RANGE_LOW;
-        }
-        if (c == '&')
-        {
-            return ASCII_RANGE_HIGH - ASCII_RANGE_LOW + 1;
-        }
-        return -1;
+    public void addChild(char c, PrefixNode<T> child) {
+        this.children.put(c, child);
     }
-
-    public void setHasChildren(boolean hasChildren) {
-        this.hasChildren = hasChildren;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
-
-    public void setChild(int index, PrefixNode<T> child) {
-        this.children.set(index, child); }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         PrefixNode<?> that = (PrefixNode<?>) o;
-        return hasChildren == that.hasChildren && Objects.equals(c, that.c) && Objects.equals(data, that.data) && Objects.equals(children, that.children);
+        return Objects.equals(c, that.c) && Objects.equals(data, that.data) && Objects.equals(children, that.children);
     }
 }
