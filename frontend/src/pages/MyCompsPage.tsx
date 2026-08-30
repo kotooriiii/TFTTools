@@ -100,6 +100,18 @@ const CompRow: React.FC<CompRowProps> = ({ comp, units, board, onDelete }) => {
                     </div>
                 </div>
 
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete(comp.id);
+                    }}
+                    aria-label="Delete comp"
+                    title="Delete comp"
+                    className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-secondary hover:bg-red-100 hover:text-red-700 transition-colors text-lg leading-none"
+                >
+                    ×
+                </button>
+
                 <span className="text-secondary shrink-0">{expanded ? '▲' : '▼'}</span>
             </div>
 
@@ -226,7 +238,7 @@ export const MyCompsPage: React.FC = () => {
     }
 
     return (
-        <div className="p-8 max-w-2xl mx-auto min-h-screen">
+        <div className="p-8 max-w-5xl mx-auto min-h-screen">
             <h1 className="text-3xl font-bold text-primary mb-4">My Comps</h1>
 
             {error && (
