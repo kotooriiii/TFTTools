@@ -14,11 +14,11 @@ export const useUnitFiltering = (selectedItems: SelectedItem[]) => {
             try {
                 const selectedUnits = selectedItems
                     .filter(item => item.type === 'unit')
-                    .map(selectedUnit => selectedUnit.displayName);
+                    .map(selectedUnit => selectedUnit.apiName);
 
                 const selectedTraits = selectedItems
                     .filter(item => item.type === 'trait')
-                    .map(selectedTrait => selectedTrait.displayName);
+                    .map(selectedTrait => selectedTrait.apiName);
                 const units = await filterService.filterUnits(selectedUnits, selectedTraits);
                 setFilteredUnits(units);
             } catch (error) {

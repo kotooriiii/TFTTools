@@ -78,15 +78,24 @@ public class EngineConfigurationAdapter
         return unitDTOs.stream()
                 .map(unitDTO ->
                 {
-                    Unit unit = unitRepository.getUnitByName(unitDTO.getDisplayName());
+                    Unit unit = unitRepository.getUnitByApiName(unitDTO.getApiName());
                     if (unit == null)
                     {
-                        validation.addError("Unknown " + context + ": " + unitDTO.getDisplayName());
+                        validation.addError("Unknown " + context + ": " + label(unitDTO.getDisplayName(), unitDTO.getApiName()));
                     }
                     return unit;
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * Prefers the human-readable display name for error text; falls back to the raw apiName
+     * when a lookup failed and there's no resolved domain object to pull a display name from.
+     */
+    private static String label(String displayName, String apiName)
+    {
+        return displayName != null ? displayName : apiName;
     }
 
     private Map<Trait, Integer> adaptRequiredTraits(Map<String, Integer> requiredTraitsDTO,
@@ -96,7 +105,7 @@ public class EngineConfigurationAdapter
 
         for (Map.Entry<String, Integer> entry : requiredTraitsDTO.entrySet())
         {
-            Trait trait = traitRepository.getTraitByName(entry.getKey());
+            Trait trait = traitRepository.getTraitByApiName(entry.getKey());
             if (trait == null)
             {
                 validation.addError("Unknown required trait: " + entry.getKey());
@@ -105,7 +114,7 @@ public class EngineConfigurationAdapter
 
             if (entry.getValue() <= 0)
             {
-                validation.addError("Required trait count must be positive for: " + entry.getKey());
+                validation.addError("Required trait count must be positive for: " + trait.getDisplayName());
                 continue;
             }
             result.put(trait, entry.getValue());
@@ -121,10 +130,10 @@ private Set<Emblem> adaptEmblems(Set<EmblemDTO> emblemDTOs, ValidationContext va
     return emblemDTOs.stream()
             .map(emblemDTO ->
             {
-                Emblem emblem = emblemRepository.getEmblemByName(emblemDTO.getDisplayName());
+                Emblem emblem = emblemRepository.getEmblemByApiName(emblemDTO.getApiName());
                 if (emblem == null)
                 {
-                    validation.addError("Unknown emblem trait: " + emblemDTO.getDisplayName());
+                    validation.addError("Unknown emblem trait: " + label(emblemDTO.getDisplayName(), emblemDTO.getApiName()));
                 }
                 return emblem;
             })
@@ -137,10 +146,10 @@ private Set<Trait> adaptTraits(Set<TraitDTO> traitDTOs, ValidationContext valida
     return traitDTOs.stream()
             .map(traitDTO ->
             {
-                Trait trait = traitRepository.getTraitByName(traitDTO.getDisplayName());
+                Trait trait = traitRepository.getTraitByApiName(traitDTO.getApiName());
                 if (trait == null)
                 {
-                    validation.addError("Unknown excluded trait: " + traitDTO.getDisplayName());
+                    validation.addError("Unknown excluded trait: " + label(traitDTO.getDisplayName(), traitDTO.getApiName()));
                 }
                 return trait;
             })

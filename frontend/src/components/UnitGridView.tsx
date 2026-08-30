@@ -112,7 +112,7 @@ export const UnitGridView: React.FC<UnitGridViewProps> = ({
                                     borderRadius: '50%',
                                     backgroundColor: selectedItems.some(item =>
                                         item.type === 'trait' &&
-                                        item.displayName === trait.displayName
+                                        item.apiName === trait.apiName
                                     ) ? 'var(--color-bg-accent)' : 'var(--color-bg-secondary)',
                                 }} />
                             </div>

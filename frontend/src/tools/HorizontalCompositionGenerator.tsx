@@ -46,8 +46,9 @@ const getTraitThresholds = (composition: CompositionDTO): Record<string, number[
     {
         unit.traits?.forEach(trait =>
         {
-            if (!thresholds[trait.displayName]) {
-                thresholds[trait.displayName] = trait.activationThresholds;
+            const traitName = trait.displayName ?? '';
+            if (!thresholds[traitName]) {
+                thresholds[traitName] = trait.activationThresholds;
             }
         });
     });
@@ -76,10 +77,12 @@ const placementsToBoard = (placements: UnitPlacementDTO[]): Record<string, UnitD
     placements.forEach(placement =>
     {
         board[hexId(placement.row, placement.col)] = {
-            displayName: placement.unit.displayName,
+            apiName: placement.unit.apiName,
+            displayName: placement.unit.displayName ?? '',
             cost: placement.unit.cost ?? 0,
             traits: (placement.unit.traits ?? []).map(trait => ({
-                displayName: trait.displayName,
+                apiName: trait.apiName,
+                displayName: trait.displayName ?? '',
                 activationThresholds: trait.activationThresholds,
                 count: trait.count ?? 1
             })),
@@ -147,11 +150,11 @@ const HorizontalCompositionGenerator: React.FC = () =>
             const horizontalData: HorizontalDTO = {
                 compSize: 8, // Default composition size, could be made configurable
                 requiredTraits: selectedTraits.reduce((acc, trait) => {
-                    acc[trait.displayName] = trait.count;
+                    acc[trait.apiName] = trait.count;
                     return acc;
                 }, {} as Record<string, number>),
                 requiredUnits: selectedUnits.map(unit => ({
-                    displayName: unit.displayName
+                    apiName: unit.apiName
                 })),
                 excludedTraits: [], // Not implemented in UI yet
                 excludedUnits: [], // Not implemented in UI yet
@@ -159,7 +162,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                 tacticianLevel: basicInputs.tacticianLevel,
                 crowns: advancedInputs.crownsPans,
                 emblems: selectedEmblems.map(emblem => ({
-                    displayName: emblem.displayName
+                    apiName: emblem.apiName
                 })),
                 luck: advancedInputs.luck
             };

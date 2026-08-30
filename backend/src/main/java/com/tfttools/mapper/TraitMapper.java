@@ -18,7 +18,7 @@ public class TraitMapper implements Function<Trait, TraitDTO> {
      */
     @Override
     public TraitDTO apply(Trait trait) {
-        return new TraitDTO(trait.getDisplayName(), trait.getActivationThresholds(), 1);
+        return new TraitDTO(trait.getApiName(), trait.getDisplayName(), trait.getActivationThresholds(), 1);
     }
 
     /**
@@ -26,6 +26,6 @@ public class TraitMapper implements Function<Trait, TraitDTO> {
      * trait that unit counts as.
      */
     public TraitDTO apply(Unit unit, Trait trait) {
-        return new TraitDTO(trait.getDisplayName(), trait.getActivationThresholds(), unit.getTraitCount(trait));
+        return new TraitDTO(trait.getApiName(), trait.getDisplayName(), trait.getActivationThresholds(), unit.getTraitCount(trait));
     }
 }

@@ -5,14 +5,20 @@ package com.tfttools.dto;
  */
 public class TraitDTO {
 
+    private final String apiName;
     private final String displayName;
     private final int[] activationThresholds;
     private final int count;
 
-    public TraitDTO(String displayName, int[] activationThresholds, int count) {
+    public TraitDTO(String apiName, String displayName, int[] activationThresholds, int count) {
+        this.apiName = apiName;
         this.displayName = displayName;
         this.activationThresholds = activationThresholds;
         this.count = count;
+    }
+
+    public String getApiName() {
+        return apiName;
     }
 
     public String getDisplayName() {

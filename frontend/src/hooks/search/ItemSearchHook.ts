@@ -10,11 +10,11 @@ export const useSearch = (searchPanelRef: RefObject<HTMLDivElement | null>) => {
     });
 
     const addSelectedItem = (item: SearchItem) => {
-        genericSearch.addSelectedItem(item, (item: SearchItem) => item.displayName);
+        genericSearch.addSelectedItem(item, (item: SearchItem) => item.apiName);
     };
 
     const removeSelectedItem = (itemId: string) => {
-        genericSearch.removeSelectedItem(itemId, (item: SearchItem) => item.displayName);
+        genericSearch.removeSelectedItem(itemId, (item: SearchItem) => item.apiName);
     };
 
     return {

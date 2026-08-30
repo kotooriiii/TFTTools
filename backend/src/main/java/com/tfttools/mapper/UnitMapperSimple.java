@@ -29,6 +29,7 @@ public class UnitMapperSimple implements Function<Unit, UnitDTO> {
     @Override
     public UnitDTO apply(Unit unit) {
         return new UnitDTO(
+                unit.getApiName(),
                 unit.getDisplayName(),
                 unit.getTraits().stream().map(trait -> traitMapper.apply(unit, trait)).collect(Collectors.toSet()),
                 unit.getCost(),

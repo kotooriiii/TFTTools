@@ -1,12 +1,14 @@
 import { UnitData } from '../types/compBuilderTypes';
 
 interface ApiTraitResponse {
+    apiName: string;
     displayName: string;
     activationThresholds?: number[];
     count?: number;
 }
 
 interface ApiUnitDetailedResponse {
+    apiName: string;
     displayName: string;
     traits?: ApiTraitResponse[];
     cost: number;
@@ -25,10 +27,12 @@ export const unitService = {
             const data: ApiUnitDetailedResponse[] = await response.json();
 
             return data.map(unit => ({
+                apiName: unit.apiName,
                 displayName: unit.displayName,
                 cost: unit.cost,
                 iconUrl: unit.iconUrl,
                 traits: (unit.traits ?? []).map(trait => ({
+                    apiName: trait.apiName,
                     displayName: trait.displayName,
                     activationThresholds: trait.activationThresholds ?? [],
                     count: trait.count ?? 1

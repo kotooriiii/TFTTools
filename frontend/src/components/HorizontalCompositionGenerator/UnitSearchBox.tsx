@@ -24,7 +24,7 @@ export const UnitSearchBox = forwardRef<UnitSearchBoxHandle>(
             clearSelection,
         } = useItemSearch<UnitItem>({
             searchFunction: searchService.searchUnits,
-            getItemKey: (item) => item.displayName,
+            getItemKey: (item) => item.apiName,
         });
 
         useImperativeHandle(ref, (): UnitSearchBoxHandle => ({
@@ -39,7 +39,7 @@ export const UnitSearchBox = forwardRef<UnitSearchBoxHandle>(
             badgeColor: "bg-amber-100 text-amber-800",
             badgeText: "Unit",
             displayName: (item: UnitItem) => item.displayName,
-            itemKey: (item: UnitItem) => item.displayName,
+            itemKey: (item: UnitItem) => item.apiName,
             iconUrl: (item: UnitItem) => item.iconUrl
         };
 

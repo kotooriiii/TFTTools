@@ -54,12 +54,12 @@ public class Trait implements Nameable
         if (o == null || getClass() != o.getClass()) return false;
 
         Trait trait = (Trait) o;
-        return getName().equals(trait.getName());
+        return getApiName().equals(trait.getApiName());
     }
 
     @Override
     public int hashCode()
     {
-        return getName().hashCode();
+        return getApiName().hashCode();
     }
 }

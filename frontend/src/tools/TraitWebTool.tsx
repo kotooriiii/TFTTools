@@ -32,9 +32,9 @@ const TraitWebTool: React.FC = () =>
     // Helper function to find shared traits between two units
     const findSharedTraits = (unit1: Unit, unit2: Unit): string[] => {
         if (!unit1?.traits || !unit2?.traits) return [];
-        const otherTraitNames = new Set(unit2.traits.map(trait => trait.displayName));
+        const otherTraitApiNames = new Set(unit2.traits.map(trait => trait.apiName));
         return unit1.traits
-            .filter(trait => otherTraitNames.has(trait.displayName))
+            .filter(trait => otherTraitApiNames.has(trait.apiName))
             .map(trait => trait.displayName);
     };
 
@@ -76,7 +76,7 @@ const TraitWebTool: React.FC = () =>
 
         // Check if unit already exists on canvas
         const existingVertex = vertices.find(vertex =>
-            vertex.unitData?.displayName === dragAndDrop.draggedUnit?.displayName
+            vertex.unitData?.apiName === dragAndDrop.draggedUnit?.apiName
         );
 
         if (existingVertex) {

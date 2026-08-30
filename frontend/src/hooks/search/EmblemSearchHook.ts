@@ -10,11 +10,11 @@ export const useEmblemSearch = (searchPanelRef: RefObject<HTMLDivElement>) => {
     });
 
     const addSelectedItem = (item: EmblemItem) => {
-        genericSearch.addSelectedItem(item, (item: EmblemItem) => item.displayName);
+        genericSearch.addSelectedItem(item, (item: EmblemItem) => item.apiName);
     };
 
     const removeSelectedItem = (itemId: string) => {
-        genericSearch.removeSelectedItem(itemId, (item: EmblemItem) => item.displayName);
+        genericSearch.removeSelectedItem(itemId, (item: EmblemItem) => item.apiName);
     };
 
     return {

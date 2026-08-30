@@ -30,9 +30,9 @@ public interface SetSpecificRules
 
     /**
      * Per-unit trait count overrides for this set: championApiName -> traitName -> count.
-     * traitName must match whatever {@code TraitRepository.getTraitByName} expects (the same
-     * trait name string Community Dragon reports on the champion). Units/traits not present
-     * here default to counting as 1.
+     * traitName must match whatever {@code TraitRepository.getTraitByDisplayName} expects (the
+     * same trait display-name string Community Dragon reports on the champion). Units/traits not
+     * present here default to counting as 1.
      */
     default Map<String, Map<Trait, Integer>> getTraitCountOverrides()
     {
