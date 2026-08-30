@@ -16,6 +16,8 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Repository for managing TFT Units loaded from Community Dragon data
@@ -25,10 +27,14 @@ import java.util.*;
 public class UnitRepository
 {
 
+    // Matches a variant champion's display name, e.g. "Lux (Inferno)" -> base name "Lux"
+    private static final Pattern VARIANT_NAME_PATTERN = Pattern.compile("^(.+?)\\s*\\([^)]*\\)$");
+
     private final Map<String, Unit> units;
 
     private final PrefixTrie<Unit> unitPrefixTrie;
     private Map<Trait, List<Unit>> traitToUnits;
+    private Map<String, Unit> variantApiNameToBaseUnit;
 
     private final TraitRepository traitRepository;
     private final CommunityDragonDataService dataService;
@@ -103,10 +109,51 @@ public class UnitRepository
 
                 this.units.put(name, new Unit(apiName, name, cost, role, championStats, traits, champions.getTileIcon()));
             }
+
+            linkVariantUnits();
         } catch (Exception e)
         {
             throw new RuntimeException("Failed to load units", e);
         }
+    }
+
+    /**
+     * Links trait-variant champions (e.g. "Lux (Inferno)") back to their base champion
+     * (e.g. "Lux"), keyed by the variant's apiName. Consumers that need a variant's data to
+     * fall back to its base champion (e.g. team planner codes, which are only ever tracked
+     * per base champion) can resolve that link via {@link #getBaseUnit(Unit)}.
+     */
+    private void linkVariantUnits()
+    {
+        Map<String, Unit> variantMap = new HashMap<>();
+
+        for (Unit unit : this.units.values())
+        {
+            Matcher matcher = VARIANT_NAME_PATTERN.matcher(unit.getDisplayName());
+            if (!matcher.matches())
+            {
+                continue;
+            }
+
+            Unit baseUnit = this.units.get(matcher.group(1).trim());
+            if (baseUnit != null && baseUnit != unit)
+            {
+                variantMap.put(unit.getApiName(), baseUnit);
+            }
+        }
+
+        this.variantApiNameToBaseUnit = Collections.unmodifiableMap(variantMap);
+    }
+
+    /**
+     * Gets the base champion a trait-variant champion belongs to, if any.
+     *
+     * @param unit The unit to resolve
+     * @return The base unit, or empty if the given unit is not a recognized variant
+     */
+    public Optional<Unit> getBaseUnit(Unit unit)
+    {
+        return Optional.ofNullable(this.variantApiNameToBaseUnit.get(unit.getApiName()));
     }
 
     public void reloadUnits()

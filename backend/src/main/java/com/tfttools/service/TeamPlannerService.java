@@ -4,6 +4,7 @@ import com.tfttools.domain.Composition;
 import com.tfttools.domain.Unit;
 import com.tfttools.domain.communitydragon.TeamPlannerChampion;
 import com.tfttools.domain.communitydragon.TeamPlannerData;
+import com.tfttools.repository.UnitRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -14,20 +15,22 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@DependsOn("TFTSetContextService")
+@DependsOn({"TFTSetContextService", "unitRepository"})
 public class TeamPlannerService
 {
 
     private final CommunityDragonDataService dataService;
     private final TFTSetContextService setContextService;
+    private final UnitRepository unitRepository;
 
-    private Map<String, String> championNameToCodeMap; // champion name -> code
+    private Map<String, String> championNameToCodeMap; // champion apiName -> code
 
     @Autowired
-    public TeamPlannerService(CommunityDragonDataService dataService, TFTSetContextService setContextService)
+    public TeamPlannerService(CommunityDragonDataService dataService, TFTSetContextService setContextService, UnitRepository unitRepository)
     {
         this.dataService = dataService;
         this.setContextService = setContextService;
+        this.unitRepository = unitRepository;
     }
 
     @PostConstruct
@@ -55,6 +58,29 @@ public class TeamPlannerService
                     }
                 }
             }
+        }
+
+        addFallbackCodesForVariantUnits();
+    }
+
+    /**
+     * The team planner feed only lists one entry per base champion. Trait-variant champions
+     * (e.g. "Lux (Inferno)") have no entry of their own in that feed - in the game client,
+     * Team Planner has no concept of variants and represents them all with the base
+     * champion's code, so we mirror that here using UnitRepository's variant/base linkage.
+     */
+    private void addFallbackCodesForVariantUnits()
+    {
+        for (Unit unit : unitRepository.getAllUnits())
+        {
+            if (championNameToCodeMap.containsKey(unit.getApiName()))
+            {
+                continue;
+            }
+
+            unitRepository.getBaseUnit(unit)
+                    .map(baseUnit -> championNameToCodeMap.get(baseUnit.getApiName()))
+                    .ifPresent(baseCode -> championNameToCodeMap.put(unit.getApiName(), baseCode));
         }
     }
 
