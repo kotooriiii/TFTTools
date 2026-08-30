@@ -3,6 +3,8 @@ import {useNavigate} from 'react-router-dom';
 import {AnimatePresence, motion} from 'framer-motion';
 import {EmblemItem, SelectedItem} from '../types/searchTypes';
 import {CompositionDTO, generateHorizontalComposition, HorizontalDTO, UnitPlacementDTO} from '../services/searchService';
+import {compsService} from '../services/compsService';
+import {useAuth} from '../contexts/AuthContext';
 
 import {EmblemSearchBox, EmblemSearchBoxHandle} from "../components/HorizontalCompositionGenerator/EmblemSearchBox.tsx";
 import {TraitSearchBox, TraitSearchBoxHandle} from '../components/HorizontalCompositionGenerator/TraitSearchBox.tsx';
@@ -13,6 +15,7 @@ import {
 import {HexBoard} from '../components/CompBuilder/HexBoard';
 import {hexId} from '../components/CompBuilder/hexUtils';
 import {UnitData} from '../types/compBuilderTypes';
+import {computeTraitSummary} from '../utils/traitSummary';
 
 interface BasicInputs
 {
@@ -34,42 +37,7 @@ interface TFTCompositionResult
     compositions: CompositionDTO[];
 }
 
-/**
- * The map response for `composition.traits` loses each trait's activation
- * thresholds (its key is serialized to just the trait name), so we recover
- * them from the units' own trait data, which still carries the thresholds.
- */
-const getTraitThresholds = (composition: CompositionDTO): Record<string, number[]> =>
-{
-    const thresholds: Record<string, number[]> = {};
-    composition.units.forEach(unit =>
-    {
-        unit.traits?.forEach(trait =>
-        {
-            const traitName = trait.displayName ?? '';
-            if (!thresholds[traitName]) {
-                thresholds[traitName] = trait.activationThresholds;
-            }
-        });
-    });
-    return thresholds;
-};
-
-const getTraitBreakdown = (composition: CompositionDTO) =>
-{
-    const thresholds = getTraitThresholds(composition);
-    return Object.entries(composition.traits)
-        .map(([trait, count]) => {
-            const sortedThresholds = [...(thresholds[trait] ?? [])].sort((a, b) => a - b);
-            return {
-                trait,
-                count,
-                active: sortedThresholds.some(threshold => count >= threshold),
-                nextThreshold: sortedThresholds.find(threshold => threshold > count) ?? null
-            };
-        })
-        .sort((a, b) => Number(b.active) - Number(a.active) || b.count - a.count);
-};
+type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
 const placementsToBoard = (placements: UnitPlacementDTO[]): Record<string, UnitData> =>
 {
@@ -95,6 +63,27 @@ const placementsToBoard = (placements: UnitPlacementDTO[]): Record<string, UnitD
 const HorizontalCompositionGenerator: React.FC = () =>
 {
     const navigate = useNavigate();
+    const {user, token} = useAuth();
+
+    const [saveStatus, setSaveStatus] = useState<Record<number, SaveStatus>>({});
+
+    const handleSaveComp = async (index: number, placements: UnitPlacementDTO[]) =>
+    {
+        if (!token) return;
+
+        setSaveStatus(prev => ({...prev, [index]: 'saving'}));
+        try {
+            await compsService.saveComp(token, placements.map(placement => ({
+                unitApiName: placement.unit.apiName,
+                row: placement.row,
+                col: placement.col
+            })));
+            setSaveStatus(prev => ({...prev, [index]: 'saved'}));
+        } catch (err) {
+            console.error('Error saving comp:', err);
+            setSaveStatus(prev => ({...prev, [index]: 'error'}));
+        }
+    };
 
     const [basicInputs, setBasicInputs] = useState<BasicInputs>({
         tacticianLevel: 1,
@@ -502,7 +491,9 @@ const HorizontalCompositionGenerator: React.FC = () =>
                             ) : (
                                 <div className="space-y-6">
                                     {result.compositions.map((composition, index) => {
-                                        const traitBreakdown = getTraitBreakdown(composition);
+                                        const board = placementsToBoard(composition.placements);
+                                        const traitBreakdown = computeTraitSummary(Object.values(board));
+                                        const status = saveStatus[index] ?? 'idle';
                                         return (
                                             <motion.div
                                                 key={composition.teamCode || index}
@@ -517,7 +508,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
 
                                                 {/* Hex Board + Active Traits sidebar */}
                                                 <div className="flex justify-center gap-4 mb-4">
-                                                    <HexBoard board={placementsToBoard(composition.placements)} readOnly />
+                                                    <HexBoard board={board} readOnly />
 
                                                     {traitBreakdown.length > 0 && (
                                                         <div className="w-56 shrink-0 border-l border-border bg-primary p-3 rounded-r-lg">
@@ -525,7 +516,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                             <div className="flex flex-col gap-2">
                                                                 {traitBreakdown.map((trait) => (
                                                                     <div
-                                                                        key={trait.trait}
+                                                                        key={trait.apiName}
                                                                         className="rounded-lg px-3 py-2 flex items-center justify-between"
                                                                         style={{
                                                                             backgroundColor: trait.active ? 'rgba(76,175,80,0.15)' : 'rgba(0,0,0,0.04)',
@@ -533,7 +524,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                                         }}
                                                                     >
                                                                         <span className={`text-xs font-semibold ${trait.active ? 'text-primary' : 'text-secondary'}`}>
-                                                                            {trait.trait}
+                                                                            {trait.displayName}
                                                                         </span>
                                                                         <span className="text-xs font-mono text-secondary">
                                                                             {trait.count}{trait.nextThreshold ? ` / ${trait.nextThreshold}` : ''}
@@ -545,7 +536,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                     )}
                                                 </div>
 
-                                                {/* Team Code + Comp Builder handoff */}
+                                                {/* Team Code + Comp Builder handoff + Save */}
                                                 <div className="flex items-center justify-center gap-2">
                                                     {composition.teamCode && (
                                                         <button
@@ -557,13 +548,26 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                     )}
                                                     <button
                                                         onClick={() => navigate('/tools/comp-builder', {
-                                                            state: {seedBoard: placementsToBoard(composition.placements)}
+                                                            state: {seedBoard: board}
                                                         })}
                                                         className="px-3 py-2 bg-accent text-primary rounded-md text-sm font-medium hover:bg-accent/80 transition-colors duration-200"
                                                     >
                                                         Edit in Comp Builder
                                                     </button>
+                                                    <button
+                                                        onClick={() => handleSaveComp(index, composition.placements)}
+                                                        disabled={!user || status === 'saving' || status === 'saved'}
+                                                        title={!user ? 'Log in to save comps' : undefined}
+                                                        className="px-3 py-2 bg-secondary text-primary rounded-md text-sm font-medium hover:bg-secondary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                                                    >
+                                                        {status === 'saving' ? 'Saving...' : status === 'saved' ? 'Saved' : status === 'error' ? 'Retry Save' : !user ? 'Log in to Save' : 'Save Comp'}
+                                                    </button>
                                                 </div>
+                                                {status === 'error' && (
+                                                    <div className="text-center text-xs text-red-600 mt-2">
+                                                        Failed to save comp. Please try again.
+                                                    </div>
+                                                )}
                                             </motion.div>
                                         );
                                     })}
