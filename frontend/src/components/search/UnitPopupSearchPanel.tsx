@@ -50,7 +50,7 @@ export const UnitPopupSearchPanel = forwardRef<HTMLDivElement, UnitSearchPanelPr
             ref={ref}
             renderSearchItem={renderSearchItem}
             renderSelectedItem={renderSelectedItem}
-            getItemKey={(item) => item.displayName}
+            getItemKey={(item) => item.apiName}
             placeholder="Search units or traits..."
             helpText="Search for units or traits"
         />

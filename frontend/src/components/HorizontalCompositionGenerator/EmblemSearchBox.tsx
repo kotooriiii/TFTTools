@@ -24,7 +24,7 @@ export const EmblemSearchBox = forwardRef<EmblemSearchBoxHandle>(
             clearSelection,
         } = useItemSearch<EmblemItem>({
             searchFunction: searchService.searchEmblems,
-            getItemKey: (item) => item.displayName,
+            getItemKey: (item) => item.apiName,
         });
 
         useImperativeHandle(ref, () => ({
@@ -39,7 +39,7 @@ export const EmblemSearchBox = forwardRef<EmblemSearchBoxHandle>(
             badgeColor: "bg-amber-100 text-amber-800",
             badgeText: "Emblem",
             displayName: (item: EmblemItem) => item.displayName,
-            itemKey: (item: EmblemItem) => item.displayName
+            itemKey: (item: EmblemItem) => item.apiName
         };
 
         return (

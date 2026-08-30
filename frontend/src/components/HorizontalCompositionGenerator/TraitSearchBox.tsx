@@ -26,7 +26,7 @@ export const TraitSearchBox = forwardRef<TraitSearchBoxHandle>(
             getItemAllowedCounts
             } = useItemSearch<TraitItem>({
             searchFunction: searchService.searchTraits,
-            getItemKey: (item) => item.displayName,
+            getItemKey: (item) => item.apiName,
             getItemAllowedCounts: (item) => item.activationThresholds
         });
 
@@ -42,7 +42,7 @@ export const TraitSearchBox = forwardRef<TraitSearchBoxHandle>(
             badgeColor: "bg-purple-100 text-purple-800",
             badgeText: "Trait",
             displayName: (item: TraitItem) => item.displayName,
-            itemKey: (item: TraitItem) => item.displayName
+            itemKey: (item: TraitItem) => item.apiName
         };
 
         return (
