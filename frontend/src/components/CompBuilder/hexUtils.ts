@@ -14,6 +14,11 @@ export interface HexCoord {
 
 export const hexId = (row: number, col: number): string => `${row}-${col}`;
 
+export const parseHexId = (id: string): HexCoord => {
+    const [row, col] = id.split('-').map(Number);
+    return { row, col };
+};
+
 export const getHexCenter = (row: number, col: number): { x: number; y: number } => {
     const rowOffset = row % 2 === 1 ? HEX_WIDTH / 2 : 0;
     const x = MARGIN + HEX_WIDTH / 2 + col * HEX_WIDTH + rowOffset;
