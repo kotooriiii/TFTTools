@@ -1,44 +1,13 @@
 import React, { useMemo } from 'react';
 import { UnitData } from '../../types/compBuilderTypes';
+import { computeTraitSummary } from '../../utils/traitSummary';
 
 interface TraitSynergyPanelProps {
     boardUnits: UnitData[];
 }
 
-interface TraitSummary {
-    displayName: string;
-    count: number;
-    activeThreshold: number | null;
-    nextThreshold: number | null;
-}
-
 export const TraitSynergyPanel: React.FC<TraitSynergyPanelProps> = ({ boardUnits }) => {
-    const traitSummaries = useMemo<TraitSummary[]>(() => {
-        const counts = new Map<string, { count: number; thresholds: number[] }>();
-
-        boardUnits.forEach(unit => {
-            unit.traits.forEach(trait => {
-                const existing = counts.get(trait.displayName);
-                if (existing) {
-                    existing.count += trait.count;
-                } else {
-                    counts.set(trait.displayName, { count: trait.count, thresholds: trait.activationThresholds });
-                }
-            });
-        });
-
-        return [...counts.entries()]
-            .map(([displayName, { count, thresholds }]) => {
-                const sorted = [...thresholds].sort((a, b) => a - b);
-                const activeThreshold = [...sorted].reverse().find(t => count >= t) ?? null;
-                const nextThreshold = sorted.find(t => t > count) ?? null;
-                return { displayName, count, activeThreshold, nextThreshold };
-            })
-            .sort((a, b) => {
-                if (!!a.activeThreshold !== !!b.activeThreshold) return a.activeThreshold ? -1 : 1;
-                return b.count - a.count;
-            });
-    }, [boardUnits]);
+    const traitSummaries = useMemo(() => computeTraitSummary(boardUnits), [boardUnits]);
 
     return (
         <div className="w-64 shrink-0 h-full border-l border-border bg-primary p-3 overflow-y-auto custom-scrollbar">
@@ -53,14 +22,14 @@ export const TraitSynergyPanel: React.FC<TraitSynergyPanelProps> = ({ boardUnits
             <div className="flex flex-col gap-2">
                 {traitSummaries.map(trait => (
                     <div
-                        key={trait.displayName}
+                        key={trait.apiName}
                         className="rounded-lg px-3 py-2 flex items-center justify-between"
                         style={{
-                            backgroundColor: trait.activeThreshold ? 'rgba(76,175,80,0.15)' : 'rgba(0,0,0,0.04)',
-                            border: `1px solid ${trait.activeThreshold ? '#4CAF50' : 'transparent'}`
+                            backgroundColor: trait.active ? 'rgba(76,175,80,0.15)' : 'rgba(0,0,0,0.04)',
+                            border: `1px solid ${trait.active ? '#4CAF50' : 'transparent'}`
                         }}
                     >
-                        <span className={`text-xs font-semibold ${trait.activeThreshold ? 'text-primary' : 'text-secondary'}`}>
+                        <span className={`text-xs font-semibold ${trait.active ? 'text-primary' : 'text-secondary'}`}>
                             {trait.displayName}
                         </span>
                         <span className="text-xs font-mono text-secondary">

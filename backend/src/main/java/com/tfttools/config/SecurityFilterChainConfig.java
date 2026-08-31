@@ -92,7 +92,8 @@ public class SecurityFilterChainConfig
                                     "/tools/*"
                             ).permitAll().requestMatchers(
                                     HttpMethod.POST,
-                                    "/tools/horizontal"
+                                    "/tools/horizontal",
+                                    "/tools/team-code"
                             ).permitAll().requestMatchers(
                                     HttpMethod.POST,
                                     "/auth/signup",
@@ -101,6 +102,8 @@ public class SecurityFilterChainConfig
                             ).permitAll().requestMatchers(
                                     HttpMethod.GET,
                                     "/auth/me"
+                            ).authenticated().requestMatchers(
+                                    "/comps/**"
                             ).authenticated();
                 })
                 // Scoped to /auth/** only, so every other (pre-existing) denied path keeps returning

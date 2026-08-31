@@ -2,21 +2,34 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { UnitData } from '../types/compBuilderTypes';
 import { unitService } from '../services/unitService';
+import { compsService, PlacementDTO } from '../services/compsService';
+import { useAuth } from '../contexts/AuthContext';
 import { UnitRoster } from '../components/CompBuilder/UnitRoster.tsx';
 import { HexBoard } from '../components/CompBuilder/HexBoard';
 import { TraitSynergyPanel } from '../components/CompBuilder/TraitSynergyPanel';
+import { parseHexId } from '../components/CompBuilder/hexUtils';
 
 interface CompBuilderNavState {
     seedBoard?: Record<string, UnitData>;
 }
 
+type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
+
+const boardToPlacements = (board: Record<string, UnitData>): PlacementDTO[] =>
+    Object.entries(board).map(([id, unit]) => {
+        const { row, col } = parseHexId(id);
+        return { unitApiName: unit.apiName, row, col };
+    });
+
 const CompBuilderTool: React.FC = () => {
     const location = useLocation();
+    const { user, token } = useAuth();
 
     const [units, setUnits] = useState<UnitData[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [board, setBoard] = useState<Record<string, UnitData>>({});
+    const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
 
     useEffect(() => {
         const seedBoard = (location.state as CompBuilderNavState | null)?.seedBoard;
@@ -52,6 +65,11 @@ const CompBuilderTool: React.FC = () => {
         () => new Set(Object.values(board).map(unit => unit.apiName)),
         [board]
     );
+
+    // A stale "Saved" label shouldn't survive the board changing underneath it.
+    useEffect(() => {
+        setSaveStatus('idle');
+    }, [board]);
 
     const filteredUnits = useMemo(() => {
         const query = searchQuery.trim().toLowerCase();
@@ -135,7 +153,23 @@ const CompBuilderTool: React.FC = () => {
         });
     };
 
-    const handleClearBoard = () => setBoard({});
+    const handleClearBoard = () => {
+        setBoard({});
+        setSaveStatus('idle');
+    };
+
+    const handleSaveComp = async () => {
+        if (!token || Object.keys(board).length === 0) return;
+
+        setSaveStatus('saving');
+        try {
+            await compsService.saveComp(token, boardToPlacements(board));
+            setSaveStatus('saved');
+        } catch (err) {
+            console.error('Error saving comp:', err);
+            setSaveStatus('error');
+        }
+    };
 
     return (
         <div className="h-full w-full flex">
@@ -156,12 +190,25 @@ const CompBuilderTool: React.FC = () => {
                             Drag units onto the board · drag placed units to rearrange · click to remove
                         </p>
                     </div>
-                    <button
-                        onClick={handleClearBoard}
-                        className="text-xs px-3 py-1.5 rounded-md bg-secondary text-primary hover:opacity-80 transition-opacity"
-                    >
-                        Clear Board
-                    </button>
+                    <div className="flex items-center gap-2">
+                        {saveStatus === 'error' && (
+                            <span className="text-xs text-red-600">Failed to save comp</span>
+                        )}
+                        <button
+                            onClick={handleSaveComp}
+                            disabled={!user || Object.keys(board).length === 0 || saveStatus === 'saving' || saveStatus === 'saved'}
+                            title={!user ? 'Log in to save comps' : undefined}
+                            className="text-xs px-3 py-1.5 rounded-md bg-accent text-primary hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+                        >
+                            {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'saved' ? 'Saved' : saveStatus === 'error' ? 'Retry Save' : !user ? 'Log in to Save' : 'Save Comp'}
+                        </button>
+                        <button
+                            onClick={handleClearBoard}
+                            className="text-xs px-3 py-1.5 rounded-md bg-secondary text-primary hover:opacity-80 transition-opacity"
+                        >
+                            Clear Board
+                        </button>
+                    </div>
                 </div>
 
                 <HexBoard

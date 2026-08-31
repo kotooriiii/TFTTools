@@ -1,5 +1,4 @@
 import React, {useRef, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
 import {AnimatePresence, motion} from 'framer-motion';
 import {EmblemItem, SelectedItem} from '../types/searchTypes';
 import {CompositionDTO, generateHorizontalComposition, HorizontalDTO, UnitPlacementDTO} from '../services/searchService';
@@ -13,6 +12,8 @@ import {
 import {HexBoard} from '../components/CompBuilder/HexBoard';
 import {hexId} from '../components/CompBuilder/hexUtils';
 import {UnitData} from '../types/compBuilderTypes';
+import {computeTraitSummary} from '../utils/traitSummary';
+import {CompActionButtons} from '../components/CompActionButtons';
 
 interface BasicInputs
 {
@@ -33,43 +34,6 @@ interface TFTCompositionResult
 {
     compositions: CompositionDTO[];
 }
-
-/**
- * The map response for `composition.traits` loses each trait's activation
- * thresholds (its key is serialized to just the trait name), so we recover
- * them from the units' own trait data, which still carries the thresholds.
- */
-const getTraitThresholds = (composition: CompositionDTO): Record<string, number[]> =>
-{
-    const thresholds: Record<string, number[]> = {};
-    composition.units.forEach(unit =>
-    {
-        unit.traits?.forEach(trait =>
-        {
-            const traitName = trait.displayName ?? '';
-            if (!thresholds[traitName]) {
-                thresholds[traitName] = trait.activationThresholds;
-            }
-        });
-    });
-    return thresholds;
-};
-
-const getTraitBreakdown = (composition: CompositionDTO) =>
-{
-    const thresholds = getTraitThresholds(composition);
-    return Object.entries(composition.traits)
-        .map(([trait, count]) => {
-            const sortedThresholds = [...(thresholds[trait] ?? [])].sort((a, b) => a - b);
-            return {
-                trait,
-                count,
-                active: sortedThresholds.some(threshold => count >= threshold),
-                nextThreshold: sortedThresholds.find(threshold => threshold > count) ?? null
-            };
-        })
-        .sort((a, b) => Number(b.active) - Number(a.active) || b.count - a.count);
-};
 
 const placementsToBoard = (placements: UnitPlacementDTO[]): Record<string, UnitData> =>
 {
@@ -94,8 +58,6 @@ const placementsToBoard = (placements: UnitPlacementDTO[]): Record<string, UnitD
 
 const HorizontalCompositionGenerator: React.FC = () =>
 {
-    const navigate = useNavigate();
-
     const [basicInputs, setBasicInputs] = useState<BasicInputs>({
         tacticianLevel: 1,
         requiredUnits: [],
@@ -502,7 +464,8 @@ const HorizontalCompositionGenerator: React.FC = () =>
                             ) : (
                                 <div className="space-y-6">
                                     {result.compositions.map((composition, index) => {
-                                        const traitBreakdown = getTraitBreakdown(composition);
+                                        const board = placementsToBoard(composition.placements);
+                                        const traitBreakdown = computeTraitSummary(Object.values(board));
                                         return (
                                             <motion.div
                                                 key={composition.teamCode || index}
@@ -517,7 +480,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
 
                                                 {/* Hex Board + Active Traits sidebar */}
                                                 <div className="flex justify-center gap-4 mb-4">
-                                                    <HexBoard board={placementsToBoard(composition.placements)} readOnly />
+                                                    <HexBoard board={board} readOnly />
 
                                                     {traitBreakdown.length > 0 && (
                                                         <div className="w-56 shrink-0 border-l border-border bg-primary p-3 rounded-r-lg">
@@ -525,7 +488,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                             <div className="flex flex-col gap-2">
                                                                 {traitBreakdown.map((trait) => (
                                                                     <div
-                                                                        key={trait.trait}
+                                                                        key={trait.apiName}
                                                                         className="rounded-lg px-3 py-2 flex items-center justify-between"
                                                                         style={{
                                                                             backgroundColor: trait.active ? 'rgba(76,175,80,0.15)' : 'rgba(0,0,0,0.04)',
@@ -533,7 +496,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                                         }}
                                                                     >
                                                                         <span className={`text-xs font-semibold ${trait.active ? 'text-primary' : 'text-secondary'}`}>
-                                                                            {trait.trait}
+                                                                            {trait.displayName}
                                                                         </span>
                                                                         <span className="text-xs font-mono text-secondary">
                                                                             {trait.count}{trait.nextThreshold ? ` / ${trait.nextThreshold}` : ''}
@@ -545,25 +508,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                     )}
                                                 </div>
 
-                                                {/* Team Code + Comp Builder handoff */}
-                                                <div className="flex items-center justify-center gap-2">
-                                                    {composition.teamCode && (
-                                                        <button
-                                                            onClick={() => navigator.clipboard.writeText(composition.teamCode)}
-                                                            className="px-3 py-2 bg-secondary text-primary rounded-md text-sm font-medium hover:bg-secondary/90 transition-colors duration-200"
-                                                        >
-                                                            Copy Team Code
-                                                        </button>
-                                                    )}
-                                                    <button
-                                                        onClick={() => navigate('/tools/comp-builder', {
-                                                            state: {seedBoard: placementsToBoard(composition.placements)}
-                                                        })}
-                                                        className="px-3 py-2 bg-accent text-primary rounded-md text-sm font-medium hover:bg-accent/80 transition-colors duration-200"
-                                                    >
-                                                        Edit in Comp Builder
-                                                    </button>
-                                                </div>
+                                                <CompActionButtons board={board} getTeamCode={async () => composition.teamCode} />
                                             </motion.div>
                                         );
                                     })}
