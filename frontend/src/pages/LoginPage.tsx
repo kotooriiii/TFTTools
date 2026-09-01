@@ -4,6 +4,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../contexts/AuthContext';
 import { AuthApiError } from '../services/authService';
 import { GoogleIcon } from '../components/GoogleIcon';
+import { Button } from '../components/Button';
 
 export const LoginPage: React.FC = () => {
     const { login, loginWithGoogle } = useAuth();
@@ -73,13 +74,13 @@ export const LoginPage: React.FC = () => {
 
                     {error && <div className="text-error text-sm">{error}</div>}
 
-                    <button
+                    <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="mt-2 bg-secondary text-primary rounded-lg py-2.5 font-medium cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50"
+                        className="mt-2 rounded-lg py-2.5 font-medium"
                     >
                         {isSubmitting ? 'Logging in...' : 'Log In'}
-                    </button>
+                    </Button>
 
                     <div className="flex items-center gap-3">
                         <div className="flex-1 h-px bg-border" />
@@ -87,14 +88,15 @@ export const LoginPage: React.FC = () => {
                         <div className="flex-1 h-px bg-border" />
                     </div>
 
-                    <button
-                        type="button"
+                    <Button
+                        variant="outline"
+                        tone="accent"
                         onClick={() => googleLogin()}
-                        className="flex items-center justify-center gap-2 border border-border rounded-lg py-2.5 font-medium cursor-pointer hover:bg-accent/10 transition-colors text-primary"
+                        className="flex items-center justify-center gap-2 rounded-lg py-2.5 font-medium text-primary"
                     >
                         <GoogleIcon />
                         Continue with Google
-                    </button>
+                    </Button>
                 </form>
 
                 <p className="text-sm text-secondary text-center mt-6">

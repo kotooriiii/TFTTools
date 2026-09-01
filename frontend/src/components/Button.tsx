@@ -17,9 +17,9 @@ const SOLID_CLASSES: Record<ButtonTone, string> = {
 };
 
 const OUTLINE_CLASSES: Record<ButtonTone, string> = {
-    secondary: 'bg-transparent border border-border text-primary hover:bg-secondary/10 active:bg-secondary/20',
-    accent: 'bg-transparent border border-border text-primary hover:bg-accent/10 active:bg-accent/20',
-    danger: 'bg-transparent border border-red-200 text-red-700 hover:bg-red-100 active:bg-red-200',
+    secondary: 'bg-transparent border border-border hover:bg-secondary/10 active:bg-secondary/20',
+    accent: 'bg-transparent border border-border hover:bg-accent/10 active:bg-accent/20',
+    danger: 'bg-transparent border border-red-200 hover:bg-red-100 active:bg-red-200',
 };
 
 const GHOST_CLASSES: Record<ButtonTone, string> = {
