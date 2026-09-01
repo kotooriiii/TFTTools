@@ -29,11 +29,16 @@ const RESTING_CLASSES: Record<ButtonVariant, Record<ButtonTone, string>> = {
 };
 
 // Every button shades toward the app's accent color on hover/press, regardless of its own resting
-// variant or tone - one consistent interaction cue app-wide. bg-accent-tint-85 (tailwind.config.css)
-// mixes 85% accent with white for hover; active goes further, to a pure/undiluted accent (100%,
-// via the existing bg-accent utility) - kept as an explicit blend rather than hardcoded so the
-// percentage is easy to dial down later.
-const HOVER_ACTIVE_CLASSES = 'hover:bg-accent-tint-85 active:bg-accent';
+// variant - one consistent interaction cue app-wide - except danger, which stays red so a delete
+// button doesn't lose its warning cue. bg-accent-tint-85 (tailwind.config.css) mixes 85% accent
+// with white for hover; active goes further, to a pure/undiluted accent (100%, via the existing
+// bg-accent utility) - kept as an explicit blend rather than hardcoded so the percentage is easy
+// to dial down later.
+const HOVER_ACTIVE_CLASSES: Record<ButtonTone, string> = {
+    secondary: 'hover:bg-accent-tint-85 active:bg-accent',
+    accent: 'hover:bg-accent-tint-85 active:bg-accent',
+    danger: 'hover:bg-red-200 active:bg-red-300',
+};
 
 /**
  * Shared button - owns background/border color (resting per variant+tone, hover/active shared
@@ -51,12 +56,13 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
     const effectiveVariant = selected ? 'solid' : variant;
     const restingClasses = RESTING_CLASSES[effectiveVariant][tone];
+    const hoverActiveClasses = HOVER_ACTIVE_CLASSES[tone];
     const scaleClasses = effectiveVariant === 'ghost' ? '' : 'active:scale-[0.97]';
 
     return (
         <button
             type={type}
-            className={`cursor-pointer transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed ${restingClasses} ${HOVER_ACTIVE_CLASSES} ${scaleClasses} ${className}`}
+            className={`cursor-pointer transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed ${restingClasses} ${hoverActiveClasses} ${scaleClasses} ${className}`}
             {...rest}
         >
             {children}
