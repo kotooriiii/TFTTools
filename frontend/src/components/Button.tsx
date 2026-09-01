@@ -28,22 +28,34 @@ const RESTING_CLASSES: Record<ButtonVariant, Record<ButtonTone, string>> = {
     },
 };
 
-// Every button shades toward the app's accent color on hover/press, regardless of its own resting
-// variant - one consistent interaction cue app-wide - except danger, which stays red so a delete
-// button doesn't lose its warning cue. bg-accent-tint-85 (tailwind.config.css) mixes 85% accent
-// with white for hover; active goes further, to a pure/undiluted accent (100%, via the existing
-// bg-accent utility) - kept as an explicit blend rather than hardcoded so the percentage is easy
-// to dial down later.
-const HOVER_ACTIVE_CLASSES: Record<ButtonTone, string> = {
-    secondary: 'hover:bg-accent-tint-85 active:bg-accent',
-    accent: 'hover:bg-accent-tint-85 active:bg-accent',
+// Every tone gets the same "three shades of one hue" feel danger already had (bg-red-100 ->
+// hover:bg-red-200 -> active:bg-red-300): the tone's own base color plays the role of "100", and
+// bg-{secondary,accent}-200/-300 (tailwind.config.css) step it progressively darker. Solid rests
+// at its own base color and steps through -200/-300 on hover/active; outline/ghost rest transparent
+// and step through the SAME base-color/-200 pair, mirroring how outline/ghost danger go
+// transparent -> red-100 -> red-200 (one tier lower than solid's hover/active).
+const SOLID_HOVER_ACTIVE: Record<ButtonTone, string> = {
+    secondary: 'hover:bg-secondary-200 active:bg-secondary-300',
+    accent: 'hover:bg-accent-200 active:bg-accent-300',
     danger: 'hover:bg-red-200 active:bg-red-300',
 };
 
+const TRANSPARENT_HOVER_ACTIVE: Record<ButtonTone, string> = {
+    secondary: 'hover:bg-secondary active:bg-secondary-200',
+    accent: 'hover:bg-accent active:bg-accent-200',
+    danger: 'hover:bg-red-100 active:bg-red-200',
+};
+
+const HOVER_ACTIVE_CLASSES: Record<ButtonVariant, Record<ButtonTone, string>> = {
+    solid: SOLID_HOVER_ACTIVE,
+    outline: TRANSPARENT_HOVER_ACTIVE,
+    ghost: TRANSPARENT_HOVER_ACTIVE,
+};
+
 /**
- * Shared button - owns background/border color (resting per variant+tone, hover/active shared
- * across all of them) and the press-shrink scale effect. Padding, sizing, radius, font, and gap
- * stay in the caller's className so this never collides with per-site layout classes.
+ * Shared button - owns background/border color (resting per variant+tone, hover/active stepping
+ * darker through the same hue) and the press-shrink scale effect. Padding, sizing, radius, font,
+ * and gap stay in the caller's className so this never collides with per-site layout classes.
  */
 export const Button: React.FC<ButtonProps> = ({
     variant = 'solid',
@@ -56,7 +68,7 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
     const effectiveVariant = selected ? 'solid' : variant;
     const restingClasses = RESTING_CLASSES[effectiveVariant][tone];
-    const hoverActiveClasses = HOVER_ACTIVE_CLASSES[tone];
+    const hoverActiveClasses = HOVER_ACTIVE_CLASSES[effectiveVariant][tone];
     const scaleClasses = effectiveVariant === 'ghost' ? '' : 'active:scale-[0.97]';
 
     return (
