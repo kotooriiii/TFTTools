@@ -42,14 +42,15 @@
 }
 
 /*
- * Shade utilities for the shared Button component's hover/active feedback (Button.tsx).
+ * Shade/tint utilities for the shared Button component's hover/active feedback (Button.tsx).
  * bg-secondary/bg-accent are flat @utility blocks, not part of Tailwind's color system, so the
  * usual `/NN` opacity modifier silently fails to apply against them - these named utilities give
- * hover:/active: something real to prefix. (A translucent tint-toward-transparent variant of this
- * was tried for the outline/ghost variants too, but color-mix()/relative-color-syntax toward
+ * hover:/active: something real to prefix, mixed toward black (shade, solid variant) or white
+ * (tint, outline variant) so the result stays fully opaque. A translucent mix toward `transparent`
+ * was tried first for the outline variant, but color-mix()/relative-color-syntax toward
  * `transparent` reliably parses to a fully-transparent no-op once nested inside Tailwind's
  * generated @layer/@media/:hover structure, even though the identical CSS works standalone -
- * outline/ghost use Tailwind's built-in bg-black/N instead, see Button.tsx.)
+ * mixing toward an opaque color (black or white) instead sidesteps that entirely.
  */
 @utility bg-secondary-shade-90 {
     background-color: color-mix(in srgb, var(--color-bg-secondary) 90%, black);
@@ -62,6 +63,18 @@
 }
 @utility bg-accent-shade-80 {
     background-color: color-mix(in srgb, var(--color-bg-accent) 80%, black);
+}
+@utility bg-secondary-tint-15 {
+    background-color: color-mix(in srgb, var(--color-bg-secondary) 15%, white);
+}
+@utility bg-secondary-tint-30 {
+    background-color: color-mix(in srgb, var(--color-bg-secondary) 30%, white);
+}
+@utility bg-accent-tint-15 {
+    background-color: color-mix(in srgb, var(--color-bg-accent) 15%, white);
+}
+@utility bg-accent-tint-30 {
+    background-color: color-mix(in srgb, var(--color-bg-accent) 30%, white);
 }
 
 /* Custom scrollbar styling */

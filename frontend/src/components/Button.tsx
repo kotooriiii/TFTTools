@@ -12,12 +12,12 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 // `bg-secondary`/`bg-accent` are hand-rolled `@utility` blocks (tailwind.config.css), not part of
 // Tailwind's auto-generated color system, so the `/NN` opacity-modifier syntax silently fails to
-// apply against them. bg-{secondary,accent}-shade-NN (tailwind.config.css) work around that for
-// the solid variant's opaque hover/active shade. The outline variant's neutral hover/press tint
-// uses plain, unmodified Tailwind gray shades for the same reason any `/NN`-opacity or color-mix()
-// value - however it's produced - reliably collapses to fully transparent once nested inside
-// Tailwind's generated @layer/@media/:hover structure (confirmed via computed-style testing on
-// this exact setup, even though the identical CSS works when applied outside that structure).
+// apply against them. bg-{secondary,accent}-{shade,tint}-NN (tailwind.config.css) work around
+// that: shade mixes toward black (solid variant's opaque hover/active), tint mixes toward white
+// (outline variant's opaque, on-theme hover/active wash) - both stay fully opaque for the same
+// reason: a translucent mix toward `transparent` reliably collapses to fully transparent once
+// nested inside Tailwind's generated @layer/@media/:hover structure (confirmed via computed-style
+// testing on this exact setup, even though the identical CSS works when applied outside it).
 const SOLID_CLASSES: Record<ButtonTone, string> = {
     secondary: 'bg-secondary text-primary hover:bg-secondary-shade-90 active:bg-secondary-shade-80',
     accent: 'bg-accent text-primary hover:bg-accent-shade-90 active:bg-accent-shade-80',
@@ -25,8 +25,8 @@ const SOLID_CLASSES: Record<ButtonTone, string> = {
 };
 
 const OUTLINE_CLASSES: Record<ButtonTone, string> = {
-    secondary: 'bg-transparent border border-border hover:bg-gray-100 active:bg-gray-200',
-    accent: 'bg-transparent border border-border hover:bg-gray-100 active:bg-gray-200',
+    secondary: 'bg-transparent border border-border hover:bg-secondary-tint-15 active:bg-secondary-tint-30',
+    accent: 'bg-transparent border border-border hover:bg-accent-tint-15 active:bg-accent-tint-30',
     danger: 'bg-transparent border border-red-200 hover:bg-red-100 active:bg-red-200',
 };
 
