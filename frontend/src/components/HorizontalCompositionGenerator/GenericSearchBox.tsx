@@ -2,6 +2,7 @@
 import {motion} from 'framer-motion';
 import {JumpingDots} from "../JumpingDots.tsx";
 import {UnitPortrait} from "../UnitPortrait.tsx";
+import {Button} from "../Button";
 
 interface SearchConfig<T>
 {
@@ -209,12 +210,14 @@ export const GenericSearchBox = <T, >({
                                         className="w-16 px-2 py-1 text-center border border-purple-300 rounded bg-white text-purple-800"
                                     />
                                 )}
-                                <button
+                                <Button
+                                    variant="ghost"
+                                    tone="accent"
                                     onClick={() => onRemoveItem(config.itemKey(item))}
-                                    className="text-current hover:text-current/80 ml-1"
+                                    className="text-current hover:text-current/80 ml-1 rounded"
                                 >
                                     ×
-                                </button>
+                                </Button>
                             </motion.div>
                         )
                     })}
