@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { Button } from './Button';
 
 export const ProfileMenu: React.FC = () => {
     const { user, isLoading, logout } = useAuth();
@@ -25,12 +26,12 @@ export const ProfileMenu: React.FC = () => {
 
     if (!user) {
         return (
-            <button
+            <Button
                 onClick={() => navigate('/login')}
-                className="px-4 py-1.5 bg-secondary text-primary rounded-lg text-sm font-medium cursor-pointer hover:opacity-90 transition-opacity"
+                className="px-4 py-1.5 rounded-lg text-sm font-medium"
             >
                 Login
-            </button>
+            </Button>
         );
     }
 
@@ -49,40 +50,49 @@ export const ProfileMenu: React.FC = () => {
 
     return (
         <div ref={menuRef} className="relative">
-            <button
+            <Button
+                tone="accent"
                 onClick={() => setIsOpen((open) => !open)}
-                className="w-8 h-8 rounded-full bg-accent text-primary flex items-center justify-center text-xs font-semibold cursor-pointer"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold"
             >
                 {initials}
-            </button>
+            </Button>
 
             {isOpen && (
                 <div className="absolute right-0 top-10 w-44 bg-primary border border-border rounded-lg shadow-md py-1 z-50">
-                    <button
+                    <Button
+                        variant="ghost"
+                        tone="accent"
                         onClick={() => handleNavigate('/profile')}
-                        className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-accent cursor-pointer"
+                        className="w-full text-left px-4 py-2 text-sm text-primary"
                     >
                         Profile
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        tone="accent"
                         onClick={() => handleNavigate('/my-comps')}
-                        className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-accent cursor-pointer"
+                        className="w-full text-left px-4 py-2 text-sm text-primary"
                     >
                         My Comps
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        tone="accent"
                         onClick={() => handleNavigate('/settings')}
-                        className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-accent cursor-pointer"
+                        className="w-full text-left px-4 py-2 text-sm text-primary"
                     >
                         Settings
-                    </button>
+                    </Button>
                     <div className="border-t border-border my-1" />
-                    <button
+                    <Button
+                        variant="ghost"
+                        tone="accent"
                         onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-accent cursor-pointer"
+                        className="w-full text-left px-4 py-2 text-sm text-primary"
                     >
                         Logout
-                    </button>
+                    </Button>
                 </div>
             )}
         </div>

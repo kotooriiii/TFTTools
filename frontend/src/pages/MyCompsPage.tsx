@@ -10,6 +10,7 @@ import { hexId } from '../components/CompBuilder/hexUtils';
 import { computeTraitSummary } from '../utils/traitSummary';
 import { getCostColor } from '../utils/unitDisplay';
 import { CompActionButtons } from '../components/CompActionButtons';
+import { Button } from '../components/Button';
 
 /**
  * Resolves a saved comp's placements (identity + hex position only) into rehydrated
@@ -88,19 +89,21 @@ const CompRow: React.FC<CompRowProps> = ({ comp, units, board, onDelete }) => {
                     </div>
                 </div>
 
-                <button
+                <Button
+                    variant="ghost"
+                    tone="danger"
                     onClick={(e) => {
                         e.stopPropagation();
                         onDelete(comp.id);
                     }}
                     aria-label="Delete comp"
                     title="Delete comp"
-                    className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-secondary hover:bg-red-100 hover:text-red-700 transition-colors"
+                    className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-secondary hover:text-red-700"
                 >
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
                     </svg>
-                </button>
+                </Button>
 
                 <span className="text-secondary shrink-0">{expanded ? '▲' : '▼'}</span>
             </div>

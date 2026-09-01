@@ -41,6 +41,28 @@
     background-color: var(--color-bg-accent);
 }
 
+/*
+ * -200/-300 shades of bg-secondary/bg-accent for the Button component's hover/active feedback
+ * (Button.tsx), named to match Tailwind's own red-100/200/300 danger palette: each tone's own
+ * base color plays the role of "100", and these two utilities step it progressively darker for
+ * hover/active - three shades of one hue, the same feel as danger, for every tone. bg-secondary/
+ * bg-accent are flat @utility blocks (not part of Tailwind's color system), so the usual `/NN`
+ * opacity modifier silently fails to apply against them - these named utilities give hover:/
+ * active: something real to prefix.
+ */
+@utility bg-secondary-200 {
+    background-color: color-mix(in srgb, var(--color-bg-secondary) 90%, black);
+}
+@utility bg-secondary-300 {
+    background-color: color-mix(in srgb, var(--color-bg-secondary) 80%, black);
+}
+@utility bg-accent-200 {
+    background-color: color-mix(in srgb, var(--color-bg-accent) 90%, black);
+}
+@utility bg-accent-300 {
+    background-color: color-mix(in srgb, var(--color-bg-accent) 80%, black);
+}
+
 /* Custom scrollbar styling */
 @layer base {
     /* Webkit scrollbar (Chrome, Safari, Edge) */
