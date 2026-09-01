@@ -12,21 +12,23 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 // `bg-secondary`/`bg-accent` are hand-rolled `@utility` blocks (tailwind.config.css), not part of
 // Tailwind's auto-generated color system, so the `/NN` opacity-modifier syntax silently fails to
-// apply against them. bg-{secondary,accent}-shade-NN (tailwind.config.css) work around that for
-// the solid variant's opaque hover/active shade, mixed toward black. (A translucent background
-// tint was tried for the outline variant first, but it read as a flat, characterless grey/wash
-// regardless of the color mixed in - a grow + tone-colored border reads as feedback without
-// needing a background color at all.)
+// apply against them. bg-{secondary,accent}-{shade,tint}-NN (tailwind.config.css) work around
+// that: shade mixes toward black (solid variant's opaque hover/active), tint mixes toward the
+// page's own cream background (outline variant's faint, on-theme hover/active wash) - both stay
+// fully opaque for the same reason: a translucent mix toward `transparent` reliably collapses to
+// fully transparent once nested inside Tailwind's generated @layer/@media/:hover structure
+// (confirmed via computed-style testing on this exact setup, even though the identical CSS works
+// when applied outside it).
 const SOLID_CLASSES: Record<ButtonTone, string> = {
-    secondary: 'bg-secondary text-primary hover:bg-secondary-shade-90 active:bg-secondary-shade-80 active:scale-[0.97]',
-    accent: 'bg-accent text-primary hover:bg-accent-shade-90 active:bg-accent-shade-80 active:scale-[0.97]',
-    danger: 'bg-red-100 text-red-700 hover:bg-red-200 active:bg-red-300 active:scale-[0.97]',
+    secondary: 'bg-secondary text-primary hover:bg-secondary-shade-90 active:bg-secondary-shade-80',
+    accent: 'bg-accent text-primary hover:bg-accent-shade-90 active:bg-accent-shade-80',
+    danger: 'bg-red-100 text-red-700 hover:bg-red-200 active:bg-red-300',
 };
 
 const OUTLINE_CLASSES: Record<ButtonTone, string> = {
-    secondary: 'bg-transparent border border-border hover:border-secondary hover:scale-105 active:border-secondary active:scale-[0.97]',
-    accent: 'bg-transparent border border-border hover:border-accent hover:scale-105 active:border-accent active:scale-[0.97]',
-    danger: 'bg-transparent border border-red-200 hover:bg-red-100 active:bg-red-200 active:scale-[0.97]',
+    secondary: 'bg-transparent border border-border hover:bg-secondary-tint-5 active:bg-secondary-tint-12',
+    accent: 'bg-transparent border border-border hover:bg-accent-tint-5 active:bg-accent-tint-12',
+    danger: 'bg-transparent border border-red-200 hover:bg-red-100 active:bg-red-200',
 };
 
 const GHOST_CLASSES: Record<ButtonTone, string> = {
@@ -36,8 +38,8 @@ const GHOST_CLASSES: Record<ButtonTone, string> = {
 };
 
 /**
- * Shared button - owns background/border color (resting/hover/active) and the hover-grow /
- * press-shrink scale effect. Padding, sizing, radius, font, and gap stay in the caller's
+ * Shared button - owns only background color (resting/hover/active), border color (outline),
+ * and the press-scale effect. Padding, sizing, radius, font, and gap stay in the caller's
  * className so this never collides with per-site layout classes.
  */
 export const Button: React.FC<ButtonProps> = ({
@@ -54,11 +56,12 @@ export const Button: React.FC<ButtonProps> = ({
         effectiveVariant === 'solid' ? SOLID_CLASSES[tone] :
         effectiveVariant === 'outline' ? OUTLINE_CLASSES[tone] :
         GHOST_CLASSES[tone];
+    const scaleClasses = effectiveVariant === 'ghost' ? '' : 'active:scale-[0.97]';
 
     return (
         <button
             type={type}
-            className={`cursor-pointer transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed ${variantClasses} ${className}`}
+            className={`cursor-pointer transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed ${variantClasses} ${scaleClasses} ${className}`}
             {...rest}
         >
             {children}
