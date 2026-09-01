@@ -42,39 +42,15 @@
 }
 
 /*
- * Shade/tint utilities for the shared Button component's hover/active feedback (Button.tsx).
- * bg-secondary/bg-accent are flat @utility blocks, not part of Tailwind's color system, so the
- * usual `/NN` opacity modifier silently fails to apply against them - these named utilities give
- * hover:/active: something real to prefix, mixed toward black (shade, solid variant) or toward
- * the page's own cream background (tint, outline variant) so the result stays fully opaque and
- * on-theme. A translucent mix toward `transparent` was tried first for the outline variant, but
- * color-mix()/relative-color-syntax toward `transparent` reliably parses to a fully-transparent
- * no-op once nested inside Tailwind's generated @layer/@media/:hover structure, even though the
- * identical CSS works standalone - mixing toward an opaque color instead sidesteps that entirely.
+ * Shared hover/press feedback for the Button component (Button.tsx). Every button, regardless of
+ * its own resting tone or variant, shades toward the app's accent color on hover/press - one
+ * consistent interaction cue app-wide. bg-accent is a flat @utility block (not part of Tailwind's
+ * color system), so the usual `/NN` opacity modifier silently fails to apply against it - this
+ * named utility gives hover: something real to prefix. Active goes further, to a pure/undiluted
+ * accent (100%) via the existing bg-accent utility directly - no separate utility needed for that.
  */
-@utility bg-secondary-shade-90 {
-    background-color: color-mix(in srgb, var(--color-bg-secondary) 90%, black);
-}
-@utility bg-secondary-shade-80 {
-    background-color: color-mix(in srgb, var(--color-bg-secondary) 80%, black);
-}
-@utility bg-accent-shade-90 {
-    background-color: color-mix(in srgb, var(--color-bg-accent) 90%, black);
-}
-@utility bg-accent-shade-80 {
-    background-color: color-mix(in srgb, var(--color-bg-accent) 80%, black);
-}
-@utility bg-secondary-tint-5 {
-    background-color: color-mix(in srgb, var(--color-bg-secondary) 5%, var(--color-bg-primary));
-}
-@utility bg-secondary-tint-12 {
-    background-color: color-mix(in srgb, var(--color-bg-secondary) 12%, var(--color-bg-primary));
-}
-@utility bg-accent-tint-5 {
-    background-color: color-mix(in srgb, var(--color-bg-accent) 5%, var(--color-bg-primary));
-}
-@utility bg-accent-tint-12 {
-    background-color: color-mix(in srgb, var(--color-bg-accent) 12%, var(--color-bg-primary));
+@utility bg-accent-tint-85 {
+    background-color: color-mix(in srgb, var(--color-bg-accent) 85%, white);
 }
 
 /* Custom scrollbar styling */
