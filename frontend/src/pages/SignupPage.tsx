@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { AuthApiError } from '../services/authService';
 import { GoogleIcon } from '../components/GoogleIcon';
 import { Button } from '../components/Button';
+import { TextInput } from '../components/TextInput';
 
 export const SignupPage: React.FC = () => {
     const { signup, loginWithGoogle } = useAuth();
@@ -61,36 +62,36 @@ export const SignupPage: React.FC = () => {
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div>
                         <label className="block text-sm font-medium text-secondary mb-1">Username</label>
-                        <input
+                        <TextInput
                             type="text"
                             required
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="w-full p-2.5 border border-border rounded-lg bg-primary text-primary text-sm outline-none focus:ring-1 focus:ring-border"
+                            className="w-full p-2.5 rounded-lg text-sm"
                         />
                         {fieldErrors.username && <div className="text-error text-xs mt-1">{fieldErrors.username}</div>}
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-secondary mb-1">Email</label>
-                        <input
+                        <TextInput
                             type="email"
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full p-2.5 border border-border rounded-lg bg-primary text-primary text-sm outline-none focus:ring-1 focus:ring-border"
+                            className="w-full p-2.5 rounded-lg text-sm"
                         />
                         {fieldErrors.email && <div className="text-error text-xs mt-1">{fieldErrors.email}</div>}
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-secondary mb-1">Password</label>
-                        <input
+                        <TextInput
                             type="password"
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full p-2.5 border border-border rounded-lg bg-primary text-primary text-sm outline-none focus:ring-1 focus:ring-border"
+                            className="w-full p-2.5 rounded-lg text-sm"
                         />
                         {fieldErrors.password && <div className="text-error text-xs mt-1">{fieldErrors.password}</div>}
                     </div>

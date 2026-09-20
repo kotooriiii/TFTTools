@@ -59,12 +59,12 @@ export const ProfileMenu: React.FC = () => {
             </Button>
 
             {isOpen && (
-                <div className="absolute right-0 top-10 w-44 bg-primary border border-border rounded-lg shadow-md py-1 z-50">
+                <div className="absolute right-0 top-10 w-44 bg-primary border border-border rounded-lg shadow-md p-1 z-50">
                     <Button
                         variant="ghost"
                         tone="accent"
                         onClick={() => handleNavigate('/profile')}
-                        className="w-full text-left px-4 py-2 text-sm text-primary"
+                        className="w-full text-left px-4 py-2 rounded-lg text-sm text-primary"
                     >
                         Profile
                     </Button>
@@ -72,7 +72,7 @@ export const ProfileMenu: React.FC = () => {
                         variant="ghost"
                         tone="accent"
                         onClick={() => handleNavigate('/my-comps')}
-                        className="w-full text-left px-4 py-2 text-sm text-primary"
+                        className="w-full text-left px-4 py-2 rounded-lg text-sm text-primary"
                     >
                         My Comps
                     </Button>
@@ -80,7 +80,7 @@ export const ProfileMenu: React.FC = () => {
                         variant="ghost"
                         tone="accent"
                         onClick={() => handleNavigate('/settings')}
-                        className="w-full text-left px-4 py-2 text-sm text-primary"
+                        className="w-full text-left px-4 py-2 rounded-lg text-sm text-primary"
                     >
                         Settings
                     </Button>
@@ -89,7 +89,7 @@ export const ProfileMenu: React.FC = () => {
                         variant="ghost"
                         tone="accent"
                         onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-sm text-primary"
+                        className="w-full text-left px-4 py-2 rounded-lg text-sm text-primary"
                     >
                         Logout
                     </Button>

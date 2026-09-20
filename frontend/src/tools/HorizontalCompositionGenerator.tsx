@@ -14,6 +14,7 @@ import {hexId} from '../components/CompBuilder/hexUtils';
 import {UnitData} from '../types/compBuilderTypes';
 import {computeTraitSummary} from '../utils/traitSummary';
 import {CompActionButtons} from '../components/CompActionButtons';
+import {TextInput} from '../components/TextInput';
 
 interface BasicInputs
 {
@@ -306,7 +307,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                             <label className="block text-sm font-medium text-primary mb-2">
                                                 Tactician Crowns/Pans
                                             </label>
-                                            <input
+                                            <TextInput
                                                 type="number"
                                                 min="0"
                                                 max="3"
@@ -315,7 +316,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                     ...prev,
                                                     crownsPans: parseInt(e.target.value)
                                                 }))}
-                                                className="w-full px-3 py-2 border border-border rounded-md bg-primary text-primary focus:outline-none focus:ring-1 focus:ring-border "
+                                                className="w-full px-3 py-2 rounded-md"
                                             />
                                         </div>
 
@@ -323,7 +324,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                             <label className="block text-sm font-medium text-primary mb-2">
                                                 Luck Factor (0.0 - 1.0)
                                             </label>
-                                            <input
+                                            <TextInput
                                                 type="number"
                                                 min="0"
                                                 max="1"
@@ -333,7 +334,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                     ...prev,
                                                     luck: parseFloat(e.target.value)
                                                 }))}
-                                                className="w-full px-3 py-2 border border-border rounded-md bg-primary text-primary focus:outline-none focus:ring-1 focus:ring-border "
+                                                className="w-full px-3 py-2 rounded-md"
                                             />
                                         </div>
 
@@ -341,7 +342,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                             <label className="block text-sm font-medium text-primary mb-2">
                                                 Target Gold Threshold
                                             </label>
-                                            <input
+                                            <TextInput
                                                 type="number"
                                                 min="0"
                                                 max="100"
@@ -350,7 +351,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                                     ...prev,
                                                     targetGold: parseInt(e.target.value)
                                                 }))}
-                                                className="w-full px-3 py-2 border border-border rounded-md bg-primary text-primary focus:outline-none focus:ring-1 focus:ring-border "
+                                                className="w-full px-3 py-2 rounded-md"
                                             />
                                         </div>
                                     </div>

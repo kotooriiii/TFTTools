@@ -3,6 +3,7 @@ import {motion} from 'framer-motion';
 import {JumpingDots} from "../JumpingDots.tsx";
 import {UnitPortrait} from "../UnitPortrait.tsx";
 import {Button} from "../Button";
+import {TextInput} from "../TextInput";
 
 interface SearchConfig<T>
 {
@@ -82,11 +83,11 @@ export const GenericSearchBox = <T, >({
             <label className="block text-sm font-medium text-primary mb-2">
                 {config.label}
             </label>
-            <input
+            <TextInput
                 type="text"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
-                className="w-full px-3 py-2 border border-border rounded-md bg-primary text-primary focus:outline-none focus:ring-1 focus:ring-border "
+                className="w-full px-3 py-2 rounded-md"
                 placeholder={config.placeholder}
             />
 

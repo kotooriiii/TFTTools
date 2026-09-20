@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { AuthApiError } from '../services/authService';
 import { GoogleIcon } from '../components/GoogleIcon';
 import { Button } from '../components/Button';
+import { TextInput } from '../components/TextInput';
 
 export const LoginPage: React.FC = () => {
     const { login, loginWithGoogle } = useAuth();
@@ -52,23 +53,23 @@ export const LoginPage: React.FC = () => {
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div>
                         <label className="block text-sm font-medium text-secondary mb-1">Email</label>
-                        <input
+                        <TextInput
                             type="email"
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full p-2.5 border border-border rounded-lg bg-primary text-primary text-sm outline-none focus:ring-1 focus:ring-border"
+                            className="w-full p-2.5 rounded-lg text-sm"
                         />
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-secondary mb-1">Password</label>
-                        <input
+                        <TextInput
                             type="password"
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full p-2.5 border border-border rounded-lg bg-primary text-primary text-sm outline-none focus:ring-1 focus:ring-border"
+                            className="w-full p-2.5 rounded-lg text-sm"
                         />
                     </div>
 
