@@ -15,6 +15,7 @@ import {UnitData} from '../types/compBuilderTypes';
 import {computeTraitSummary} from '../utils/traitSummary';
 import {CompActionButtons} from '../components/CompActionButtons';
 import {TextInput} from '../components/TextInput';
+import {Button} from '../components/Button';
 
 interface BasicInputs
 {
@@ -372,12 +373,11 @@ const HorizontalCompositionGenerator: React.FC = () =>
                     transition={{duration: 0.5, delay: 0.2}}
                 >
                     <div className="flex flex-col sm:flex-row gap-4">
-                        <motion.button
+                        <Button
                             onClick={handleCalculate}
                             disabled={isCalculating || basicInputs.tacticianLevel < 1}
-                            className="flex-1 px-6 py-3 bg-secondary text-primary rounded-lg font-medium hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                            whileHover={{scale: 1.02}}
-                            whileTap={{scale: 0.98}}
+                            tone="secondary"
+                            className="flex-1 px-6 py-3 rounded-lg font-medium"
                         >
                             {isCalculating ? (
                                 <span className="flex items-center justify-center">
@@ -391,21 +391,18 @@ const HorizontalCompositionGenerator: React.FC = () =>
                                     Generating Composition...
                                 </span>
                             ) : (
-                                'Generate TFT Composition'
+                                'Generate Composition'
                             )}
-                        </motion.button>
+                        </Button>
 
-                        <motion.button
+                        {/* tone flips to danger while resetting - the same red-100/200 signal the app
+                            already uses for destructive actions, instead of a one-off manual color
+                            animation - so this stays consistent with Button's own design language. */}
+                        <Button
                             onClick={resetForm}
                             disabled={isResetting}
-                            className="px-6 py-3 bg-secondary text-primary rounded-lg font-medium hover:bg-secondary/90 disabled:opacity-70 transition-colors duration-200"
-                            whileHover={{scale: isResetting ? 1 : 1.02}}
-                            whileTap={{scale: isResetting ? 1 : 0.98}}
-                            animate={isResetting ? {
-                                scale: [1, 1.05, 1],
-                                backgroundColor: ["var(--secondary)", "#ef4444", "var(--secondary)"]
-                            } : {}}
-                            transition={{duration: 0.4}}
+                            tone={isResetting ? 'danger' : 'secondary'}
+                            className="px-6 py-3 rounded-lg font-medium"
                         >
                             {isResetting ? (
                                 <span className="flex items-center justify-center">
@@ -421,7 +418,7 @@ const HorizontalCompositionGenerator: React.FC = () =>
                             ) : (
                                 'Reset Form'
                             )}
-                        </motion.button>
+                        </Button>
                     </div>
                 </motion.div>
 

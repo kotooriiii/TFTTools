@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { SearchItem, SelectedItem } from '../../types/searchTypes';
 import { GenericSearchPanelWithRef } from './GenericPopupSearchPanel.tsx';
-import { Button } from '../Button';
+import { RemoveChipButton } from '../RemoveChipButton';
 
 interface UnitSearchPanelProps {
     searchQuery: string;
@@ -36,14 +36,7 @@ export const UnitPopupSearchPanel = forwardRef<HTMLDivElement, UnitSearchPanelPr
         }`}>
             <span>{item.type === 'unit' ? '🗡️' : '⭐'}</span>
             <span>{item.displayName}</span>
-            <Button
-                variant="ghost"
-                tone="accent"
-                onClick={onRemove}
-                className="border-none text-primary text-sm p-0 ml-1 rounded"
-            >
-                ×
-            </Button>
+            <RemoveChipButton onClick={onRemove} label={`Remove ${item.displayName}`} className="ml-1"/>
         </div>
     );
 

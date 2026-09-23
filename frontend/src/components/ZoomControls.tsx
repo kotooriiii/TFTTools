@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Button } from './Button';
 
 interface ZoomControlsProps {
     onZoomIn: () => void;
@@ -7,6 +8,11 @@ interface ZoomControlsProps {
     onResetZoom: () => void;
     zoom: number;
 }
+
+const ICON_BUTTON_CLASSES = 'w-12 h-12 rounded-lg flex items-center justify-center text-xl font-bold shadow-md backdrop-blur-sm';
+
+// outline + accent, same pairing LoginPage's "Continue with Google" button uses - one recognizable
+// combination reused instead of a one-off choice for this component.
 
 export const ZoomControls: React.FC<ZoomControlsProps> = ({
                                                               onZoomIn,
@@ -24,55 +30,25 @@ export const ZoomControls: React.FC<ZoomControlsProps> = ({
             gap: '8px',
             zIndex: 1000
         }}>
-            <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+            <Button
+                variant="outline"
+                tone="accent"
                 onClick={onZoomIn}
-                style={{
-                    width: '48px',
-                    height: '48px',
-                    backgroundColor: 'var(--color-bg-primary)',
-                    border: '2px solid var(--color-border)',
-                    borderRadius: '8px',
-                    fontSize: '20px',
-                    fontWeight: 'bold',
-                    color: 'var(--color-text-primary)',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-                    backdropFilter: 'blur(10px)'
-                }}
                 title="Zoom In"
+                className={ICON_BUTTON_CLASSES}
             >
                 +
-            </motion.button>
+            </Button>
 
-            <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+            <Button
+                variant="outline"
+                tone="accent"
                 onClick={onZoomOut}
-                style={{
-                    width: '48px',
-                    height: '48px',
-                    backgroundColor: 'var(--color-bg-primary)',
-                    border: '2px solid var(--color-border)',
-                    borderRadius: '8px',
-                    fontSize: '20px',
-                    fontWeight: 'bold',
-                    color: 'var(--color-text-primary)',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-                    backdropFilter: 'blur(10px)'
-                }}
                 title="Zoom Out"
+                className={ICON_BUTTON_CLASSES}
             >
                 −
-            </motion.button>
+            </Button>
 
             <motion.div
                 style={{
@@ -95,30 +71,15 @@ export const ZoomControls: React.FC<ZoomControlsProps> = ({
                 {Math.round(zoom * 100)}%
             </motion.div>
 
-            <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+            <Button
+                variant="outline"
+                tone="accent"
                 onClick={onResetZoom}
-                style={{
-                    width: '48px',
-                    height: '48px',
-                    backgroundColor: 'var(--color-bg-primary)',
-                    border: '2px solid var(--color-border)',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    fontWeight: 'bold',
-                    color: 'var(--color-text-primary)',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-                    backdropFilter: 'blur(10px)'
-                }}
                 title="Reset Zoom & Pan"
+                className={ICON_BUTTON_CLASSES}
             >
                 ⌂
-            </motion.button>
+            </Button>
         </div>
     );
 };

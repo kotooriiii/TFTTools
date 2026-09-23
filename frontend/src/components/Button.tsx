@@ -16,10 +16,15 @@ const RESTING_CLASSES: Record<ButtonVariant, Record<ButtonTone, string>> = {
         accent: 'bg-accent text-primary',
         danger: 'bg-red-100 text-red-700',
     },
+    // bg-primary, not bg-transparent: outline is meant to float as a bordered chip wherever it's
+    // placed, but every current usage happens to sit on a bg-primary parent already, so a
+    // transparent fill and an opaque bg-primary fill look pixel-identical there - the difference
+    // only shows up somewhere with a different backdrop (ZoomControls' canvas is bg-secondary),
+    // where transparent let the button camouflage into it instead of reading as a distinct chip.
     outline: {
-        secondary: 'bg-transparent border border-border',
-        accent: 'bg-transparent border border-border',
-        danger: 'bg-transparent border border-red-200',
+        secondary: 'bg-primary border border-border',
+        accent: 'bg-primary border border-border',
+        danger: 'bg-primary border border-red-200',
     },
     ghost: {
         secondary: 'bg-transparent',
