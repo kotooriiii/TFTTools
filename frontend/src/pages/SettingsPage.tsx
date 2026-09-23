@@ -2,6 +2,7 @@ import React from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { themes } from '../themes/themeConfigurations';
 import { isExperimentalThemesEnabled } from '../utils/featureFlags';
+import { Button } from '../components/Button';
 
 export const SettingsPage: React.FC = () => {
     const { theme, setTheme } = useTheme();
@@ -18,17 +19,15 @@ export const SettingsPage: React.FC = () => {
                 <h2 className="text-lg font-semibold text-primary mb-4">Theme</h2>
                 <div className="flex gap-3">
                     {availableThemes.map((candidate) => (
-                        <button
+                        <Button
                             key={candidate.name}
+                            variant="outline"
+                            selected={theme.name === candidate.name}
                             onClick={() => setTheme(candidate)}
-                            className={`px-4 py-2 rounded-lg border capitalize cursor-pointer transition-colors ${
-                                theme.name === candidate.name
-                                    ? 'bg-secondary text-primary border-secondary'
-                                    : 'bg-white text-secondary border-border hover:bg-accent'
-                            }`}
+                            className={`px-4 py-2 rounded-lg capitalize ${theme.name === candidate.name ? '' : 'text-secondary'}`}
                         >
                             {candidate.name}
-                        </button>
+                        </Button>
                     ))}
                 </div>
             </div>

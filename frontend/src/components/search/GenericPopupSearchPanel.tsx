@@ -1,6 +1,7 @@
 import {forwardRef, JSX} from 'react';
 import { motion } from 'framer-motion';
 import { JumpingDots } from "../JumpingDots.tsx";
+import { TextInput } from "../TextInput";
 
 interface GenericSearchPanelProps<T> {
     searchQuery: string;
@@ -42,12 +43,12 @@ export const GenericPopupSearchPanel = <T,>({
             >
                 {/* Search Input */}
                 <div className="mb-4">
-                    <input
+                    <TextInput
                         type="text"
                         placeholder={placeholder}
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
-                        className="w-full p-3 border border-border rounded-lg text-base text-primary bg-primary outline-none focus:ring-1 focus:ring-border"
+                        className="w-full p-3 rounded-lg text-base"
                     />
                 </div>
 

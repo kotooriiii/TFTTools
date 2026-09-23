@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { compsService } from '../services/compsService';
 import { UnitData } from '../types/compBuilderTypes';
 import { parseHexId } from './CompBuilder/hexUtils';
+import { Button } from './Button';
 
 type CopyStatus = 'idle' | 'copying' | 'copied' | 'error';
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
@@ -62,34 +63,36 @@ export const CompActionButtons: React.FC<CompActionButtonsProps> = ({ board, get
     return (
         <div className="flex flex-col items-center gap-2">
             <div className="flex items-center justify-center gap-2">
-                <button
+                <Button
                     onClick={handleCopyTeamCode}
                     disabled={copyStatus === 'copying'}
-                    className="px-3 py-2 bg-secondary text-primary rounded-md text-sm font-medium hover:bg-secondary/90 disabled:opacity-50 transition-colors duration-200"
+                    className="px-3 py-2 rounded-md text-sm font-medium"
                 >
                     {copyStatus === 'copying' ? 'Generating...' : copyStatus === 'copied' ? 'Copied!' : copyStatus === 'error' ? 'Failed - Retry' : 'Copy Team Code'}
-                </button>
-                <button
+                </Button>
+                <Button
+                    tone="accent"
                     onClick={() => navigate('/tools/comp-builder', { state: { seedBoard: board } })}
-                    className="px-3 py-2 bg-accent text-primary rounded-md text-sm font-medium hover:bg-accent/80 transition-colors duration-200"
+                    className="px-3 py-2 rounded-md text-sm font-medium"
                 >
                     Edit in Comp Builder
-                </button>
-                <button
+                </Button>
+                <Button
                     onClick={handleSaveComp}
                     disabled={!user || saveStatus === 'saving' || saveStatus === 'saved'}
                     title={!user ? 'Log in to save comps' : undefined}
-                    className="px-3 py-2 bg-secondary text-primary rounded-md text-sm font-medium hover:bg-secondary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                    className="px-3 py-2 rounded-md text-sm font-medium"
                 >
                     {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'saved' ? 'Saved' : saveStatus === 'error' ? 'Retry Save' : !user ? 'Log in to Save' : 'Save Comp'}
-                </button>
+                </Button>
                 {onDelete && (
-                    <button
+                    <Button
+                        tone="danger"
                         onClick={onDelete}
-                        className="px-3 py-2 bg-red-100 text-red-700 rounded-md text-sm font-medium hover:bg-red-200 transition-colors duration-200"
+                        className="px-3 py-2 rounded-md text-sm font-medium"
                     >
                         Delete
-                    </button>
+                    </Button>
                 )}
             </div>
             {saveStatus === 'error' && (

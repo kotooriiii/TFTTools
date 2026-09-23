@@ -4,6 +4,8 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../contexts/AuthContext';
 import { AuthApiError } from '../services/authService';
 import { GoogleIcon } from '../components/GoogleIcon';
+import { Button } from '../components/Button';
+import { TextInput } from '../components/TextInput';
 
 export const SignupPage: React.FC = () => {
     const { signup, loginWithGoogle } = useAuth();
@@ -60,49 +62,49 @@ export const SignupPage: React.FC = () => {
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div>
                         <label className="block text-sm font-medium text-secondary mb-1">Username</label>
-                        <input
+                        <TextInput
                             type="text"
                             required
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="w-full p-2.5 border border-border rounded-lg bg-primary text-primary text-sm outline-none focus:ring-1 focus:ring-border"
+                            className="w-full p-2.5 rounded-lg text-sm"
                         />
                         {fieldErrors.username && <div className="text-error text-xs mt-1">{fieldErrors.username}</div>}
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-secondary mb-1">Email</label>
-                        <input
+                        <TextInput
                             type="email"
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full p-2.5 border border-border rounded-lg bg-primary text-primary text-sm outline-none focus:ring-1 focus:ring-border"
+                            className="w-full p-2.5 rounded-lg text-sm"
                         />
                         {fieldErrors.email && <div className="text-error text-xs mt-1">{fieldErrors.email}</div>}
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-secondary mb-1">Password</label>
-                        <input
+                        <TextInput
                             type="password"
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full p-2.5 border border-border rounded-lg bg-primary text-primary text-sm outline-none focus:ring-1 focus:ring-border"
+                            className="w-full p-2.5 rounded-lg text-sm"
                         />
                         {fieldErrors.password && <div className="text-error text-xs mt-1">{fieldErrors.password}</div>}
                     </div>
 
                     {error && <div className="text-error text-sm">{error}</div>}
 
-                    <button
+                    <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="mt-2 bg-secondary text-primary rounded-lg py-2.5 font-medium cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50"
+                        className="mt-2 rounded-lg py-2.5 font-medium"
                     >
                         {isSubmitting ? 'Signing up...' : 'Sign Up'}
-                    </button>
+                    </Button>
 
                     <div className="flex items-center gap-3">
                         <div className="flex-1 h-px bg-border" />
@@ -110,14 +112,15 @@ export const SignupPage: React.FC = () => {
                         <div className="flex-1 h-px bg-border" />
                     </div>
 
-                    <button
-                        type="button"
+                    <Button
+                        variant="outline"
+                        tone="accent"
                         onClick={() => googleSignup()}
-                        className="flex items-center justify-center gap-2 border border-border rounded-lg py-2.5 font-medium cursor-pointer hover:bg-accent/10 transition-colors text-primary"
+                        className="flex items-center justify-center gap-2 rounded-lg py-2.5 font-medium text-primary"
                     >
                         <GoogleIcon />
                         Continue with Google
-                    </button>
+                    </Button>
                 </form>
 
                 <p className="text-sm text-secondary text-center mt-6">

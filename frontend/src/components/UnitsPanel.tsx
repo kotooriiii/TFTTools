@@ -4,6 +4,7 @@ import {SelectedItem} from '../types/searchTypes';
 import {UnitGridView} from './UnitGridView';
 import {UnitDetailedView} from './UnitDetailedView';
 import {JumpingDots} from "./JumpingDots.tsx";
+import {Button} from "./Button";
 
 interface UnitsPanelProps
 {
@@ -56,38 +57,26 @@ export const UnitsPanel: React.FC<UnitsPanelProps> = ({
                 padding: '2px',
                 marginBottom: '16px'
             }}>
-                <button
+                <Button
+                    variant="ghost"
+                    tone="accent"
+                    selected={unitsViewMode === 'grid'}
                     onClick={() => setUnitsViewMode('grid')}
-                    style={{
-                        fontSize: '10px',
-                        padding: '4px 8px',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        backgroundColor: unitsViewMode === 'grid' ? 'var(--color-bg-accent)' : 'transparent',
-                        color: unitsViewMode === 'grid' ? 'var(--color-text-accent)' : 'var(--color-text-secondary)',
-                        transition: 'all 0.2s ease'
-                    }}
+                    className={`text-[10px] px-2 py-1 rounded ${unitsViewMode === 'grid' ? '' : 'text-secondary'}`}
                     title="Grid View"
                 >
                     ⊞
-                </button>
-                <button
+                </Button>
+                <Button
+                    variant="ghost"
+                    tone="accent"
+                    selected={unitsViewMode === 'detailed'}
                     onClick={() => setUnitsViewMode('detailed')}
-                    style={{
-                        fontSize: '10px',
-                        padding: '4px 8px',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        backgroundColor: unitsViewMode === 'detailed' ? 'var(--color-bg-accent)' : 'transparent',
-                        color: unitsViewMode === 'detailed' ? 'var(--color-text-accent)' : 'var(--color-text-secondary)',
-                        transition: 'all 0.2s ease'
-                    }}
+                    className={`text-[10px] px-2 py-1 rounded ${unitsViewMode === 'detailed' ? '' : 'text-secondary'}`}
                     title="Detailed View"
                 >
                     ☰
-                </button>
+                </Button>
             </div>
 
             <p style={{

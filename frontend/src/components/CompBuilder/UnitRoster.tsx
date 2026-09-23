@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { UnitData } from '../../types/compBuilderTypes';
 import { getCostColor } from '../../utils/unitDisplay';
 import { UnitPortrait } from '../UnitPortrait.tsx';
+import { TextInput } from '../TextInput';
 
 interface UnitRosterProps {
     units: UnitData[];
@@ -37,12 +38,12 @@ export const UnitRoster: React.FC<UnitRosterProps> = ({
     return (
         <div className="w-72 shrink-0 h-full flex flex-col border-r border-border bg-primary">
             <div className="p-3 border-b border-border">
-                <input
+                <TextInput
                     type="text"
                     value={searchQuery}
                     onChange={(e) => onSearchChange(e.target.value)}
                     placeholder="Search units or traits..."
-                    className="w-full px-3 py-2 rounded-lg border border-border bg-primary text-sm text-primary outline-none focus:ring-1 focus:ring-border"
+                    className="w-full px-3 py-2 rounded-lg text-sm"
                 />
             </div>
 

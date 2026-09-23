@@ -8,6 +8,7 @@ import { UnitRoster } from '../components/CompBuilder/UnitRoster.tsx';
 import { HexBoard } from '../components/CompBuilder/HexBoard';
 import { TraitSynergyPanel } from '../components/CompBuilder/TraitSynergyPanel';
 import { parseHexId } from '../components/CompBuilder/hexUtils';
+import { Button } from '../components/Button';
 
 interface CompBuilderNavState {
     seedBoard?: Record<string, UnitData>;
@@ -194,20 +195,21 @@ const CompBuilderTool: React.FC = () => {
                         {saveStatus === 'error' && (
                             <span className="text-xs text-red-600">Failed to save comp</span>
                         )}
-                        <button
+                        <Button
+                            tone="accent"
                             onClick={handleSaveComp}
                             disabled={!user || Object.keys(board).length === 0 || saveStatus === 'saving' || saveStatus === 'saved'}
                             title={!user ? 'Log in to save comps' : undefined}
-                            className="text-xs px-3 py-1.5 rounded-md bg-accent text-primary hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+                            className="text-xs px-3 py-1.5 rounded-md"
                         >
                             {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'saved' ? 'Saved' : saveStatus === 'error' ? 'Retry Save' : !user ? 'Log in to Save' : 'Save Comp'}
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             onClick={handleClearBoard}
-                            className="text-xs px-3 py-1.5 rounded-md bg-secondary text-primary hover:opacity-80 transition-opacity"
+                            className="text-xs px-3 py-1.5 rounded-md"
                         >
                             Clear Board
-                        </button>
+                        </Button>
                     </div>
                 </div>
 

@@ -41,6 +41,61 @@
     background-color: var(--color-bg-accent);
 }
 
+/*
+ * bg-{secondary,accent}-shade-200: the lightened fill Button.tsx (hover AND active - both use
+ * the exact same color, only the press scale differs between them) mixes toward on hover/active,
+ * for every tone but danger (which already has Tailwind's own red-200 to play that role).
+ * (Named bg-{tone}-shade-200 rather than bg-{tone}-200 - the plain "-200" form collides with
+ * Tailwind's own bg-{color}-{weight} matching, which intercepts the class name and tries to
+ * resolve it through its native color system instead of this custom @utility, silently
+ * generating nothing.) bg-secondary/bg-accent are flat @utility blocks (not part of Tailwind's
+ * color system), so the usual `/NN` opacity modifier silently fails to apply against them - this
+ * named utility gives hover:/active: something real to prefix.
+ *
+ * Mixed toward white, not toward text-primary/black: a button darkening on hover reads as it
+ * going dull/unresponsive rather than responding. `color-mix(in srgb, ...)` toward a var()/
+ * literal color is a construct proven to work with Tailwind's @utility parser - relative-color
+ * syntax (`oklch(from var(...) ...)`) and `color-mix(in oklch, ...)` were tried first and
+ * abandoned because Tailwind's build silently drops any @utility whose value it can't parse, and
+ * both never generated any CSS at all, confirmed via computed-style testing.
+ */
+@utility bg-secondary-shade-200 {
+    background-color: color-mix(in srgb, var(--color-bg-secondary) 80%, white);
+}
+@utility bg-accent-shade-200 {
+    background-color: color-mix(in srgb, var(--color-bg-accent) 80%, white);
+}
+
+/*
+ * Standard focus ring for text inputs, used only by the shared TextInput component (never
+ * call-site classNames directly - see TextInput.tsx). Same 2px thickness as Button.tsx's
+ * interactive-ring below, on purpose: TextInput pairs this with `focus:border-transparent`, the
+ * same border-hands-off-to-ring trick Button.tsx's outline variant uses, so the resting border
+ * doesn't stack with the ring into an unpredictable combined thickness - only one boundary is
+ * ever drawn at a time.
+ */
+@utility field-ring {
+    outline: none;
+    &:focus {
+        box-shadow: 0 0 0 2px var(--color-border);
+    }
+}
+
+/*
+ * Standard 2px hover/active ring for Button.tsx (same thickness/color as field-ring above, so
+ * buttons and inputs read as the same interaction language) - previously copy-pasted per
+ * tone/variant as `hover:ring-1 hover:ring-{color} active:ring-1 active:ring-{color}`.
+ * --ring-tone defaults to the same border color field-ring uses; danger overrides it with a
+ * `[--ring-tone:var(--color-red-300)]` utility (same technique as BLOB_INK_CLASSES's --blob-ink
+ * in Button.tsx) instead of duplicating the rule per tone.
+ */
+@utility interactive-ring {
+    --ring-tone: var(--color-border);
+    &:hover, &:active {
+        box-shadow: 0 0 0 2px var(--ring-tone);
+    }
+}
+
 /* Custom scrollbar styling */
 @layer base {
     /* Webkit scrollbar (Chrome, Safari, Edge) */

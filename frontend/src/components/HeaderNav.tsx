@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {getToolsForNav} from '../config/RouteConfig';
+import {Button} from './Button';
 
 interface HeaderNavProps
 {
@@ -62,13 +63,15 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({currentPath, onNavigate}) =
 
             {/* Narrow viewports: hamburger + dropdown */}
             <div ref={menuRef} className="relative lg:hidden">
-                <button
+                <Button
+                    variant="ghost"
+                    tone="accent"
                     onClick={() => setIsOpen((open) => !open)}
                     aria-label="Toggle navigation menu"
-                    className="w-9 h-9 rounded-md flex items-center justify-center cursor-pointer text-secondary text-lg transition-all duration-150 hover:bg-accent hover:text-primary"
+                    className="w-9 h-9 rounded-md flex items-center justify-center text-secondary text-lg hover:text-primary"
                 >
                     ☰
-                </button>
+                </Button>
 
                 {isOpen && (
                     <div className="absolute left-0 top-11 w-56 bg-primary border border-border rounded-lg shadow-md py-1 z-50">
