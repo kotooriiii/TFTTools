@@ -30,14 +30,6 @@ export const HomePage: React.FC = () => {
           <div className="text-3xl font-bold text-primary mb-2">{toolsOnly.length}</div>
           <div className="text-secondary">Available Tools</div>
         </div>
-        <div className="bg-primary-surface rounded-lg shadow-md p-6 text-center border border-border">
-          <div className="text-3xl font-bold text-primary mb-2">∞</div>
-          <div className="text-secondary">Possibilities</div>
-        </div>
-        <div className="bg-primary-surface rounded-lg shadow-md p-6 text-center border border-border">
-          <div className="text-3xl font-bold text-primary mb-2">🚀</div>
-          <div className="text-secondary">Ready to Launch</div>
-        </div>
       </div>
 
       {/* Tools Grid */}
