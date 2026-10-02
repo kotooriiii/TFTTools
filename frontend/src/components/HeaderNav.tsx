@@ -54,7 +54,6 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({currentPath, onNavigate}) =
                                 }
                             `}
                         >
-                            <span className="text-base mr-2">{tool.icon}</span>
                             <span className="text-sm font-medium whitespace-nowrap">{tool.name}</span>
                         </div>
                     );
@@ -91,7 +90,6 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({currentPath, onNavigate}) =
                                         }
                                     `}
                                 >
-                                    <span>{tool.icon}</span>
                                     <span>{tool.name}</span>
                                 </div>
                             );
